@@ -18,13 +18,13 @@ namespace AlienGrab
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        GraphicsDevice device;
         Level level;
 
         public Game1()
         {
-            graphics = new GraphicsDeviceManager(this);
-            Content.RootDirectory = "Content";
-            level = new Level(new Rectangle());
+            graphics = new GraphicsDeviceManager(this);            
+            Content.RootDirectory = "Content";            
         }
 
         /// <summary>
@@ -48,7 +48,9 @@ namespace AlienGrab
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            device = graphics.GraphicsDevice;
             // TODO: use this.Content to load your game content here
+            level = new Level(new Rectangle(), device);
             level.LoadContent(Content);
         }
 
