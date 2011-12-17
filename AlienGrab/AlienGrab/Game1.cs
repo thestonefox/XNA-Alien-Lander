@@ -49,8 +49,11 @@ namespace AlienGrab
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             device = graphics.GraphicsDevice;
+            device.BlendState = BlendState.Opaque;
+            device.DepthStencilState = DepthStencilState.Default;
+            device.SamplerStates[0] = SamplerState.LinearWrap;
             // TODO: use this.Content to load your game content here
-            level = new Level(new Rectangle(), device);
+            level = new Level(device);
             level.LoadContent(Content);
         }
 
@@ -89,9 +92,11 @@ namespace AlienGrab
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-            spriteBatch.Begin();
-            level.Draw(gameTime, spriteBatch);
-            spriteBatch.End();
+            level.Draw(device, gameTime, spriteBatch);
+            device.RasterizerState = RasterizerState.CullNone;
+            device.BlendState = BlendState.Opaque;
+            device.DepthStencilState = DepthStencilState.Default;
+            device.SamplerStates[0] = SamplerState.LinearWrap;            
             base.Draw(gameTime);
         }
     }

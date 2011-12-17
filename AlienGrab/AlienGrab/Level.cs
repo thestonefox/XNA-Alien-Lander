@@ -14,25 +14,17 @@ namespace AlienGrab
 {
     class Level
     {
-        private GraphicsDevice device;
-        private Rectangle gameArea;
         private Map map;
         private Player playerOne;
-        private Matrix viewMatrix;
-        private Matrix projectionMatrix;
 
-        private Vector3 camerapos;
-        private Vector3 cameraviewpos;
+        private Vector3 cameraPosition;
+        private Vector3 cameraView;
 
-        public Level(Rectangle _gameArea, GraphicsDevice _device)
+        public Level(GraphicsDevice _device)
         {
-            gameArea = _gameArea;
-            device = _device;
-            map = new Map(new Vector3(6, 8, 4), device);
-            camerapos = new Vector3(30, 15, -8);
-            cameraviewpos = new Vector3(-179,-127,-8) ;
-
-            SetUpCamera();
+            map = new Map(new Vector3(8, 8, 5));
+            cameraPosition = new Vector3(-20.0f, 1230.0f, 1180.0f);
+            cameraView = new Vector3(1050.0f, -1050.0f, -880.0f);
             playerOne = new Player();
         }
 
@@ -43,79 +35,79 @@ namespace AlienGrab
             playerOne.Reset(Vector2.Zero);
         }
 
-        public void SetUpCamera()
-        {
-            viewMatrix = Matrix.CreateLookAt(camerapos, cameraviewpos, new Vector3(0, 1, 0));
-            projectionMatrix = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, device.Viewport.AspectRatio, 0.2f, 500.0f);
-        }
-
         public void Update(GameTime gameTime)
         {
-            map.Update(gameTime);
+            int spin = 50;
+            map.Update(gameTime, cameraPosition, cameraView);
             playerOne.Update(gameTime);
 
             if (Keyboard.GetState().IsKeyDown(Keys.NumPad8))
             {
-                camerapos.Y += 1;
+                cameraPosition.Y += spin;
+                cameraView.Y -= spin;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.NumPad2))
             {
-                camerapos.Y -= 1;
+                cameraPosition.Y -= spin;
+                cameraView.Y += spin;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.NumPad4))
             {
-                camerapos.X -= 1;
+                cameraPosition.X -= spin;
+                cameraView.X += spin;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.NumPad6))
             {
-                camerapos.X += 1;
+                cameraPosition.X += spin;
+                cameraView.X -= spin;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.NumPad9))
             {
-                camerapos.Z += 1;
+                cameraPosition.Z += spin;
+                cameraView.Z -= spin;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.NumPad3))
             {
-                camerapos.Z -= 1;
+                cameraPosition.Z -= spin;
+                cameraView.Z += spin;
             }
 
             if (Keyboard.GetState().IsKeyDown(Keys.W))
             {
-                cameraviewpos.Y += 1;
+                cameraView.Y += spin;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.S))
             {
-                cameraviewpos.Y -= 1;
+                cameraView.Y -= spin;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.A))
             {
-                cameraviewpos.X -= 1;
+                cameraView.X -= spin;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.D))
             {
-                cameraviewpos.X += 1;
+                cameraView.X += spin;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.R))
             {
-                cameraviewpos.Z += 1;
+                cameraView.Z += spin;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.F))
             {
-                cameraviewpos.Z -= 1;
+                cameraView.Z -= spin;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.P))
             {
-                Console.WriteLine(camerapos + " " + cameraviewpos);
+                Console.WriteLine(cameraPosition + " - " + cameraView + ".");
             }
-
-
-            viewMatrix = Matrix.CreateLookAt(camerapos, cameraviewpos, new Vector3(0, 1, 0));
         }
 
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public void Draw(GraphicsDevice device, GameTime gameTime, SpriteBatch spriteBatch)
         {
-            map.Draw(gameTime, spriteBatch, viewMatrix, projectionMatrix);
+            map.Draw(device, gameTime, spriteBatch);
+            spriteBatch.Begin();
             playerOne.Draw(gameTime, spriteBatch);
+            spriteBatch.End();            
         }
     }
 }
