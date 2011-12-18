@@ -16,10 +16,14 @@ namespace AlienGrab
     /// </summary>
     public class Game1 : Microsoft.Xna.Framework.Game
     {
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
-        GraphicsDevice device;
-        Level level;
+        private GraphicsDeviceManager graphics;
+        private SpriteBatch spriteBatch;
+        private GraphicsDevice device;
+
+        private InputState input;
+        private PlayerIndex[] controllingPlayer;
+
+        private Level level;
 
         public Game1()
         {
@@ -36,7 +40,8 @@ namespace AlienGrab
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
+            input = new InputState();
+            controllingPlayer = new PlayerIndex[2]{PlayerIndex.One, new PlayerIndex()};
             base.Initialize();
         }
 
@@ -78,7 +83,8 @@ namespace AlienGrab
                 this.Exit();
 
             // TODO: Add your update logic here
-            level.Update(gameTime);
+            input.Update();
+            level.Update(gameTime, input, controllingPlayer);
 
             base.Update(gameTime);
         }
@@ -93,6 +99,7 @@ namespace AlienGrab
 
             // TODO: Add your drawing code here
             level.Draw(device, gameTime, spriteBatch);
+
             device.RasterizerState = RasterizerState.CullNone;
             device.BlendState = BlendState.Opaque;
             device.DepthStencilState = DepthStencilState.Default;

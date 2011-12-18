@@ -36,7 +36,7 @@ namespace AlienGrab
         {
             Model newModel = content.Load<Model>(assetName);
             return newModel;
-        }
+        }                                                             
 
         public void Update(GameTime gameTime, Vector3 _cameraPosition, Vector3 _cameraView)
         {

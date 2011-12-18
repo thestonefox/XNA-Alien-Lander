@@ -35,67 +35,53 @@ namespace AlienGrab
             playerOne.Reset(Vector2.Zero);
         }
 
-        public void Update(GameTime gameTime)
+        protected void ControlCamera(InputState input, PlayerIndex[] controllingPlayer)
         {
             int spin = 50;
-            map.Update(gameTime, cameraPosition, cameraView);
-            playerOne.Update(gameTime);
-
-            if (Keyboard.GetState().IsKeyDown(Keys.NumPad8))
-            {
-                cameraPosition.Y += spin;
-                cameraView.Y -= spin;
-            }
-            if (Keyboard.GetState().IsKeyDown(Keys.NumPad2))
-            {
-                cameraPosition.Y -= spin;
-                cameraView.Y += spin;
-            }
-            if (Keyboard.GetState().IsKeyDown(Keys.NumPad4))
+            if (input.IsNewButtonHeld(Buttons.LeftThumbstickLeft, controllingPlayer[0], out controllingPlayer[1]) ||
+                input.IsNewKeyHeld(Keys.NumPad4, controllingPlayer[0], out controllingPlayer[1]))
             {
                 cameraPosition.X -= spin;
                 cameraView.X += spin;
             }
-            if (Keyboard.GetState().IsKeyDown(Keys.NumPad6))
+            if (input.IsNewButtonHeld(Buttons.LeftThumbstickRight, controllingPlayer[0], out controllingPlayer[1]) ||
+                input.IsNewKeyHeld(Keys.NumPad6, controllingPlayer[0], out controllingPlayer[1]))
             {
                 cameraPosition.X += spin;
                 cameraView.X -= spin;
             }
-            if (Keyboard.GetState().IsKeyDown(Keys.NumPad9))
+            if (input.IsNewButtonHeld(Buttons.LeftThumbstickUp, controllingPlayer[0], out controllingPlayer[1]) ||
+                input.IsNewKeyHeld(Keys.NumPad8, controllingPlayer[0], out controllingPlayer[1]))
+            {
+                cameraPosition.Y += spin;
+                cameraView.Y -= spin;
+            }
+            if (input.IsNewButtonHeld(Buttons.LeftThumbstickDown, controllingPlayer[0], out controllingPlayer[1]) ||
+                input.IsNewKeyHeld(Keys.NumPad2, controllingPlayer[0], out controllingPlayer[1]))
+            {
+                cameraPosition.Y -= spin;
+                cameraView.Y += spin;
+            }
+            if (input.IsNewButtonHeld(Buttons.LeftTrigger, controllingPlayer[0], out controllingPlayer[1]) ||
+                input.IsNewKeyHeld(Keys.NumPad7, controllingPlayer[0], out controllingPlayer[1]))
             {
                 cameraPosition.Z += spin;
                 cameraView.Z -= spin;
             }
-            if (Keyboard.GetState().IsKeyDown(Keys.NumPad3))
+            if (input.IsNewButtonHeld(Buttons.RightTrigger, controllingPlayer[0], out controllingPlayer[1]) ||
+                input.IsNewKeyHeld(Keys.NumPad9, controllingPlayer[0], out controllingPlayer[1]))
             {
                 cameraPosition.Z -= spin;
                 cameraView.Z += spin;
             }
+        }
 
-            if (Keyboard.GetState().IsKeyDown(Keys.W))
-            {
-                cameraView.Y += spin;
-            }
-            if (Keyboard.GetState().IsKeyDown(Keys.S))
-            {
-                cameraView.Y -= spin;
-            }
-            if (Keyboard.GetState().IsKeyDown(Keys.A))
-            {
-                cameraView.X -= spin;
-            }
-            if (Keyboard.GetState().IsKeyDown(Keys.D))
-            {
-                cameraView.X += spin;
-            }
-            if (Keyboard.GetState().IsKeyDown(Keys.R))
-            {
-                cameraView.Z += spin;
-            }
-            if (Keyboard.GetState().IsKeyDown(Keys.F))
-            {
-                cameraView.Z -= spin;
-            }
+        public void Update(GameTime gameTime, InputState input, PlayerIndex[] controllingPlayer)
+        {
+            ControlCamera(input, controllingPlayer);
+            map.Update(gameTime, cameraPosition, cameraView);
+            playerOne.Update(gameTime);            
+            
             if (Keyboard.GetState().IsKeyDown(Keys.P))
             {
                 Console.WriteLine(cameraPosition + " - " + cameraView + ".");
