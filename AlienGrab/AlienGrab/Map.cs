@@ -15,7 +15,8 @@ namespace AlienGrab
     class Map
     {
         private int[,] layout;
-        private Model block;
+        private Sprite3D[] blocks;
+
         private Vector3 cameraView;
         private Vector3 cameraPosition;
 
@@ -29,14 +30,12 @@ namespace AlienGrab
 
         public void LoadContent(ContentManager content)
         {
-            block = LoadModel(content, "cube");
-        }
-
-        protected Model LoadModel(ContentManager content, String assetName)
-        {
-            Model newModel = content.Load<Model>(assetName);
-            return newModel;
-        }                                                             
+            foreach (Sprite3D block in blocks)
+            {
+                block.LoadContent(content);
+                block.Initalize(Vector3.Zero, 0.0f, cameraView, cameraPosition);
+            }
+        }                             
 
         public void Update(GameTime gameTime, Vector3 _cameraPosition, Vector3 _cameraView)
         {
@@ -51,59 +50,44 @@ namespace AlienGrab
 
         protected void DrawMap(GraphicsDevice device)
         {
+            int blockCounter = 0;
             for (int d = 0;  d < layout.GetLength(0); d++)
             {
                 for (int w = layout.GetLength(1) - 1; w >= 0;  w--)
                 {
-                    DrawBuilding(device, new Vector2(w, d));
+                    blockCounter = DrawBuilding(device, blockCounter, new Vector2(w,d));
                 }
             }
         }
 
-        protected void DrawBuilding(GraphicsDevice device, Vector2 coordinate)
+        protected int DrawBuilding(GraphicsDevice device, int blockCounter, Vector2 coordinate)
         {
             for (int h = 0; h < layout[(int)coordinate.Y, (int)coordinate.X]; h++)
             {
                 Vector3 position = new Vector3(coordinate.X * 125, h * 60, coordinate.Y * 125);
-                DrawBlock(device, block, position);
+                blocks[blockCounter].Initalize(position, 0.0f, cameraView, cameraPosition);
+                blocks[blockCounter].Draw(device);
+                blockCounter++;
             }
-        }
-
-        protected void DrawBlock(GraphicsDevice device, Model model, Vector3 position)
-        {
-            // Copy any parent transforms.
-            Matrix[] transforms = new Matrix[model.Bones.Count];
-            model.CopyAbsoluteBoneTransformsTo(transforms);
-
-            // Draw the model. A model can have multiple meshes, so loop.
-            foreach (ModelMesh mesh in model.Meshes)
-            {
-                // This is where the mesh orientation is set, as well 
-                // as our camera and projection.
-                foreach (BasicEffect effect in mesh.Effects)
-                {
-                    effect.EnableDefaultLighting();
-                    effect.DiffuseColor = new Vector3(position.X / 1000, position.Y / 1000, position.Z / 1000);
-                    effect.World = transforms[mesh.ParentBone.Index] *
-                                    Matrix.CreateRotationY(0.0f) *
-                                    Matrix.CreateTranslation(position);
-                    effect.View = Matrix.CreateLookAt(cameraPosition, cameraView, Vector3.Up);
-                    effect.Projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(45.0f), device.Viewport.AspectRatio, 10f, 10000.0f);
-                }
-                // Draw the mesh, using the effects set above.
-                mesh.Draw();
-            }
+            return blockCounter;
         }
 
         protected void GenerateMap(int maxHeight)
         {
+            int blockCounter = 0;
             Random height = new Random();
             for (int d = 0; d < layout.GetLength(0); d++)
             {
                 for (int w = 0; w < layout.GetLength(1); w++)
                 {
                     layout[d, w] = height.Next((layout.GetLength(0)) - d, maxHeight);
+                    blockCounter += layout[d, w];
                 }
+            }
+            blocks = new Sprite3D[blockCounter];
+            for (int c = 0; c < blocks.Length; c++)
+            {
+                blocks[c] = new Sprite3D("cube");
             }
         }
     }
