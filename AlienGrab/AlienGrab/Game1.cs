@@ -84,7 +84,7 @@ namespace AlienGrab
 
             // TODO: Add your update logic here
             input.Update();
-            level.Update(device, gameTime, input, controllingPlayer);
+            level.Update(gameTime, input, controllingPlayer);
 
             base.Update(gameTime);
         }

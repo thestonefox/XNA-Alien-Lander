@@ -88,7 +88,7 @@ namespace AlienGrab
             return retVal;
         }
 
-        protected void DrawModel(GameTime gameTime)
+        public void Draw(GameTime gameTime, BaseCamera camera)
         {
             Game.GraphicsDevice.BlendState = BlendState.Opaque;
             Game.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
@@ -100,17 +100,14 @@ namespace AlienGrab
             //BEffect.DirectionalLight0.Direction = Vector3.Normalize(Position - LightPosition);
             //BEffect.LightingEnabled = true;
             BEffect.EnableDefaultLighting();
-            BEffect.Projection = ProjectionMatrix;
+            BEffect.Projection = camera.GetProjectionMatrix();
             //BEffect.PreferPerPixelLighting = true;
-            BEffect.View = ViewMatrix;
+            BEffect.View = camera.GetViewMatrix();
             
             foreach (ModelMesh meshM in mesh.Meshes)
-            {                
-                // Do the world stuff. 
-                // Scale * transform * pos * rotation
+            {
                 meshWorld = transforms[meshM.ParentBone.Index] * World;
-                meshWVP = meshWorld * ViewMatrix * ProjectionMatrix;
-
+                meshWVP = meshWorld * camera.GetViewMatrix() * camera.GetProjectionMatrix();
                 BEffect.World = meshWorld;
 
                 BEffect.CurrentTechnique.Passes[0].Apply();
@@ -123,11 +120,6 @@ namespace AlienGrab
                 }
             }
 
-        }
-
-        public override void Draw(GameTime gameTime)
-        {
-            DrawModel(gameTime);            
         }
     }
 }
