@@ -107,6 +107,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Base3DObject.cs" />
+    <Compile Include="BaseCamera.cs" />
     <Compile Include="InputState.cs" />
     <Compile Include="Level.cs" />
     <Compile Include="Map.cs" />

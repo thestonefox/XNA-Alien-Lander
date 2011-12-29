@@ -14,86 +14,118 @@ namespace AlienGrab
 {
     class Level
     {
-        private Map map;
-        private Player playerOne;
+        protected BaseCamera camera;
+        protected Map map;
+        protected Player playerOne;
 
-        private Vector3 cameraPosition;
-        private Vector3 cameraView;
-
-        public Level(GraphicsDevice _device)
+        public Level(Game game)
         {
-            map = new Map(new Vector3(8, 8, 5));
-            cameraPosition = new Vector3(-20.0f, 1230.0f, 1180.0f);
-            cameraView = new Vector3(1050.0f, -1050.0f, -880.0f);
-            playerOne = new Player();
+            map = new Map(game, new Vector3(8, 8, 5));
+            camera = new BaseCamera(game.GraphicsDevice.Viewport.AspectRatio, 10.0f, 10000.0f);
+            camera.position = new Vector3(-20.0f, 1230.0f, 1180.0f);
+            camera.view = new Vector3(1050.0f, -1050.0f, -880.0f);
+            playerOne = new Player(game, "ship");            
         }
 
         public void LoadContent(ContentManager content)
         {
             map.LoadContent(content);
             playerOne.LoadContent(content);
-            playerOne.Reset(Vector2.Zero);
+            playerOne.Position = new Vector3(0.0f, 500.0f, 0.0f);
         }
 
-        protected void ControlCamera(InputState input, PlayerIndex[] controllingPlayer)
+        protected void ControlCamera(InputState input, PlayerIndex[] controllingPlayer, float aspectRatio)
         {
             int spin = 50;
-            if (input.IsNewButtonHeld(Buttons.LeftThumbstickLeft, controllingPlayer[0], out controllingPlayer[1]) ||
+            if (input.IsNewButtonHeld(Buttons.RightThumbstickLeft, controllingPlayer[0], out controllingPlayer[1]) ||
                 input.IsNewKeyHeld(Keys.NumPad4, controllingPlayer[0], out controllingPlayer[1]))
             {
-                cameraPosition.X -= spin;
-                cameraView.X += spin;
+                if (camera.position.Z > 130)
+                {
+                    camera.position.X -= spin;
+                    camera.view.X += spin;
+                }
+                else
+                {
+                    camera.position.X += spin;
+                    camera.view.X -= spin;
+                }
             }
-            if (input.IsNewButtonHeld(Buttons.LeftThumbstickRight, controllingPlayer[0], out controllingPlayer[1]) ||
+            if (input.IsNewButtonHeld(Buttons.RightThumbstickRight, controllingPlayer[0], out controllingPlayer[1]) ||
                 input.IsNewKeyHeld(Keys.NumPad6, controllingPlayer[0], out controllingPlayer[1]))
             {
-                cameraPosition.X += spin;
-                cameraView.X -= spin;
+                if (camera.position.Z <= 130)
+                {
+                    camera.position.X -= spin;
+                    camera.view.X += spin;
+                }
+                else
+                {
+                    camera.position.X += spin;
+                    camera.view.X -= spin;
+                }
             }
-            if (input.IsNewButtonHeld(Buttons.LeftThumbstickUp, controllingPlayer[0], out controllingPlayer[1]) ||
+            if (input.IsNewButtonHeld(Buttons.RightThumbstickUp, controllingPlayer[0], out controllingPlayer[1]) ||
                 input.IsNewKeyHeld(Keys.NumPad8, controllingPlayer[0], out controllingPlayer[1]))
             {
-                cameraPosition.Y += spin;
-                cameraView.Y -= spin;
+                camera.position.Y += spin;
+                camera.view.Y -= spin;
             }
-            if (input.IsNewButtonHeld(Buttons.LeftThumbstickDown, controllingPlayer[0], out controllingPlayer[1]) ||
+            if (input.IsNewButtonHeld(Buttons.RightThumbstickDown, controllingPlayer[0], out controllingPlayer[1]) ||
                 input.IsNewKeyHeld(Keys.NumPad2, controllingPlayer[0], out controllingPlayer[1]))
             {
-                cameraPosition.Y -= spin;
-                cameraView.Y += spin;
+                camera.position.Y -= spin;
+                camera.view.Y += spin;
             }
             if (input.IsNewButtonHeld(Buttons.LeftTrigger, controllingPlayer[0], out controllingPlayer[1]) ||
                 input.IsNewKeyHeld(Keys.NumPad7, controllingPlayer[0], out controllingPlayer[1]))
             {
-                cameraPosition.Z += spin;
-                cameraView.Z -= spin;
+                camera.position.Z += spin;
+                camera.view.Z -= spin;
             }
             if (input.IsNewButtonHeld(Buttons.RightTrigger, controllingPlayer[0], out controllingPlayer[1]) ||
                 input.IsNewKeyHeld(Keys.NumPad9, controllingPlayer[0], out controllingPlayer[1]))
             {
-                cameraPosition.Z -= spin;
-                cameraView.Z += spin;
+                camera.position.Z -= spin;
+                camera.view.Z += spin;
             }
+
+            camera.position.X = MathHelper.Clamp(camera.position.X, -320.0f, 1230.0f);
+            camera.view.X = MathHelper.Clamp(camera.view.X, -200.0f, 1350.0f);
+            camera.position.Y = MathHelper.Clamp(camera.position.Y, 630.0f, 1130.0f);
+            camera.view.Y = MathHelper.Clamp(camera.view.Y, -950.0f, -450.0f);
+            camera.position.Z = MathHelper.Clamp(camera.position.Z, -570.0f, 1180.0f);
+            camera.view.Z = MathHelper.Clamp(camera.view.Z, -880.0f, 870.0f);
         }
 
-        public void Update(GameTime gameTime, InputState input, PlayerIndex[] controllingPlayer)
+        public void Update(GraphicsDevice device, GameTime gameTime, InputState input, PlayerIndex[] controllingPlayer)
         {
-            ControlCamera(input, controllingPlayer);
-            map.Update(gameTime, cameraPosition, cameraView);
-            playerOne.Update(gameTime);            
+            ControlCamera(input, controllingPlayer, device.Viewport.AspectRatio);
+            map.Update(gameTime);            
+            playerOne.Update(gameTime);
+            if (map.CheckCollision(playerOne))
+            {
+                playerOne.Position = playerOne.lastPosition;
+            }
+            else
+            {
+                playerOne.lastPosition = playerOne.Position;
+            }
             
             if (Keyboard.GetState().IsKeyDown(Keys.P))
             {
-                Console.WriteLine(cameraPosition + " - " + cameraView + ".");
+                Console.WriteLine(camera.position + " - " + camera.view + "." + " - " + playerOne.Position);
             }
         }
 
-        public void Draw(GraphicsDevice device, GameTime gameTime, SpriteBatch spriteBatch)
+        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            map.Draw(device, gameTime, spriteBatch);
+            map.Draw(gameTime, camera.GetViewMatrix(), camera.GetProjectionMatrix());
+            playerOne.ViewMatrix = camera.GetViewMatrix();
+            playerOne.ProjectionMatrix = camera.GetProjectionMatrix();
+            playerOne.Draw(gameTime);
             spriteBatch.Begin();
-            playerOne.Draw(gameTime, spriteBatch);
-            spriteBatch.End();            
+            spriteBatch.End();
         }
     }
 }

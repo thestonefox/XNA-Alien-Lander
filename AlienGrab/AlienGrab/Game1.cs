@@ -58,7 +58,7 @@ namespace AlienGrab
             device.DepthStencilState = DepthStencilState.Default;
             device.SamplerStates[0] = SamplerState.LinearWrap;
             // TODO: use this.Content to load your game content here
-            level = new Level(device);
+            level = new Level(this);
             level.LoadContent(Content);
         }
 
@@ -84,7 +84,7 @@ namespace AlienGrab
 
             // TODO: Add your update logic here
             input.Update();
-            level.Update(gameTime, input, controllingPlayer);
+            level.Update(device, gameTime, input, controllingPlayer);
 
             base.Update(gameTime);
         }
@@ -98,7 +98,7 @@ namespace AlienGrab
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-            level.Draw(device, gameTime, spriteBatch);
+            level.Draw(gameTime, spriteBatch);
 
             device.RasterizerState = RasterizerState.CullNone;
             device.BlendState = BlendState.Opaque;

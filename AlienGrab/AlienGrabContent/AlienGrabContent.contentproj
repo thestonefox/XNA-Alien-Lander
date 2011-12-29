@@ -42,18 +42,24 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ship.png">
-      <Name>ship</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="cube.FBX">
       <Name>cube</Name>
       <Importer>FbxImporter</Importer>
-      <Processor>ModelProcessor</Processor>
+      <Processor>BoundsModelProcessor</Processor>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ship.FBX">
+      <Name>ship</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>BoundsModelProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\ContentPipelineExtension\ContentPipelineExtension.csproj">
+      <Project>{53A2CD41-0924-4D53-AD86-2480D68FC44C}</Project>
+      <Name>ContentPipelineExtension</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
   <!--  To modify your build process, add your task inside one of the targets below and uncomment it. 

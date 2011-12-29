@@ -12,82 +12,74 @@ using Microsoft.Xna.Framework.Media;
 
 namespace AlienGrab
 {
-    class Player
+    class Player:Base3DObject
     {
-        private Texture2D graphic;
-        private Rectangle graphicSource;
-        private Vector2 position;
-        private Vector2 center;
-        private Vector2 velocity;
-        private float scale;
+        protected Vector3 velocity;
+        protected float acceleration;
+        protected float accelerationBit;
 
-        public Player()
+        public Vector3 lastPosition;
+
+        public Player(Game game, String assetName) :base (game, assetName)
         {
+            velocity = Vector3.Zero;
+            acceleration = 0.0f;
+            accelerationBit = 0.2f;
         }
 
-        public void Reset(Vector2 _position)
+        public override void Update(GameTime gameTime)
         {
-            position = _position;
-            center = new Vector2(graphic.Width / 2, graphic.Height / 2);
-            velocity = Vector2.Zero;
-            scale = 0.5f;
-        }
+            base.Update(gameTime);
+            acceleration = MathHelper.Clamp(acceleration, 0.0f, 3.0f);
 
-        public void LoadContent(ContentManager content)
-        {
-            graphic = content.Load<Texture2D>("ship");
-            graphicSource = new Rectangle(0, 0, graphic.Width, graphic.Height);
-        }
-
-        public void Update(GameTime gameTime)
-        {
+            bool playerInput = false;
             if (Keyboard.GetState().IsKeyDown(Keys.Left))
             {
-                position.X -= 1;
+                velocity.X = -1;
+                acceleration += accelerationBit;
+                playerInput = true;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.Right))
             {
-                position.X += 1;
+                velocity.X = 1;
+                acceleration += accelerationBit;
+                playerInput = true;
             }
-            if (Keyboard.GetState().IsKeyDown(Keys.Space))
-            {
-                position.Y -= 1;
-            }
-            if (Keyboard.GetState().IsKeyDown(Keys.Enter))
-            {
-                position.Y += 1;
-            }
+
             if (Keyboard.GetState().IsKeyDown(Keys.Up))
             {
-                scale -= 0.003f;                
-                if (scale < 0.5f)
-                {
-                    scale = 0.5f;
-                }
-                else
-                {
-                    position.Y -= 0.5f;
-                    position.X += 0.5f;
-                }
+                velocity.Z = -1;
+                acceleration += accelerationBit;
+                playerInput = true;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.Down))
             {
-                scale += 0.003f;
-                if (scale > 1.0f)
-                {
-                    scale = 1.0f;
-                }
-                else
-                {
-                    position.Y += 0.5f;
-                    position.X -= 0.5f;
-                }
+                velocity.Z = 1;
+                acceleration += accelerationBit;
+                playerInput = true;
+            }
+
+            if (Keyboard.GetState().IsKeyDown(Keys.Space))
+            {
+                velocity.Y = 1;
+                acceleration += accelerationBit;
+                playerInput = true;
+            }
+            if (Keyboard.GetState().IsKeyDown(Keys.Enter))
+            {
+                velocity.Y = -1;
+                acceleration += accelerationBit;
+                playerInput = true;
+            }
+
+            Position += velocity * acceleration;
+
+            if (playerInput == false)
+            {
+                acceleration -= accelerationBit;
+                velocity = Vector3.Zero;
             }
         }
 
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
-        {
-            spriteBatch.Draw(graphic, position, graphicSource, Color.White, 0.0f, center, scale, SpriteEffects.None, 1.0f);
-        }
     }
 }

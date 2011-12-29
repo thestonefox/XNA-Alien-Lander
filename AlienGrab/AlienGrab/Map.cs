@@ -14,59 +14,81 @@ namespace AlienGrab
 {
     class Map
     {
-        private int[,] layout;
-        private Sprite3D[] blocks;
+        protected Game game;
+        protected int[,] layout;
+        protected Base3DObject[] blocks;
 
-        private Vector3 cameraView;
-        private Vector3 cameraPosition;
-
-        public Map(Vector3 coordinates)
+        public Map(Game _game, Vector3 coordinates)
         {
-            cameraView = Vector3.Zero;
-            cameraPosition = Vector3.Zero;
+            game = _game;
             layout = new int[(int)coordinates.Z, (int)coordinates.X];
             GenerateMap((int)coordinates.Y);
         }
 
         public void LoadContent(ContentManager content)
         {
-            foreach (Sprite3D block in blocks)
+            foreach (Base3DObject block in blocks)
             {
                 block.LoadContent(content);
-                block.Initalize(Vector3.Zero, 0.0f, cameraView, cameraPosition);
             }
-        }                             
-
-        public void Update(GameTime gameTime, Vector3 _cameraPosition, Vector3 _cameraView)
-        {
-            cameraPosition = _cameraPosition;
-            cameraView = _cameraView;
         }
 
-        public void Draw(GraphicsDevice device, GameTime gameTime, SpriteBatch spriteBatch)
+        public void Update(GameTime gameTime)
         {
-            DrawMap(device);            
         }
 
-        protected void DrawMap(GraphicsDevice device)
+        public void Draw(GameTime gameTime, Matrix viewMatrix, Matrix projectionMatrix)
+        {
+            DrawMap(gameTime, viewMatrix, projectionMatrix);            
+        }
+
+        public bool CheckCollision(Base3DObject foreignObject)
+        {
+            bool collisionDetected = false;
+            int blockCounter = 0;
+            for (int d = 0; d < layout.GetLength(0); d++)
+            {
+                for (int w = 0; w < layout.GetLength(1); w++)
+                {
+                    for (int h = 0; h < layout[d, w]; h++)
+                    {
+                        if (blocks[blockCounter].Collided(foreignObject))
+                        {
+                            return true;
+                        }
+                        blockCounter++;
+                    }
+                }
+            }
+            return collisionDetected;
+        }
+
+        protected void DrawMap(GameTime gameTime, Matrix viewMatrix, Matrix projectionMatrix)
         {
             int blockCounter = 0;
             for (int d = 0;  d < layout.GetLength(0); d++)
             {
-                for (int w = layout.GetLength(1) - 1; w >= 0;  w--)
+                for (int w = 0; w < layout.GetLength(1); w++)
                 {
-                    blockCounter = DrawBuilding(device, blockCounter, new Vector2(w,d));
+                    blockCounter = DrawBuilding(gameTime, blockCounter, new Vector2(w, d), viewMatrix, projectionMatrix);
                 }
             }
         }
 
-        protected int DrawBuilding(GraphicsDevice device, int blockCounter, Vector2 coordinate)
+        protected Vector3 CalculatePosition(Vector3 coordinates)
+        {
+            return new Vector3(coordinates.X * 125, coordinates.Y * 60, coordinates.Z * 125);
+        }
+
+        protected int DrawBuilding(GameTime gameTime, int blockCounter, Vector2 coordinate, Matrix viewMatrix, Matrix projectionMatrix)
         {
             for (int h = 0; h < layout[(int)coordinate.Y, (int)coordinate.X]; h++)
             {
-                Vector3 position = new Vector3(coordinate.X * 125, h * 60, coordinate.Y * 125);
-                blocks[blockCounter].Initalize(position, 0.0f, cameraView, cameraPosition);
-                blocks[blockCounter].Draw(device);
+                blocks[blockCounter].Position = CalculatePosition(new Vector3(coordinate.X, h, coordinate.Y));
+                blocks[blockCounter].ViewMatrix = viewMatrix;
+                blocks[blockCounter].ProjectionMatrix = projectionMatrix;
+                blocks[blockCounter].Update(gameTime);
+                blocks[blockCounter].Draw(gameTime);
                 blockCounter++;
             }
             return blockCounter;
@@ -84,10 +106,10 @@ namespace AlienGrab
                     blockCounter += layout[d, w];
                 }
             }
-            blocks = new Sprite3D[blockCounter];
+            blocks = new Base3DObject[blockCounter];
             for (int c = 0; c < blocks.Length; c++)
             {
-                blocks[c] = new Sprite3D("cube");
+                blocks[c] = new Base3DObject(game, "cube");
             }
         }
     }
