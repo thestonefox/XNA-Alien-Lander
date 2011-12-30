@@ -47,7 +47,7 @@ namespace AlienGrab
             playerOne.LoadContent(content);            
         }
 
-        public void Update(GraphicsDevice device, GameTime gameTime, InputState input, PlayerIndex[] controllingPlayer)
+        public void Update(GameTime gameTime, InputState input, PlayerIndex[] controllingPlayer)
         {
             camera.Move(input, controllingPlayer);
             //camera.View = playerOne.Position;
@@ -64,10 +64,8 @@ namespace AlienGrab
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            map.Draw(gameTime, camera.GetViewMatrix(), camera.GetProjectionMatrix());
-            playerOne.ViewMatrix = camera.GetViewMatrix();
-            playerOne.ProjectionMatrix = camera.GetProjectionMatrix();
-            playerOne.Draw(gameTime);
+            map.Draw(gameTime, camera);
+            playerOne.Draw(gameTime, camera);
             spriteBatch.Begin();
             spriteBatch.End();
         }

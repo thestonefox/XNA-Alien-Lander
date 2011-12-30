@@ -20,8 +20,6 @@ namespace AlienGrab
         public Vector3 LightPosition = new Vector3(10, 10, 0);
         public Color AmbientColor = Color.White;
         public Color DiffuseColor = Color.White;
-        public Matrix ViewMatrix;
-        public Matrix ProjectionMatrix;
 
         protected bool firstPassCollision;
         protected bool hitTest;
@@ -48,9 +46,6 @@ namespace AlienGrab
             Rotation = Quaternion.Identity;
             modelName = modelAssetName;
             bEffect = new BasicEffect(Game.GraphicsDevice);
-
-            ViewMatrix = Matrix.Identity;
-            ProjectionMatrix = Matrix.Identity;
             firstPassCollision = false;
         }
 
@@ -107,7 +102,7 @@ namespace AlienGrab
             return hitTest;
         }
 
-        protected void DrawModel(GameTime gameTime)
+        protected void DrawModel(GameTime gameTime, BaseCamera camera)
         {
             Game.GraphicsDevice.BlendState = BlendState.Opaque;
             Game.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
@@ -120,8 +115,8 @@ namespace AlienGrab
             bEffect.LightingEnabled = true;
             bEffect.PreferPerPixelLighting = true;
             bEffect.EnableDefaultLighting();
-            bEffect.Projection = ProjectionMatrix;            
-            bEffect.View = ViewMatrix;
+            bEffect.Projection = camera.GetProjectionMatrix();
+            bEffect.View = camera.GetViewMatrix();
 
             if (hitTest)
             {
@@ -132,7 +127,7 @@ namespace AlienGrab
                 // Do the world stuff. 
                 // Scale * transform * pos * rotation
                 meshWorld = transforms[meshM.ParentBone.Index] * world;
-                meshWVP = meshWorld * ViewMatrix * ProjectionMatrix;
+                meshWVP = meshWorld * camera.GetViewMatrix() * camera.GetProjectionMatrix();
 
                 bEffect.World = meshWorld;
 
@@ -148,9 +143,9 @@ namespace AlienGrab
 
         }
 
-        public override void Draw(GameTime gameTime)
+        public void Draw(GameTime gameTime, BaseCamera camera)
         {
-            DrawModel(gameTime);            
+            DrawModel(gameTime, camera);
         }
     }
 }

@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace AlienGrab
 {
-    class BaseCamera
+    public class BaseCamera
     {
         public Vector3 Position;
         public Vector3 View;

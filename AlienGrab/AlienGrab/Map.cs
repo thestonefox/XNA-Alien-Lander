@@ -37,9 +37,9 @@ namespace AlienGrab
         {
         }
 
-        public void Draw(GameTime gameTime, Matrix viewMatrix, Matrix projectionMatrix)
+        public void Draw(GameTime gameTime, BaseCamera camera)
         {
-            DrawMap(gameTime, viewMatrix, projectionMatrix);            
+            DrawMap(gameTime, camera);            
         }
 
         public bool CheckCollision(Base3DObject foreignObject)
@@ -63,14 +63,14 @@ namespace AlienGrab
             return collisionDetected;
         }
 
-        protected void DrawMap(GameTime gameTime, Matrix viewMatrix, Matrix projectionMatrix)
+        protected void DrawMap(GameTime gameTime, BaseCamera camera)
         {
             int blockCounter = 0;
             for (int d = 0;  d < layout.GetLength(0); d++)
             {
                 for (int w = 0; w < layout.GetLength(1); w++)
                 {
-                    blockCounter = DrawBuilding(gameTime, blockCounter, new Vector2(w, d), viewMatrix, projectionMatrix);
+                    blockCounter = DrawBuilding(gameTime, blockCounter, new Vector2(w, d), camera);
                 }
             }
         }
@@ -80,16 +80,14 @@ namespace AlienGrab
             return new Vector3(coordinates.X * 165, coordinates.Y * 60, coordinates.Z * 165);
         }
 
-        protected int DrawBuilding(GameTime gameTime, int blockCounter, Vector2 coordinate, Matrix viewMatrix, Matrix projectionMatrix)
+        protected int DrawBuilding(GameTime gameTime, int blockCounter, Vector2 coordinate, BaseCamera camera)
         {
             for (int h = 0; h < layout[(int)coordinate.Y, (int)coordinate.X]; h++)
             {
                 blocks[blockCounter].Position = CalculatePosition(new Vector3(coordinate.X, h, coordinate.Y));
                 blocks[blockCounter].DiffuseColor = new Color((float)coordinate.X / 7, (float)coordinate.Y / 7, (float)h / 7);
-                blocks[blockCounter].ViewMatrix = viewMatrix;
-                blocks[blockCounter].ProjectionMatrix = projectionMatrix;
                 blocks[blockCounter].Update(gameTime);
-                blocks[blockCounter].Draw(gameTime);
+                blocks[blockCounter].Draw(gameTime, camera);
                 blockCounter++;
             }
             return blockCounter;
