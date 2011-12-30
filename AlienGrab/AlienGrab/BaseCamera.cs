@@ -14,8 +14,8 @@ namespace AlienGrab
 {
     class BaseCamera
     {
-        public Vector3 position;
-        public Vector3 view;
+        public Vector3 Position;
+        public Vector3 View;
         protected float nearPlane;
         protected float farPlane;
         protected float aspectRatio;
@@ -25,13 +25,13 @@ namespace AlienGrab
             aspectRatio = _aspectRatio;
             nearPlane = _nearPlane;
             farPlane = _farPlane;
-            position = Vector3.Zero;
-            view = Vector3.Zero;
+            Position = Vector3.Zero;
+            View = Vector3.Zero;
         }
 
         public Matrix GetViewMatrix()
         {
-            return Matrix.CreateLookAt(position, view, Vector3.Up);
+            return Matrix.CreateLookAt(Position, View, Vector3.Up);
         }
 
         public Matrix GetProjectionMatrix()

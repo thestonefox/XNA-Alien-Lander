@@ -12,38 +12,37 @@ using Microsoft.Xna.Framework.Media;
 
 namespace AlienGrab
 {
-    class Player:Base3DObject
+    class Player:MovingObject
     {
-        protected Vector3 velocity;
-        protected float acceleration;
-        protected float accelerationBit;
+        protected float thrust;
+        protected float gravity;
 
-        public Vector3 lastPosition;
-
-        public Player(Game game, String assetName) :base (game, assetName)
+        public Player(Game game, String assetName)
+            : base(game, assetName)
         {
-            velocity = Vector3.Zero;
-            acceleration = 0.0f;
-            accelerationBit = 0.2f;
+            thrust = 0.025f;
+            gravity = -1.0f;
         }
 
-        public override void Update(GameTime gameTime)
+        public void Move()
         {
-            base.Update(gameTime);
-            acceleration = MathHelper.Clamp(acceleration, 0.0f, 3.0f);
-
             bool playerInput = false;
+
             if (Keyboard.GetState().IsKeyDown(Keys.Left))
             {
                 velocity.X = -1;
                 acceleration += accelerationBit;
                 playerInput = true;
             }
-            if (Keyboard.GetState().IsKeyDown(Keys.Right))
+            else if (Keyboard.GetState().IsKeyDown(Keys.Right))
             {
                 velocity.X = 1;
                 acceleration += accelerationBit;
                 playerInput = true;
+            }
+            else
+            {
+                velocity.X = 0;
             }
 
             if (Keyboard.GetState().IsKeyDown(Keys.Up))
@@ -52,34 +51,36 @@ namespace AlienGrab
                 acceleration += accelerationBit;
                 playerInput = true;
             }
-            if (Keyboard.GetState().IsKeyDown(Keys.Down))
+            else if (Keyboard.GetState().IsKeyDown(Keys.Down))
             {
                 velocity.Z = 1;
                 acceleration += accelerationBit;
                 playerInput = true;
             }
+            else
+            {
+                velocity.Z = 0;
+            }
 
             if (Keyboard.GetState().IsKeyDown(Keys.Space))
             {
-                velocity.Y = 1;
+                velocity.Y += thrust;
+                if (velocity.Y > 1.0f) velocity.Y = 1.0f;
                 acceleration += accelerationBit;
                 playerInput = true;
             }
-            if (Keyboard.GetState().IsKeyDown(Keys.Enter))
+            else
             {
-                velocity.Y = -1;
+                velocity.Y -= thrust;
+                if (velocity.Y < gravity) velocity.Y = gravity;
                 acceleration += accelerationBit;
-                playerInput = true;
             }
-
-            Position += velocity * acceleration;
 
             if (playerInput == false)
             {
-                acceleration -= accelerationBit;
-                velocity = Vector3.Zero;
+                //acceleration -= accelerationBit;
+                //velocity = Vector3.Zero;
             }
         }
-
     }
 }

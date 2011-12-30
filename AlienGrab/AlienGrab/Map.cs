@@ -77,7 +77,7 @@ namespace AlienGrab
 
         protected Vector3 CalculatePosition(Vector3 coordinates)
         {
-            return new Vector3(coordinates.X * 125, coordinates.Y * 60, coordinates.Z * 125);
+            return new Vector3(coordinates.X * 165, coordinates.Y * 60, coordinates.Z * 165);
         }
 
         protected int DrawBuilding(GameTime gameTime, int blockCounter, Vector2 coordinate, Matrix viewMatrix, Matrix projectionMatrix)
@@ -85,6 +85,7 @@ namespace AlienGrab
             for (int h = 0; h < layout[(int)coordinate.Y, (int)coordinate.X]; h++)
             {
                 blocks[blockCounter].Position = CalculatePosition(new Vector3(coordinate.X, h, coordinate.Y));
+                blocks[blockCounter].DiffuseColor = new Color((float)coordinate.X / 7, (float)coordinate.Y / 7, (float)h / 7);
                 blocks[blockCounter].ViewMatrix = viewMatrix;
                 blocks[blockCounter].ProjectionMatrix = projectionMatrix;
                 blocks[blockCounter].Update(gameTime);

@@ -13,22 +13,26 @@ using Microsoft.Xna.Framework.Media;
 namespace AlienGrab
 {
     public class Base3DObject : DrawableGameComponent
-    {        
+    {
         public Vector3 Position;
         public Vector3 Scale;
         public Quaternion Rotation;
         public Vector3 LightPosition = new Vector3(10, 10, 0);
         public Color AmbientColor = Color.White;
         public Color DiffuseColor = Color.White;
+        public Matrix ViewMatrix;
+        public Matrix ProjectionMatrix;
+
+        protected bool firstPassCollision;
+        protected bool hitTest;
+        protected bool safeHit;
 
         protected Model mesh;
         protected String modelName;
 
-        public Matrix ViewMatrix;
-        public Matrix ProjectionMatrix;
-
-        protected Matrix World;
-        protected BasicEffect BEffect;
+        protected Matrix world;
+        protected Matrix lastWorld;
+        protected BasicEffect bEffect;
         protected Matrix[] transforms;
         protected Matrix meshWorld;
         protected Matrix meshWVP;        
@@ -43,10 +47,11 @@ namespace AlienGrab
             Scale = Vector3.One;
             Rotation = Quaternion.Identity;
             modelName = modelAssetName;
-            BEffect = new BasicEffect(Game.GraphicsDevice);
+            bEffect = new BasicEffect(Game.GraphicsDevice);
 
             ViewMatrix = Matrix.Identity;
             ProjectionMatrix = Matrix.Identity;
+            firstPassCollision = false;
         }
 
         public void LoadContent(ContentManager content)
@@ -65,27 +70,41 @@ namespace AlienGrab
 
         public override void Update(GameTime gameTime)
         {
-            World = Matrix.CreateScale(Scale) *
-                      Matrix.CreateFromQuaternion(Rotation) *
-                      Matrix.CreateTranslation(Position);
-            bounds = new BoundingBox(Vector3.Transform(volume.Min, World), Vector3.Transform(volume.Max, World));
+
+            if (lastWorld != world)
+            {
+                lastWorld = world;
+            }
+            world =     Matrix.CreateScale(Scale) *
+                        Matrix.CreateFromQuaternion(Rotation) *
+                        Matrix.CreateTranslation(Position);
+            bounds = new BoundingBox(Vector3.Transform(volume.Min, world), Vector3.Transform(volume.Max, world));
         }
 
         public bool Collided(Base3DObject bob)
         {
-            bool retVal = false;
+            hitTest = false;
+            bob.hitTest = false;
 
-            if (bounds.Intersects(bob.bounds))
+            if (bounds.Intersects(bob.bounds) && firstPassCollision == true)
             {
-                bob.DiffuseColor = Color.DarkRed;                
-                retVal = true;
+                if (bob.bounds.Min.Y > (bounds.Max.Y - 4.0f) && (bob.bounds.Min.X > bounds.Min.X && bob.bounds.Max.X < bounds.Max.X && bob.bounds.Min.Z > bounds.Min.Z && bob.bounds.Max.Z < bounds.Max.Z))
+                {
+                    safeHit = true;
+                    bob.safeHit = true;
+                    DiffuseColor = Color.DarkRed;
+                }
+                else
+                {
+                    safeHit = false;
+                    bob.safeHit = false;
+                    DiffuseColor = Color.White;
+                }
+                hitTest = true;
+                bob.hitTest = true;
             }
-            else
-            {
-                bob.DiffuseColor = Color.White;
-            }
-
-            return retVal;
+            firstPassCollision = true;
+            return hitTest;
         }
 
         protected void DrawModel(GameTime gameTime)
@@ -95,25 +114,29 @@ namespace AlienGrab
             Game.GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
             Game.GraphicsDevice.SamplerStates[0] = SamplerState.PointWrap;
 
-            //BEffect.AmbientLightColor = AmbientColor.ToVector3();
-            BEffect.DiffuseColor = DiffuseColor.ToVector3();
-            //BEffect.DirectionalLight0.Direction = Vector3.Normalize(Position - LightPosition);
-            //BEffect.LightingEnabled = true;
-            BEffect.EnableDefaultLighting();
-            BEffect.Projection = ProjectionMatrix;
-            //BEffect.PreferPerPixelLighting = true;
-            BEffect.View = ViewMatrix;
-            
+            bEffect.AmbientLightColor = AmbientColor.ToVector3();
+            bEffect.DiffuseColor = DiffuseColor.ToVector3();
+            bEffect.DirectionalLight0.Direction = Vector3.Normalize(Position - LightPosition);
+            bEffect.LightingEnabled = true;
+            bEffect.PreferPerPixelLighting = true;
+            bEffect.EnableDefaultLighting();
+            bEffect.Projection = ProjectionMatrix;            
+            bEffect.View = ViewMatrix;
+
+            if (hitTest)
+            {
+                world = lastWorld;
+            }
             foreach (ModelMesh meshM in mesh.Meshes)
             {                
                 // Do the world stuff. 
                 // Scale * transform * pos * rotation
-                meshWorld = transforms[meshM.ParentBone.Index] * World;
+                meshWorld = transforms[meshM.ParentBone.Index] * world;
                 meshWVP = meshWorld * ViewMatrix * ProjectionMatrix;
 
-                BEffect.World = meshWorld;
+                bEffect.World = meshWorld;
 
-                BEffect.CurrentTechnique.Passes[0].Apply();
+                bEffect.CurrentTechnique.Passes[0].Apply();
 
                 foreach (ModelMeshPart meshPart in meshM.MeshParts)
                 {
