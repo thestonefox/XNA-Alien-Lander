@@ -21,66 +21,58 @@ namespace AlienGrab
             : base(game, assetName)
         {
             thrust = 0.025f;
-            gravity = -1.0f;
+            gravity = 0.035f;
         }
 
         public void Move()
         {
-            bool playerInput = false;
-
-            if (Keyboard.GetState().IsKeyDown(Keys.Left))
+            Rotation.Y += MathHelper.ToRadians(5.0f);
+            if (Keyboard.GetState().IsKeyDown(Keys.Left) 
+                && (hasPlayArea==false || (hasPlayArea==true && bounds.Max.X>playArea.Min.X) ))
             {
                 velocity.X = -1;
                 acceleration += accelerationBit;
-                playerInput = true;
             }
-            else if (Keyboard.GetState().IsKeyDown(Keys.Right))
+            else if (Keyboard.GetState().IsKeyDown(Keys.Right) 
+                && (hasPlayArea == false || (hasPlayArea == true && bounds.Min.X < playArea.Max.X)))
             {
                 velocity.X = 1;
                 acceleration += accelerationBit;
-                playerInput = true;
             }
             else
             {
                 velocity.X = 0;
             }
 
-            if (Keyboard.GetState().IsKeyDown(Keys.Up))
+            if (Keyboard.GetState().IsKeyDown(Keys.Up)
+                && (hasPlayArea == false || (hasPlayArea == true && bounds.Max.Z > playArea.Min.Z)))
             {
                 velocity.Z = -1;
                 acceleration += accelerationBit;
-                playerInput = true;
             }
-            else if (Keyboard.GetState().IsKeyDown(Keys.Down))
+            else if (Keyboard.GetState().IsKeyDown(Keys.Down)
+                && (hasPlayArea == false || (hasPlayArea == true && bounds.Min.Z < playArea.Max.Z)))
             {
                 velocity.Z = 1;
                 acceleration += accelerationBit;
-                playerInput = true;
             }
             else
             {
                 velocity.Z = 0;
             }
 
-            if (Keyboard.GetState().IsKeyDown(Keys.Space))
+            if (Keyboard.GetState().IsKeyDown(Keys.Space)
+                && (hasPlayArea == false || (hasPlayArea == true && bounds.Min.Y < playArea.Max.Y)))
             {
                 velocity.Y += thrust;
-                if (velocity.Y > 1.0f) velocity.Y = 1.0f;
-                acceleration += accelerationBit;
-                playerInput = true;
-            }
-            else
-            {
-                velocity.Y -= thrust;
-                if (velocity.Y < gravity) velocity.Y = gravity;
                 acceleration += accelerationBit;
             }
-
-            if (playerInput == false)
+            else if (hasPlayArea == false || (hasPlayArea == true && bounds.Max.Y > playArea.Min.Y))
             {
-                //acceleration -= accelerationBit;
-                //velocity = Vector3.Zero;
+                velocity.Y -= gravity;
+                acceleration += accelerationBit;
             }
+            velocity.Y = MathHelper.Clamp(velocity.Y, -1.0f, 1.0f);
         }
     }
 }

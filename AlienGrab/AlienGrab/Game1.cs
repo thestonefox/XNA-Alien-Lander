@@ -18,7 +18,6 @@ namespace AlienGrab
     {
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
-        private GraphicsDevice device;
 
         private InputState input;
         private PlayerIndex[] controllingPlayer;
@@ -53,10 +52,9 @@ namespace AlienGrab
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            device = graphics.GraphicsDevice;
-            device.BlendState = BlendState.Opaque;
-            device.DepthStencilState = DepthStencilState.Default;
-            device.SamplerStates[0] = SamplerState.LinearWrap;
+            this.GraphicsDevice.BlendState = BlendState.Opaque;
+            this.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+            this.GraphicsDevice.SamplerStates[0] = SamplerState.LinearWrap;
             // TODO: use this.Content to load your game content here
             level = new Level(this);
             level.LoadContent(Content);
@@ -95,15 +93,18 @@ namespace AlienGrab
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
-
             // TODO: Add your drawing code here
+            this.GraphicsDevice.Clear(Color.CornflowerBlue);
+            this.GraphicsDevice.BlendState = BlendState.Opaque;
+            this.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+            this.GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
+            this.GraphicsDevice.SamplerStates[1] = SamplerState.PointClamp;
+
             level.Draw(gameTime, spriteBatch);
 
-            device.RasterizerState = RasterizerState.CullNone;
-            device.BlendState = BlendState.Opaque;
-            device.DepthStencilState = DepthStencilState.Default;
-            device.SamplerStates[0] = SamplerState.LinearWrap;            
+            this.GraphicsDevice.RasterizerState = RasterizerState.CullNone;                        
+            this.GraphicsDevice.SamplerStates[0] = SamplerState.LinearWrap;
+            
             base.Draw(gameTime);
         }
     }

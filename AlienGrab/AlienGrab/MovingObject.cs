@@ -18,6 +18,8 @@ namespace AlienGrab
         protected Vector3 activeVelocity;
         protected float acceleration;
         protected float accelerationBit;
+        protected BoundingBox playArea;
+        protected bool hasPlayArea;
 
         public MovingObject(Game game, String assetName)
             : base(game, assetName)
@@ -25,16 +27,24 @@ namespace AlienGrab
             velocity = Vector3.Zero;
             acceleration = 0.0f;
             accelerationBit = 0.05f;
+            playArea = new BoundingBox();
+            hasPlayArea = false;
+        }
+
+        public void SetPlayArea(BoundingBox _playArea)
+        {
+            playArea = _playArea;
+            hasPlayArea = true;
         }
 
         public override void Update(GameTime gameTime)
-        {            
+        {
             acceleration = MathHelper.Clamp(acceleration, 0.0f, 3.0f);
             if (!hitTest)
             {
                 if (velocity != Vector3.Zero && acceleration != 0)
                 {
-                    activeVelocity = velocity * acceleration;                    
+                    activeVelocity = velocity * acceleration;
                 }
                 Position += velocity * acceleration;
             }
@@ -42,6 +52,7 @@ namespace AlienGrab
             {
                 Position -= activeVelocity;
             }
+
             base.Update(gameTime);
         }
     }

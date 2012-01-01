@@ -88,6 +88,8 @@ namespace AlienGrab
             View.Y = MathHelper.Clamp(View.Y, viewLimits[0].Y, viewLimits[1].Y);
             Position.Z = MathHelper.Clamp(Position.Z, positionLimits[0].Z, positionLimits[1].Z);
             View.Z = MathHelper.Clamp(View.Z, viewLimits[0].Z, viewLimits[1].Z);
+
+            cameraFrustum.Matrix = GetViewMatrix() * GetProjectionMatrix();
         }
     }
 }

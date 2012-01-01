@@ -16,6 +16,7 @@ namespace AlienGrab
     {
         public Vector3 Position;
         public Vector3 View;
+        public BoundingFrustum cameraFrustum;
         protected float nearPlane;
         protected float farPlane;
         protected float aspectRatio;
@@ -27,6 +28,7 @@ namespace AlienGrab
             farPlane = _farPlane;
             Position = Vector3.Zero;
             View = Vector3.Zero;
+            cameraFrustum = new BoundingFrustum(Matrix.Identity);
         }
 
         public Matrix GetViewMatrix()
