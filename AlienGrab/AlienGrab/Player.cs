@@ -26,7 +26,7 @@ namespace AlienGrab
 
         public void Move()
         {
-            Rotation.Y += MathHelper.ToRadians(5.0f);
+            //Rotation.Y += MathHelper.ToRadians(5.0f);
             if (Keyboard.GetState().IsKeyDown(Keys.Left) 
                 && (hasPlayArea==false || (hasPlayArea==true && bounds.Max.X>playArea.Min.X) ))
             {
@@ -62,15 +62,19 @@ namespace AlienGrab
             }
 
             if (Keyboard.GetState().IsKeyDown(Keys.Space)
-                && (hasPlayArea == false || (hasPlayArea == true && bounds.Min.Y < playArea.Max.Y)))
+                && ((hasPlayArea == false || (hasPlayArea == true && bounds.Min.Y < playArea.Max.Y))))
             {
                 velocity.Y += thrust;
                 acceleration += accelerationBit;
             }
-            else if (hasPlayArea == false || (hasPlayArea == true && bounds.Max.Y > playArea.Min.Y))
+            else if ((hasPlayArea == false || (hasPlayArea == true && bounds.Max.Y > playArea.Min.Y)))
             {
                 velocity.Y -= gravity;
                 acceleration += accelerationBit;
+            }
+            else
+            {
+                velocity.Y = 0;
             }
             velocity.Y = MathHelper.Clamp(velocity.Y, -1.0f, 1.0f);
         }

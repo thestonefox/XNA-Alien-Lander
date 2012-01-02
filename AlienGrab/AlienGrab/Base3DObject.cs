@@ -169,7 +169,7 @@ namespace AlienGrab
             bob.hitTest = false;
             if (bounds.Intersects(bob.bounds) && firstPassCollision == true)
             {
-                if (bob.bounds.Min.Y > (bounds.Max.Y - 4.0f) && (bob.bounds.Min.X > bounds.Min.X && bob.bounds.Max.X < bounds.Max.X && bob.bounds.Min.Z > bounds.Min.Z && bob.bounds.Max.Z < bounds.Max.Z))
+                if (bob.bounds.Min.Y > (bounds.Max.Y - 1.0f) && (bob.bounds.Min.X > bounds.Min.X && bob.bounds.Max.X < bounds.Max.X && bob.bounds.Min.Z > bounds.Min.Z && bob.bounds.Max.Z < bounds.Max.Z))
                 {
                     safeHit = true;
                     bob.safeHit = true;
