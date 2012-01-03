@@ -15,7 +15,7 @@ using TOutput = System.String;
 
 namespace ContentPipelineExtension
 {
-    /*
+    
     /// <summary>
     /// Model Data Slots
     /// </summary>
@@ -29,7 +29,7 @@ namespace ContentPipelineExtension
         /// Bounding Sphere data.
         /// </summary>
         BoundingSpheres
-    }*/
+    }
     /// <summary>
     /// This class will be instantiated by the XNA Framework Content Pipeline
     /// to apply custom processing to content data, converting an object of
@@ -41,7 +41,7 @@ namespace ContentPipelineExtension
     /// TODO: change the ContentProcessor attribute to specify the correct
     /// display name for this processor.
     /// </summary>
-    [ContentProcessor(DisplayName = "Bounds Model Processor")]
+    [ContentProcessor(DisplayName = "Shadow Bounds Model Processor")]
     public class ShadowBoundsModelProcessor : ModelProcessor
     {
         List<BoundingBox> boxs = new List<BoundingBox>();

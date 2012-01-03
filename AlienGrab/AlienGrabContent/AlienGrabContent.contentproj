@@ -42,33 +42,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="cube.FBX">
-      <Name>cube</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>BoundsModelProcessor</Processor>
-      <ProcessorParameters_CustomEffect>DrawModel.fx</ProcessorParameters_CustomEffect>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="ship.FBX">
-      <Name>ship</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>BoundsModelProcessor</Processor>
-      <ProcessorParameters_CustomEffect>DrawModel.fx</ProcessorParameters_CustomEffect>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\ContentPipelineExtension\ContentPipelineExtension.csproj">
       <Project>{53A2CD41-0924-4D53-AD86-2480D68FC44C}</Project>
       <Name>ContentPipelineExtension</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="DrawModel.fx">
-      <Name>DrawModel</Name>
-      <Importer>EffectImporter</Importer>
-      <Processor>EffectProcessor</Processor>
-    </Compile>
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -82,14 +59,16 @@
     <Compile Include="Models\cube.FBX">
       <Name>cube</Name>
       <Importer>FbxImporter</Importer>
-      <Processor>ModelProcessor</Processor>
+      <Processor>ShadowBoundsModelProcessor</Processor>
+      <ProcessorParameters_CustomEffect>Effects/ShadowEffect.fx</ProcessorParameters_CustomEffect>
     </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\ship.FBX">
       <Name>ship</Name>
       <Importer>FbxImporter</Importer>
-      <Processor>ModelProcessor</Processor>
+      <Processor>ShadowBoundsModelProcessor</Processor>
+      <ProcessorParameters_CustomEffect>Effects/ShadowEffect.fx</ProcessorParameters_CustomEffect>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />

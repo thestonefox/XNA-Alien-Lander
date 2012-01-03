@@ -68,13 +68,13 @@ namespace AlienGrab
                 Position.Y -= Speed;
                 View.Y += Speed;
             }
-            if (input.IsNewButtonHeld(Buttons.LeftTrigger, controllingPlayer[0], out controllingPlayer[1]) ||
+            if (input.IsNewButtonHeld(Buttons.LeftShoulder, controllingPlayer[0], out controllingPlayer[1]) ||
                 input.IsNewKeyHeld(Keys.NumPad7, controllingPlayer[0], out controllingPlayer[1]))
             {
                 Position.Z += Speed;
                 View.Z -= Speed;
             }
-            if (input.IsNewButtonHeld(Buttons.RightTrigger, controllingPlayer[0], out controllingPlayer[1]) ||
+            if (input.IsNewButtonHeld(Buttons.RightShoulder, controllingPlayer[0], out controllingPlayer[1]) ||
                 input.IsNewKeyHeld(Keys.NumPad9, controllingPlayer[0], out controllingPlayer[1]))
             {
                 Position.Z -= Speed;

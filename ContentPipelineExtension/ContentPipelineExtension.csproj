@@ -51,7 +51,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BoundsModelProecssor.cs" />
     <Compile Include="CustomEffectMaterialProcessor.cs" />
     <Compile Include="LogWritter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

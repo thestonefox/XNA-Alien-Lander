@@ -49,7 +49,7 @@ namespace AlienGrab
                 Position += velocity * acceleration;
             }
             else
-            {
+            {                
                 Position -= activeVelocity;
             }
 

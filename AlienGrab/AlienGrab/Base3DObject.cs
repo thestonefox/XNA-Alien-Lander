@@ -22,7 +22,7 @@ namespace AlienGrab
         protected LightSource light;
 
         protected bool firstPassCollision;
-        protected bool hitTest;
+        public bool hitTest;
 
         protected Model mesh;
         protected String modelName;
@@ -71,8 +71,9 @@ namespace AlienGrab
 
         protected void SetPositions()
         {
+            Matrix boundsWorld = Matrix.CreateScale(Scale) * Matrix.CreateTranslation(Position);
+            Bounds = new BoundingBox(Vector3.Transform(volume.Min, boundsWorld), Vector3.Transform(volume.Max, boundsWorld));
             world = Matrix.CreateScale(Scale) * (Matrix.CreateRotationX(Rotation.X) * Matrix.CreateRotationY(Rotation.Y) * Matrix.CreateRotationZ(Rotation.Z)) * Matrix.CreateTranslation(Position);
-            Bounds = new BoundingBox(Vector3.Transform(volume.Min, world), Vector3.Transform(volume.Max, world));            
         }
 
         protected void DrawModel(BaseCamera camera, bool createShadowMap, ref RenderTarget2D shadowRenderTarget)
@@ -130,9 +131,9 @@ namespace AlienGrab
             {
                 hitTest = true;
                 bob.hitTest = true;
-            }
+            }            
             firstPassCollision = true;
-            return hitTest;
+            return bob.hitTest;
         }
     }
 }

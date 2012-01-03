@@ -52,8 +52,7 @@ namespace AlienGrab
             for (int c = 0; c < blocks.Length; c++)
             {
                 blocks[c].Draw(camera, ref shadowRenderTarget);
-            }
-            //DrawMap(gameTime, camera, ref shadowRenderTarget);            
+            }       
         }
 
         public CollisionType CheckCollision(Base3DObject bob)
@@ -69,27 +68,10 @@ namespace AlienGrab
                     {
                         ct = CollisionType.Roof;
                     }
+                    break;
                 }
             }
             return ct;
-
-            /*
-            int blockCounter = 0;
-            for (int d = 0; d < layout.GetLength(0); d++)
-            {
-                for (int w = 0; w < layout.GetLength(1); w++)
-                {
-                    for (int h = 0; h < layout[d, w]; h++)
-                    {
-                        if (blocks[blockCounter].Collided(foreignObject))
-                        {
-                            return true;
-                        }
-                        blockCounter++;
-                    }
-                }
-            }
-            return collisionDetected;*/
         }
 
         protected Vector3 CalculatePosition(Vector3 coordinates)
@@ -101,7 +83,7 @@ namespace AlienGrab
         {
             int blockCounter = 0;
             Random height = new Random();
-            ArrayList positions = new ArrayList();
+            List<int[]> positions = new List<int[]>();
             
             for (int d = 0; d < layout.GetLength(0); d++)
             {
@@ -122,7 +104,7 @@ namespace AlienGrab
             for (int c = 0; c < blocks.Length; c++)
             {
                 int[] coords = (int[])positions[c];
-                blocks[c] = new Base3DObject(game, "cube", light);
+                blocks[c] = new Base3DObject(game, "Models/cube", light);
                 blocks[c].Position = CalculatePosition(new Vector3(coords[0], coords[1], coords[2]));
                 blocks[c].Initialize();
 
@@ -145,31 +127,6 @@ namespace AlienGrab
         public BoundingBox GetPlayArea()
         {
             return playArea;
-        }
-
-
-
-        protected void DrawMap(GameTime gameTime, BaseCamera camera, ref RenderTarget2D shadowRenderTarget)
-        {
-            int blockCounter = 0;
-            for (int d = 0; d < layout.GetLength(0); d++)
-            {
-                for (int w = 0; w < layout.GetLength(1); w++)
-                {
-                    blockCounter = DrawBuilding(gameTime, blockCounter, new Vector2(w, d), camera, ref shadowRenderTarget);
-                }
-            }
-        }
-
-        protected int DrawBuilding(GameTime gameTime, int blockCounter, Vector2 coordinate, BaseCamera camera, ref RenderTarget2D shadowRenderTarget)
-        {
-            for (int h = 0; h < layout[(int)coordinate.Y, (int)coordinate.X]; h++)
-            {
-                blocks[blockCounter].Update(gameTime);
-                blocks[blockCounter].Draw(camera, ref shadowRenderTarget);
-                blockCounter++;
-            }
-            return blockCounter;
         }
     }
 }

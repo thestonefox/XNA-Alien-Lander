@@ -36,7 +36,7 @@ namespace AlienGrab
 
             map = new Map(game, new Vector3(8, 8, 4), light);
 
-            playerOne = new Player(game, "ship", light);
+            playerOne = new Player(game, "Models/ship", light);
             playerOne.Position = new Vector3(0.0f, 500.0f, 0.0f);
             playerOne.SetPlayArea(map.GetPlayArea());
 
@@ -55,9 +55,9 @@ namespace AlienGrab
             camera.Move(input, controllingPlayer);
             //camera.View = playerOne.Position;
             map.Update(gameTime);
-            playerOne.Move();
+            playerOne.Move(input, controllingPlayer);            
+            map.CheckCollision(playerOne);
             playerOne.Update(gameTime);
-            map.CheckCollision(playerOne);            
 
             if (Keyboard.GetState().IsKeyDown(Keys.P))
             {
