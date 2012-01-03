@@ -21,8 +21,8 @@ namespace AlienGrab
         protected BoundingBox playArea;
         protected bool hasPlayArea;
 
-        public MovingObject(Game game, String assetName)
-            : base(game, assetName)
+        public MovingObject(Game game, String assetName, LightSource _light)
+            : base(game, assetName, _light)
         {
             velocity = Vector3.Zero;
             acceleration = 0.0f;

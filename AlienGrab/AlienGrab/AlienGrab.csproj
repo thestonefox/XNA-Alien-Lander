@@ -109,9 +109,11 @@
   <ItemGroup>
     <Compile Include="Base3DObject.cs" />
     <Compile Include="BaseCamera.cs" />
+    <Compile Include="DebugShapeRenderer.cs" />
     <Compile Include="GameCamera.cs" />
     <Compile Include="InputState.cs" />
     <Compile Include="Level.cs" />
+    <Compile Include="LightSource.cs" />
     <Compile Include="Map.cs" />
     <Compile Include="MovingObject.cs" />
     <Compile Include="Player.cs" />

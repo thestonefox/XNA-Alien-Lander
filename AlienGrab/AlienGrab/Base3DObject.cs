@@ -17,13 +17,12 @@ namespace AlienGrab
         public Vector3 Position;
         public Vector3 Scale;
         public Vector3 Rotation;
-        public Vector3 lightDirection = new Vector3(-0.3f, 500.0f, 0.5f);
+        public BoundingBox Bounds;
 
-        Matrix lightViewProjection;
+        protected LightSource light;
 
         protected bool firstPassCollision;
         protected bool hitTest;
-        protected bool safeHit;
 
         protected Model mesh;
         protected String modelName;
@@ -34,15 +33,15 @@ namespace AlienGrab
         protected Matrix meshWorld;
 
         protected BoundingBox volume;
-        public BoundingBox bounds;
 
-        public Base3DObject(Game game, String modelAssetName)
+        public Base3DObject(Game game, String modelAssetName, LightSource _light)
             : base(game)
         {
             Position = Vector3.Zero;
             Scale = Vector3.One;
             Rotation = Vector3.Zero;
             modelName = modelAssetName;
+            light = _light;
             firstPassCollision = false;            
         }
 
@@ -73,52 +72,12 @@ namespace AlienGrab
         protected void SetPositions()
         {
             world = Matrix.CreateScale(Scale) * (Matrix.CreateRotationX(Rotation.X) * Matrix.CreateRotationY(Rotation.Y) * Matrix.CreateRotationZ(Rotation.Z)) * Matrix.CreateTranslation(Position);
-            bounds = new BoundingBox(Vector3.Transform(volume.Min, world), Vector3.Transform(volume.Max, world));            
-        }
-
-        protected Matrix CreateLightViewProjectionMatrix(BaseCamera camera)
-        {
-            // Matrix with that will rotate in points the direction of the light
-            Matrix lightRotation = Matrix.CreateLookAt(Vector3.Zero, -lightDirection, Vector3.Up);
-
-            // Get the corners of the frustum
-            Vector3[] frustumCorners = camera.cameraFrustum.GetCorners();
-
-            // Transform the positions of the corners into the direction of the light
-            for (int i = 0; i < frustumCorners.Length; i++)
-            {
-                frustumCorners[i] = Vector3.Transform(frustumCorners[i], lightRotation);
-            }
-
-            // Find the smallest box around the points
-            BoundingBox lightBox = BoundingBox.CreateFromPoints(frustumCorners);
-
-            Vector3 boxSize = lightBox.Max - lightBox.Min;
-            Vector3 halfBoxSize = boxSize * 0.5f;
-
-            // The position of the light should be in the center of the back
-            // pannel of the box. 
-            Vector3 lightPosition = lightBox.Min + halfBoxSize;
-            lightPosition.Z = lightBox.Min.Z;
-
-            // We need the position back in world coordinates so we transform 
-            // the light position by the inverse of the lights rotation
-            lightPosition = Vector3.Transform(lightPosition,
-                                              Matrix.Invert(lightRotation));
-
-            // Create the view matrix for the light
-            Matrix lightView = Matrix.CreateLookAt(lightPosition, lightPosition - lightDirection, Vector3.Up);
-
-            // Create the projection matrix for the light
-            // The projection is orthographic since we are using a directional light
-            Matrix lightProjection = Matrix.CreateOrthographic(boxSize.X, boxSize.Y, -boxSize.Z, boxSize.Z);
-
-            return lightView * lightProjection;
+            Bounds = new BoundingBox(Vector3.Transform(volume.Min, world), Vector3.Transform(volume.Max, world));            
         }
 
         protected void DrawModel(BaseCamera camera, bool createShadowMap, ref RenderTarget2D shadowRenderTarget)
         {
-            lightViewProjection = CreateLightViewProjectionMatrix(camera);
+            Matrix lightViewProjection = light.CreateLightViewProjectionMatrix();
             String techniqueName = createShadowMap ? "CreateShadowMap" : "DrawWithShadowMap";
 
             if (hitTest)
@@ -137,7 +96,7 @@ namespace AlienGrab
                     effect.Parameters["World"].SetValue(meshWorld);
                     effect.Parameters["View"].SetValue(camera.GetViewMatrix());
                     effect.Parameters["Projection"].SetValue(camera.GetProjectionMatrix());
-                    effect.Parameters["LightDirection"].SetValue(lightDirection);
+                    effect.Parameters["LightDirection"].SetValue(light.LightDirection);
                     effect.Parameters["LightViewProj"].SetValue(lightViewProjection);
                     if (!createShadowMap)
                     {
@@ -167,18 +126,8 @@ namespace AlienGrab
         {
             hitTest = false;
             bob.hitTest = false;
-            if (bounds.Intersects(bob.bounds) && firstPassCollision == true)
+            if (Bounds.Intersects(bob.Bounds) && firstPassCollision == true)
             {
-                if (bob.bounds.Min.Y > (bounds.Max.Y - 1.0f) && (bob.bounds.Min.X > bounds.Min.X && bob.bounds.Max.X < bounds.Max.X && bob.bounds.Min.Z > bounds.Min.Z && bob.bounds.Max.Z < bounds.Max.Z))
-                {
-                    safeHit = true;
-                    bob.safeHit = true;
-                }
-                else
-                {
-                    safeHit = false;
-                    bob.safeHit = false;
-                }
                 hitTest = true;
                 bob.hitTest = true;
             }

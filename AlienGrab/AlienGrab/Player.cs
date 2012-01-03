@@ -17,8 +17,8 @@ namespace AlienGrab
         protected float thrust;
         protected float gravity;
 
-        public Player(Game game, String assetName)
-            : base(game, assetName)
+        public Player(Game game, String assetName, LightSource light)
+            : base(game, assetName, light)
         {
             thrust = 0.025f;
             gravity = 0.035f;
@@ -28,13 +28,13 @@ namespace AlienGrab
         {
             //Rotation.Y += MathHelper.ToRadians(5.0f);
             if (Keyboard.GetState().IsKeyDown(Keys.Left) 
-                && (hasPlayArea==false || (hasPlayArea==true && bounds.Max.X>playArea.Min.X) ))
+                && (hasPlayArea==false || (hasPlayArea==true && Bounds.Max.X>playArea.Min.X) ))
             {
                 velocity.X = -1;
                 acceleration += accelerationBit;
             }
             else if (Keyboard.GetState().IsKeyDown(Keys.Right) 
-                && (hasPlayArea == false || (hasPlayArea == true && bounds.Min.X < playArea.Max.X)))
+                && (hasPlayArea == false || (hasPlayArea == true && Bounds.Min.X < playArea.Max.X)))
             {
                 velocity.X = 1;
                 acceleration += accelerationBit;
@@ -45,13 +45,13 @@ namespace AlienGrab
             }
 
             if (Keyboard.GetState().IsKeyDown(Keys.Up)
-                && (hasPlayArea == false || (hasPlayArea == true && bounds.Max.Z > playArea.Min.Z)))
+                && (hasPlayArea == false || (hasPlayArea == true && Bounds.Max.Z > playArea.Min.Z)))
             {
                 velocity.Z = -1;
                 acceleration += accelerationBit;
             }
             else if (Keyboard.GetState().IsKeyDown(Keys.Down)
-                && (hasPlayArea == false || (hasPlayArea == true && bounds.Min.Z < playArea.Max.Z)))
+                && (hasPlayArea == false || (hasPlayArea == true && Bounds.Min.Z < playArea.Max.Z)))
             {
                 velocity.Z = 1;
                 acceleration += accelerationBit;
@@ -62,12 +62,12 @@ namespace AlienGrab
             }
 
             if (Keyboard.GetState().IsKeyDown(Keys.Space)
-                && ((hasPlayArea == false || (hasPlayArea == true && bounds.Min.Y < playArea.Max.Y))))
+                && ((hasPlayArea == false || (hasPlayArea == true && Bounds.Min.Y < playArea.Max.Y))))
             {
                 velocity.Y += thrust;
                 acceleration += accelerationBit;
             }
-            else if ((hasPlayArea == false || (hasPlayArea == true && bounds.Max.Y > playArea.Min.Y)))
+            else if ((hasPlayArea == false || (hasPlayArea == true && Bounds.Max.Y > playArea.Min.Y)))
             {
                 velocity.Y -= gravity;
                 acceleration += accelerationBit;

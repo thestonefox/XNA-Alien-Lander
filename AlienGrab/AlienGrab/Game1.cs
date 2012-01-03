@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace AlienGrab
 {
+    public enum CollisionType { None, Building, Roof };
     /// <summary>
     /// This is the main type for your game
     /// </summary>
