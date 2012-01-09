@@ -18,8 +18,8 @@ namespace AlienGrab
         protected Vector3[] viewLimits;
         protected Vector3[] positionLimits;
 
-        public GameCamera(float _speed, Vector3[] _viewLimits, Vector3[] _positionLimits, float _aspectRatio, float _nearPlane, float _farPlane)
-            : base(_aspectRatio, _nearPlane, _farPlane)
+        public GameCamera(float _speed, Vector3[] _viewLimits, Vector3[] _positionLimits, float _aspectRatio, float _nearPlane, float _farPlane, Vector3 _startPosition, Vector3 _startView)
+            : base(_aspectRatio, _nearPlane, _farPlane, _startPosition, _startView)
         {
             Speed = _speed;
             viewLimits = _viewLimits;
@@ -80,7 +80,11 @@ namespace AlienGrab
                 Position.Z -= Speed;
                 View.Z += Speed;
             }
-
+            if (input.IsNewButtonHeld(Buttons.RightStick, controllingPlayer[0], out controllingPlayer[1]) ||
+                input.IsNewKeyHeld(Keys.NumPad0, controllingPlayer[0], out controllingPlayer[1]))
+            {
+                ResetCamera();
+            }
 
             Position.X = MathHelper.Clamp(Position.X, positionLimits[0].X, positionLimits[1].X);
             View.X = MathHelper.Clamp(View.X, viewLimits[0].X, viewLimits[1].X);

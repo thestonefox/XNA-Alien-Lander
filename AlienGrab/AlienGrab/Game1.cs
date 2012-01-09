@@ -12,6 +12,9 @@ using Microsoft.Xna.Framework.Media;
 namespace AlienGrab
 {
     public enum CollisionType { None, Building, Roof };
+
+    public enum GameState { Splash, Home, Options, Trial, Playing, LevelComplete, GameOver, GameComplete };
+
     /// <summary>
     /// This is the main type for your game
     /// </summary>
@@ -25,10 +28,39 @@ namespace AlienGrab
 
         private Level level;
 
+        private ParticleLibrary particleLibrary;
+
+        private GameState gameState;
+
+        private int startPeeps;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);            
-            Content.RootDirectory = "Content";            
+            Content.RootDirectory = "Content";
+            InitParticles();
+
+            startPeeps = 3;
+            gameState = GameState.Playing;
+        }
+
+        protected void InitParticles()
+        {
+            ParticleSystem explosionParticles = new ExplosionParticleSystem(this, Content);
+            ParticleSystem explosionSmokeParticles = new ExplosionSmokeParticleSystem(this, Content);
+            ParticleSystem energyParticles = new EnergyParticleSystem(this, Content);
+            particleLibrary = new ParticleLibrary();
+            explosionSmokeParticles.DrawOrder = 200;
+            energyParticles.DrawOrder = 300;
+            explosionParticles.DrawOrder = 400;
+
+            Components.Add(explosionParticles);
+            Components.Add(explosionSmokeParticles);
+            Components.Add(energyParticles);
+
+            particleLibrary.ExplosionParticles = explosionParticles;
+            particleLibrary.ExplosionSmokeParticles = explosionSmokeParticles;
+            particleLibrary.EnergyParticles = energyParticles;
         }
 
         /// <summary>
@@ -41,7 +73,7 @@ namespace AlienGrab
         {
             // TODO: Add your initialization logic here
             input = new InputState();
-            controllingPlayer = new PlayerIndex[2]{PlayerIndex.One, new PlayerIndex()};
+            controllingPlayer = new PlayerIndex[2]{PlayerIndex.One, new PlayerIndex()};            
             base.Initialize();
         }
 
@@ -57,8 +89,7 @@ namespace AlienGrab
             this.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
             this.GraphicsDevice.SamplerStates[0] = SamplerState.LinearWrap;
             // TODO: use this.Content to load your game content here
-            level = new Level(this);
-            level.LoadContent(Content);
+            CreateLevel();
         }
 
         /// <summary>
@@ -68,6 +99,12 @@ namespace AlienGrab
         protected override void UnloadContent()
         {
             // TODO: Unload any non ContentManager content here
+        }
+
+        protected void CreateLevel()
+        {
+            level = new Level(this, particleLibrary, startPeeps);
+            level.LoadContent(Content);
         }
 
         /// <summary>
@@ -83,7 +120,18 @@ namespace AlienGrab
 
             // TODO: Add your update logic here
             input.Update();
-            level.Update(gameTime, input, controllingPlayer);
+
+            if (gameState == GameState.LevelComplete)
+            {
+                startPeeps++;
+                CreateLevel();
+                gameState = GameState.Playing;
+            }
+
+            if (gameState == GameState.Playing)
+            {
+                level.Update(gameTime, input, controllingPlayer, ref gameState);
+            }
 
             base.Update(gameTime);
         }
@@ -95,13 +143,16 @@ namespace AlienGrab
         protected override void Draw(GameTime gameTime)
         {
             // TODO: Add your drawing code here
-            this.GraphicsDevice.Clear(Color.CornflowerBlue);
+            this.GraphicsDevice.Clear(Color.White);
             this.GraphicsDevice.BlendState = BlendState.Opaque;
             this.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
             this.GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
             this.GraphicsDevice.SamplerStates[1] = SamplerState.PointClamp;
 
-            level.Draw(gameTime, spriteBatch);
+            if (gameState == GameState.Playing)
+            {
+                level.Draw(gameTime, spriteBatch);
+            }
 
             this.GraphicsDevice.RasterizerState = RasterizerState.CullNone;                        
             this.GraphicsDevice.SamplerStates[0] = SamplerState.LinearWrap;

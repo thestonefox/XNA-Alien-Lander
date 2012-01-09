@@ -16,7 +16,7 @@ namespace AlienGrab
     {
         protected Vector3 velocity;
         protected Vector3 activeVelocity;
-        protected float acceleration;
+        protected Vector3 acceleration;
         protected float accelerationBit;
         protected BoundingBox playArea;
         protected bool hasPlayArea;
@@ -25,8 +25,8 @@ namespace AlienGrab
             : base(game, assetName, _light)
         {
             velocity = Vector3.Zero;
-            acceleration = 0.0f;
-            accelerationBit = 0.05f;
+            acceleration = Vector3.Zero;
+            accelerationBit = 0.25f;
             playArea = new BoundingBox();
             hasPlayArea = false;
         }
@@ -39,21 +39,27 @@ namespace AlienGrab
 
         public override void Update(GameTime gameTime)
         {
-            acceleration = MathHelper.Clamp(acceleration, 0.0f, 3.0f);
-            if (!hitTest)
+            if (Active == true)
             {
-                if (velocity != Vector3.Zero && acceleration != 0)
+                acceleration.X = MathHelper.Clamp(acceleration.X, 0.0f, 3.0f);
+                acceleration.Y = MathHelper.Clamp(acceleration.Y, 0.0f, 3.0f);
+                acceleration.Z = MathHelper.Clamp(acceleration.Z, 0.0f, 3.0f);
+                if (!HitTest)
                 {
-                    activeVelocity = velocity * acceleration;
+                    if (velocity != Vector3.Zero && acceleration != Vector3.Zero)
+                    {
+                        activeVelocity = velocity * acceleration;
+                    }
+                    Position += velocity * acceleration;
                 }
-                Position += velocity * acceleration;
-            }
-            else
-            {                
-                Position -= activeVelocity;
-            }
+                else
+                {
+                    Position -= activeVelocity;
+                    velocity = Vector3.Zero;
+                }
 
-            base.Update(gameTime);
+                base.Update(gameTime);
+            }
         }
     }
 

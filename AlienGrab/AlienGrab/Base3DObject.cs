@@ -17,12 +17,15 @@ namespace AlienGrab
         public Vector3 Position;
         public Vector3 Scale;
         public Vector3 Rotation;
+        public Matrix[] elementsWorldMatrix;
         public BoundingBox Bounds;
+        public bool HitTest;
+
+        public bool OverrideFirstCollision;
 
         protected LightSource light;
 
         protected bool firstPassCollision;
-        public bool hitTest;
 
         protected Model mesh;
         protected String modelName;
@@ -34,6 +37,8 @@ namespace AlienGrab
 
         protected BoundingBox volume;
 
+        public bool Active;
+
         public Base3DObject(Game game, String modelAssetName, LightSource _light)
             : base(game)
         {
@@ -42,7 +47,9 @@ namespace AlienGrab
             Rotation = Vector3.Zero;
             modelName = modelAssetName;
             light = _light;
-            firstPassCollision = false;            
+            firstPassCollision = false;
+            Active = true;
+            elementsWorldMatrix = new Matrix[0];
         }
 
         public new void LoadContent()
@@ -51,7 +58,42 @@ namespace AlienGrab
             transforms = new Matrix[mesh.Bones.Count];
             mesh.CopyAbsoluteBoneTransformsTo(transforms);
             Dictionary<string, object> data = (Dictionary<string, object>)mesh.Tag;
-            volume = ((List<BoundingBox>)data["BoundingBoxs"])[0];
+            for (int i = 0; i<((List<BoundingBox>)data["BoundingBoxs"]).Count; i++)
+            {
+                if (i == 0)
+                {
+                    volume = ((List<BoundingBox>)data["BoundingBoxs"])[i];
+                }
+                else
+                {
+                    if (((List<BoundingBox>)data["BoundingBoxs"])[i].Min.X < volume.Min.X)
+                    {
+                        volume.Min.X = ((List<BoundingBox>)data["BoundingBoxs"])[i].Min.X;
+                    }
+                    if (((List<BoundingBox>)data["BoundingBoxs"])[i].Max.X > volume.Max.X)
+                    {
+                        volume.Max.X = ((List<BoundingBox>)data["BoundingBoxs"])[i].Max.X;
+                    }
+
+                    if (((List<BoundingBox>)data["BoundingBoxs"])[i].Min.Y < volume.Min.Y)
+                    {
+                        volume.Min.Y = ((List<BoundingBox>)data["BoundingBoxs"])[i].Min.Y;
+                    }
+                    if (((List<BoundingBox>)data["BoundingBoxs"])[i].Max.Y > volume.Max.Y)
+                    {
+                        volume.Max.Y = ((List<BoundingBox>)data["BoundingBoxs"])[i].Max.Y;
+                    }
+
+                    if (((List<BoundingBox>)data["BoundingBoxs"])[i].Min.Z < volume.Min.Z)
+                    {
+                        volume.Min.Z = ((List<BoundingBox>)data["BoundingBoxs"])[i].Min.Z;
+                    }
+                    if (((List<BoundingBox>)data["BoundingBoxs"])[i].Max.Y > volume.Max.Z)
+                    {
+                        volume.Max.Z = ((List<BoundingBox>)data["BoundingBoxs"])[i].Max.Z;
+                    }
+                }
+            }            
         }
 
         public override void Initialize()
@@ -62,11 +104,14 @@ namespace AlienGrab
 
         public override void Update(GameTime gameTime)
         {
-            if (lastWorld != world)
+            if (Active == true)
             {
-                lastWorld = world;
+                if (lastWorld != world)
+                {
+                    lastWorld = world;
+                }
+                SetPositions();
             }
-            SetPositions();
         }
 
         protected void SetPositions()
@@ -81,15 +126,24 @@ namespace AlienGrab
             Matrix lightViewProjection = light.CreateLightViewProjectionMatrix();
             String techniqueName = createShadowMap ? "CreateShadowMap" : "DrawWithShadowMap";
 
-            if (hitTest)
+            if (HitTest)
             {
                 world = lastWorld;
             }
-            foreach (ModelMesh meshM in mesh.Meshes)
+
+            for(int meshIndex = 0; meshIndex < mesh.Meshes.Count; meshIndex++)
             {                
+                ModelMesh meshM = mesh.Meshes[meshIndex];
                 // Do the world stuff. 
                 // Scale * transform * pos * rotation
-                meshWorld = transforms[meshM.ParentBone.Index] * world;
+                if (elementsWorldMatrix.Length == 0)
+                {
+                    meshWorld = transforms[meshM.ParentBone.Index] * world;
+                }
+                else
+                {
+                    meshWorld = transforms[meshM.ParentBone.Index] * elementsWorldMatrix[meshIndex] * world;
+                }
 
                 foreach (Effect effect in meshM.Effects)
                 {
@@ -99,7 +153,7 @@ namespace AlienGrab
                     effect.Parameters["Projection"].SetValue(camera.GetProjectionMatrix());
                     effect.Parameters["LightDirection"].SetValue(light.LightDirection);
                     effect.Parameters["LightViewProj"].SetValue(lightViewProjection);
-                    if (!createShadowMap)
+                    if (createShadowMap == false)
                     {
                         effect.Parameters["ShadowMap"].SetValue(shadowRenderTarget);
                     }
@@ -112,7 +166,10 @@ namespace AlienGrab
 
         public void Draw(BaseCamera camera, ref RenderTarget2D shadowRenderTarget)
         {
-            DrawModel(camera, false, ref shadowRenderTarget);
+            if (Active)
+            {
+                DrawModel(camera, false, ref shadowRenderTarget);
+            }            
         }
 
         public void DrawShadow(BaseCamera camera, ref RenderTarget2D shadowRenderTarget)
@@ -125,15 +182,16 @@ namespace AlienGrab
 
         public bool Collided(Base3DObject bob)
         {
-            hitTest = false;
-            bob.hitTest = false;
-            if (Bounds.Intersects(bob.Bounds) && firstPassCollision == true)
+            if (Active == true)
             {
-                hitTest = true;
-                bob.hitTest = true;
-            }            
-            firstPassCollision = true;
-            return bob.hitTest;
+                if (Bounds.Intersects(bob.Bounds) && (firstPassCollision == true || OverrideFirstCollision == true))
+                {
+                    return true;
+                }
+                firstPassCollision = true;
+                return false;
+            }
+            return false;
         }
     }
 }

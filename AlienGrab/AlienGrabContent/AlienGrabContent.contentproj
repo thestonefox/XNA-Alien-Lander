@@ -47,7 +47,13 @@
       <Name>ContentPipelineExtension</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Compile Include="Effects\ParticleEffect.fx">
+      <Name>ParticleEffect</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+  </ItemGroup>
   <ItemGroup>
     <Compile Include="Effects\ShadowEffect.fx">
       <Name>ShadowEffect</Name>
@@ -66,6 +72,38 @@
   <ItemGroup>
     <Compile Include="Models\ship.FBX">
       <Name>ship</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ShadowBoundsModelProcessor</Processor>
+      <ProcessorParameters_CustomEffect>Effects/ShadowEffect.fx</ProcessorParameters_CustomEffect>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\explosion.png">
+      <Name>explosion</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\fire.png">
+      <Name>fire</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\smoke.png">
+      <Name>smoke</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\energy.png">
+      <Name>energy</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Models\person.FBX">
+      <Name>person</Name>
       <Importer>FbxImporter</Importer>
       <Processor>ShadowBoundsModelProcessor</Processor>
       <ProcessorParameters_CustomEffect>Effects/ShadowEffect.fx</ProcessorParameters_CustomEffect>
