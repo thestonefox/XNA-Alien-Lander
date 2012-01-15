@@ -23,9 +23,10 @@ namespace AlienGrab
         protected Vector3 diePosition;
 
         public int Lives;
+        protected int startFuel;
         public int Fuel;
         public int Score; 
-        public Player(Game game, String assetName, LightSource light, Vector3 _startPosition)
+        public Player(Game game, String assetName, LightSource light, Vector3 _startPosition, int _startFuel)
             : base(game, assetName, light)
         {
             thrust = 0.035f;
@@ -35,6 +36,7 @@ namespace AlienGrab
             Lives = 3;
             Score = 0;
             startPosition = _startPosition;
+            startFuel = _startFuel;
             ResetPlayer();
         }
 
@@ -57,7 +59,7 @@ namespace AlienGrab
             deathCounter = deathTimer;
             diePosition = Position;
             Lives--;
-            Position = new Vector3(-5000,-5000,-5000);                
+            Position = new Vector3(-50000,-50000,-50000);                
         }
 
         public bool SafeDescent()
@@ -92,7 +94,7 @@ namespace AlienGrab
         protected void ResetPlayer()
         {            
             deathCounter = 0;
-            Fuel = 1000;
+            Fuel = startFuel;
             Position = startPosition;
             Active = true;
         }

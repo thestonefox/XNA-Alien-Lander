@@ -36,6 +36,7 @@ namespace AlienGrab
         protected Matrix meshWorld;
 
         protected BoundingBox volume;
+        protected bool hasBounds;
 
         public bool Active;
 
@@ -50,15 +51,24 @@ namespace AlienGrab
             firstPassCollision = false;
             Active = true;
             elementsWorldMatrix = new Matrix[0];
+            hasBounds = false;
         }
 
-        public new void LoadContent()
+        public void LoadContent(bool withBounds)
         {
             mesh = Game.Content.Load<Model>(modelName);
             transforms = new Matrix[mesh.Bones.Count];
             mesh.CopyAbsoluteBoneTransformsTo(transforms);
+            if (withBounds)
+            {
+                CreateBounds();
+            }
+        }
+
+        protected void CreateBounds()
+        {
             Dictionary<string, object> data = (Dictionary<string, object>)mesh.Tag;
-            for (int i = 0; i<((List<BoundingBox>)data["BoundingBoxs"]).Count; i++)
+            for (int i = 0; i < ((List<BoundingBox>)data["BoundingBoxs"]).Count; i++)
             {
                 if (i == 0)
                 {
@@ -93,7 +103,8 @@ namespace AlienGrab
                         volume.Max.Z = ((List<BoundingBox>)data["BoundingBoxs"])[i].Max.Z;
                     }
                 }
-            }            
+            }
+            hasBounds = true;
         }
 
         public override void Initialize()
@@ -116,8 +127,11 @@ namespace AlienGrab
 
         protected void SetPositions()
         {
-            Matrix boundsWorld = Matrix.CreateScale(Scale) * Matrix.CreateTranslation(Position);
-            Bounds = new BoundingBox(Vector3.Transform(volume.Min, boundsWorld), Vector3.Transform(volume.Max, boundsWorld));
+            if (hasBounds)
+            {
+                Matrix boundsWorld = Matrix.CreateScale(Scale) * Matrix.CreateTranslation(Position);
+                Bounds = new BoundingBox(Vector3.Transform(volume.Min, boundsWorld), Vector3.Transform(volume.Max, boundsWorld));
+            }
             world = Matrix.CreateScale(Scale) * (Matrix.CreateRotationX(Rotation.X) * Matrix.CreateRotationY(Rotation.Y) * Matrix.CreateRotationZ(Rotation.Z)) * Matrix.CreateTranslation(Position);
         }
 
@@ -125,12 +139,7 @@ namespace AlienGrab
         {
             Matrix lightViewProjection = light.CreateLightViewProjectionMatrix();
             String techniqueName = createShadowMap ? "CreateShadowMap" : "DrawWithShadowMap";
-
-            if (HitTest)
-            {
-                world = lastWorld;
-            }
-
+   
             for(int meshIndex = 0; meshIndex < mesh.Meshes.Count; meshIndex++)
             {                
                 ModelMesh meshM = mesh.Meshes[meshIndex];
@@ -168,8 +177,48 @@ namespace AlienGrab
         {
             if (Active)
             {
+                if (HitTest)
+                {
+                    world = lastWorld;
+                }
                 DrawModel(camera, false, ref shadowRenderTarget);
             }            
+        }
+
+        public void Draw(BaseCamera camera)
+        {
+            if (Active)
+            {
+                if (HitTest)
+                {
+                    world = lastWorld;
+                }
+                // Copy any parent transforms.
+
+                // Draw the model. A model can have multiple meshes, so loop.
+                for(int meshIndex = 0; meshIndex < mesh.Meshes.Count; meshIndex++)
+                {                
+                    ModelMesh meshM = mesh.Meshes[meshIndex];
+                    // This is where the mesh orientation is set, as well 
+                    // as our camera and projection.
+                    foreach (BasicEffect effect in meshM.Effects)
+                    {
+                        effect.EnableDefaultLighting();
+                        if (elementsWorldMatrix.Length == 0)
+                        {
+                            effect.World = transforms[meshM.ParentBone.Index] * world;
+                        }
+                        else
+                        {
+                            effect.World = transforms[meshM.ParentBone.Index] * elementsWorldMatrix[meshIndex] * world;
+                        }
+                        effect.View = camera.GetViewMatrix();
+                        effect.Projection = camera.GetProjectionMatrix();
+                    }
+                    // Draw the mesh, using the effects set above.
+                    meshM.Draw();
+                }
+            }
         }
 
         public void DrawShadow(BaseCamera camera, ref RenderTarget2D shadowRenderTarget)

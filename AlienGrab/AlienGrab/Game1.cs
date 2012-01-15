@@ -33,6 +33,8 @@ namespace AlienGrab
         private GameState gameState;
 
         private int startPeeps;
+        private int startFuel;
+        private int levelCount;
 
         public Game1()
         {
@@ -41,6 +43,8 @@ namespace AlienGrab
             InitParticles();
 
             startPeeps = 3;
+            startFuel = 1000;
+            levelCount = 1;
             gameState = GameState.Playing;
         }
 
@@ -73,7 +77,7 @@ namespace AlienGrab
         {
             // TODO: Add your initialization logic here
             input = new InputState();
-            controllingPlayer = new PlayerIndex[2]{PlayerIndex.One, new PlayerIndex()};            
+            controllingPlayer = new PlayerIndex[2]{PlayerIndex.One, new PlayerIndex()};
             base.Initialize();
         }
 
@@ -103,8 +107,9 @@ namespace AlienGrab
 
         protected void CreateLevel()
         {
-            level = new Level(this, particleLibrary, startPeeps);
+            level = new Level(this, particleLibrary, startPeeps, startFuel, levelCount);
             level.LoadContent(Content);
+            levelCount++;
         }
 
         /// <summary>
@@ -124,6 +129,11 @@ namespace AlienGrab
             if (gameState == GameState.LevelComplete)
             {
                 startPeeps++;
+                if (startPeeps > 16)
+                {
+                    startPeeps = 3;
+                    startFuel -= 100;
+                }
                 CreateLevel();
                 gameState = GameState.Playing;
             }
@@ -143,7 +153,8 @@ namespace AlienGrab
         protected override void Draw(GameTime gameTime)
         {
             // TODO: Add your drawing code here
-            this.GraphicsDevice.Clear(Color.White);
+            this.GraphicsDevice.Clear(Color.CornflowerBlue);            
+
             this.GraphicsDevice.BlendState = BlendState.Opaque;
             this.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
             this.GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
@@ -153,7 +164,6 @@ namespace AlienGrab
             {
                 level.Draw(gameTime, spriteBatch);
             }
-
             this.GraphicsDevice.RasterizerState = RasterizerState.CullNone;                        
             this.GraphicsDevice.SamplerStates[0] = SamplerState.LinearWrap;
             

@@ -22,7 +22,7 @@ namespace AlienGrab
         protected float playAreaCeiling;
         protected BoundingBox playArea;
         protected Vector3 playerStart;
-        protected Vector3 playerSafeZones = new Vector3(15.0f, 5.0f, 15.0f);
+        protected Vector3 playerSafeZones = new Vector3(10.0f, 5.0f, 10.0f);
 
         protected Vector3 blockDimensions = new Vector3(165,60,165);
 
@@ -34,18 +34,6 @@ namespace AlienGrab
             playerStart = Vector3.Zero;
             peeps = new Person[totalPeeps];
             GenerateMap((int)coordinates.Y, light);
-        }
-
-        public void LoadContent()
-        {
-            foreach (Base3DObject block in blocks)
-            {
-                block.LoadContent();
-            }
-            foreach (Person peep in peeps)
-            {
-                peep.LoadContent();
-            }
         }
 
         public void Update(GameTime gameTime)
@@ -156,6 +144,7 @@ namespace AlienGrab
                                 if (peepsLeft < peeps.Length && (random.Next(0, 5) == 1 || d >= layout.GetLength(0)-2))
                                 {
                                     Person peep = new Person(game, "Models/person", light);
+                                    peep.LoadContent(true);
                                     peep.Position = new Vector3(w * blockDimensions.X, (h * blockDimensions.Y) + blockDimensions.Y, d * blockDimensions.Z);
                                     peep.Initialize();
                                     peeps[peepsLeft] = peep;
@@ -166,30 +155,31 @@ namespace AlienGrab
                     }
                 }                
             }
-            blocks = new Base3DObject[blockCounter];
+            blocks = new Base3DObject[blockCounter];            
             Vector3 minPlayArea = Vector3.Zero;
             Vector3 maxPlayArea = Vector3.Zero;
             for (int c = 0; c < blocks.Length; c++)
             {
                 int[] coords = (int[])positions[c];
                 blocks[c] = new Base3DObject(game, "Models/cube", light);
+                blocks[c].LoadContent(true);
                 blocks[c].Position = CalculatePosition(new Vector3(coords[0], coords[1], coords[2]));
                 blocks[c].Initialize();
 
                 //top left                
                 if (coords[0] == 0 && coords[1] == 0 && coords[2] == 0)
                 {
-                    minPlayArea = blocks[c].Bounds.Min;
+                    minPlayArea = blocks[c].Position;                    
                 }
 
                 //bottom right                
                 if (c == blocks.Length-1)
                 {
-                    maxPlayArea = blocks[c].Bounds.Max;
-                    maxPlayArea.Y = playAreaCeiling;
+                    maxPlayArea = blocks[c].Position;
+                    maxPlayArea.Y = playAreaCeiling;                    
                 }
             }
-            playArea = new BoundingBox(minPlayArea, maxPlayArea);
+            playArea = new BoundingBox(minPlayArea, maxPlayArea);            
         }
 
         public BoundingBox GetPlayArea()
