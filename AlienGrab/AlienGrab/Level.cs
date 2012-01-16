@@ -25,8 +25,9 @@ namespace AlienGrab
         protected CollisionType playerCollisionCheck;
         protected Base3DObject skybox;
         protected int levelNumber;
+        protected Hud gameHud;
 
-        public Level(Game game, ParticleLibrary _particleEffects, int peeps, int fuel, int _levelNumber)
+        public Level(Game game, ParticleLibrary _particleEffects, int peeps, int fuel, int _levelNumber, int score, int lives)
         {
             levelNumber = _levelNumber;
             particleEffects = _particleEffects;
@@ -42,14 +43,13 @@ namespace AlienGrab
             shadowRenderTarget = new RenderTarget2D(game.GraphicsDevice, 2048, 2048, false, SurfaceFormat.Single, DepthFormat.Depth24);
 
             peepsLeft = peeps;
-            map = new Map(game, new Vector3(8, 8, 4), light, peepsLeft);
-            playerOne = new Player(game, "Models/ship", light, map.GetPlayerStartPosition(), fuel);
+            map = new Map(game, new Vector3(8, 8, 4), light, peepsLeft);            
+            playerOne = new Player(game, "Models/ship", light, map.GetPlayerStartPosition(), fuel, score, lives);
             playerOne.SetPlayArea(map.GetPlayArea());
             playerOne.AttachParticleLibrary(particleEffects);
             playerCollisionCheck = CollisionType.None;
-
             skybox = new Base3DObject(game, "Models/skybox", light);
-            //DebugShapeRenderer.Initialize(game.GraphicsDevice);
+            gameHud = new Hud(game.Content, game.GraphicsDevice.Viewport.TitleSafeArea);
         }
 
         public void LoadContent(ContentManager content)
@@ -61,7 +61,7 @@ namespace AlienGrab
             playerOne.LoadContent(true);
         }
 
-        public void Update(GameTime gameTime, InputState input, PlayerIndex[] controllingPlayer, ref GameState gameState)
+        public void Update(GameTime gameTime, InputState input, PlayerIndex[] controllingPlayer, ref GameState gameState, ref int score, ref int lives)
         {
             camera.Move(input, controllingPlayer);
             skybox.Update(gameTime);
@@ -94,6 +94,9 @@ namespace AlienGrab
                 }
             }
 
+            score = playerOne.Score;
+            lives = playerOne.Lives;
+
 
             if (playerOne.Lives <= 0)
             {
@@ -103,6 +106,8 @@ namespace AlienGrab
             {
                 gameState = GameState.LevelComplete;
             }
+
+            gameHud.Update(gameTime, playerOne.Lives, playerOne.Score, playerOne.Fuel, peepsLeft);
 
 
 
@@ -120,6 +125,10 @@ namespace AlienGrab
             map.Draw(camera, ref shadowRenderTarget);
             playerOne.Draw(camera, ref shadowRenderTarget);
             skybox.Draw(camera);
+
+            spriteBatch.Begin();
+            gameHud.Draw(spriteBatch);
+            spriteBatch.End();
         }
     }
 }

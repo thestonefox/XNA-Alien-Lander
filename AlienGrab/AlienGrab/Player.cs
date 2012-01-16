@@ -21,20 +21,20 @@ namespace AlienGrab
         protected int deathCounter;
         protected Vector3 startPosition;
         protected Vector3 diePosition;
-
-        public int Lives;
         protected int startFuel;
+
+        public int Lives;        
         public int Fuel;
         public int Score; 
-        public Player(Game game, String assetName, LightSource light, Vector3 _startPosition, int _startFuel)
+        public Player(Game game, String assetName, LightSource light, Vector3 _startPosition, int _startFuel, int _score, int _lives)
             : base(game, assetName, light)
         {
             thrust = 0.035f;
             gravity = 0.035f;
             particleLibrary = null;
             deathTimer = 50;
-            Lives = 3;
-            Score = 0;
+            Lives = _lives;
+            Score = _score;
             startPosition = _startPosition;
             startFuel = _startFuel;
             ResetPlayer();

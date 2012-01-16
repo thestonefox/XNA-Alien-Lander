@@ -35,16 +35,22 @@ namespace AlienGrab
         private int startPeeps;
         private int startFuel;
         private int levelCount;
+        private int score;
+        private int lives;
 
         public Game1()
         {
-            graphics = new GraphicsDeviceManager(this);            
+            graphics = new GraphicsDeviceManager(this);
+            graphics.PreferredBackBufferWidth = 1280;
+            graphics.PreferredBackBufferHeight = 720;
             Content.RootDirectory = "Content";
             InitParticles();
 
             startPeeps = 3;
             startFuel = 1000;
             levelCount = 1;
+            score = 0;
+            lives = 3;
             gameState = GameState.Playing;
         }
 
@@ -106,8 +112,8 @@ namespace AlienGrab
         }
 
         protected void CreateLevel()
-        {
-            level = new Level(this, particleLibrary, startPeeps, startFuel, levelCount);
+        {            
+            level = new Level(this, particleLibrary, startPeeps, startFuel, levelCount, score, lives);
             level.LoadContent(Content);
             levelCount++;
         }
@@ -140,7 +146,7 @@ namespace AlienGrab
 
             if (gameState == GameState.Playing)
             {
-                level.Update(gameTime, input, controllingPlayer, ref gameState);
+                level.Update(gameTime, input, controllingPlayer, ref gameState, ref score, ref lives);
             }
 
             base.Update(gameTime);
