@@ -61,7 +61,7 @@ namespace AlienGrab
             playerOne.LoadContent(true);
         }
 
-        public void Update(GameTime gameTime, InputState input, PlayerIndex[] controllingPlayer, ref GameState gameState, ref int score, ref int lives)
+        public void Update(GameTime gameTime, InputState input, PlayerIndex[] controllingPlayer, ref ApplicationState gameState, ref int score, ref int lives, ref int fuel)
         {
             camera.Move(input, controllingPlayer);
             skybox.Update(gameTime);
@@ -96,15 +96,16 @@ namespace AlienGrab
 
             score = playerOne.Score;
             lives = playerOne.Lives;
+            fuel = playerOne.Fuel;
 
 
             if (playerOne.Lives <= 0)
             {
-                gameState = GameState.GameOver;
+                gameState = ApplicationState.GameOver;
             }
             if (peepsLeft <= 0)
             {
-                gameState = GameState.LevelComplete;
+                gameState = ApplicationState.LevelComplete;
             }
 
             gameHud.Update(gameTime, playerOne.Lives, playerOne.Score, playerOne.Fuel, peepsLeft);

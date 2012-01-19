@@ -11,10 +11,6 @@ using Microsoft.Xna.Framework.Media;
 
 namespace AlienGrab
 {
-    public enum CollisionType { None, Building, Roof };
-
-    public enum GameState { Splash, Home, Options, Trial, Playing, LevelComplete, GameOver, GameComplete };
-
     /// <summary>
     /// This is the main type for your game
     /// </summary>
@@ -25,53 +21,26 @@ namespace AlienGrab
 
         private InputState input;
         private PlayerIndex[] controllingPlayer;
+        private ApplicationState gameState;
 
-        private Level level;
+        private GameState game;
 
-        private ParticleLibrary particleLibrary;
-
-        private GameState gameState;
-
-        private int startPeeps;
-        private int startFuel;
-        private int levelCount;
-        private int score;
-        private int lives;
-
+        private SplashScreen splashScreen;
+        private HomeScreen homeScreen;
+        private OptionsScreen optionsScreen;
+        private GameOverScreen gameOverScreen;
+        private QuitScreen quitScreen;
+        
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             graphics.PreferredBackBufferWidth = 1280;
             graphics.PreferredBackBufferHeight = 720;
-            Content.RootDirectory = "Content";
-            InitParticles();
-
-            startPeeps = 3;
-            startFuel = 1000;
-            levelCount = 1;
-            score = 0;
-            lives = 3;
-            gameState = GameState.Playing;
+            Content.RootDirectory = "Content";            
+            gameState = ApplicationState.Splash;
+            game = new GameState();
         }
 
-        protected void InitParticles()
-        {
-            ParticleSystem explosionParticles = new ExplosionParticleSystem(this, Content);
-            ParticleSystem explosionSmokeParticles = new ExplosionSmokeParticleSystem(this, Content);
-            ParticleSystem energyParticles = new EnergyParticleSystem(this, Content);
-            particleLibrary = new ParticleLibrary();
-            explosionSmokeParticles.DrawOrder = 200;
-            energyParticles.DrawOrder = 300;
-            explosionParticles.DrawOrder = 400;
-
-            Components.Add(explosionParticles);
-            Components.Add(explosionSmokeParticles);
-            Components.Add(energyParticles);
-
-            particleLibrary.ExplosionParticles = explosionParticles;
-            particleLibrary.ExplosionSmokeParticles = explosionSmokeParticles;
-            particleLibrary.EnergyParticles = energyParticles;
-        }
 
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
@@ -84,6 +53,12 @@ namespace AlienGrab
             // TODO: Add your initialization logic here
             input = new InputState();
             controllingPlayer = new PlayerIndex[2]{PlayerIndex.One, new PlayerIndex()};
+
+            splashScreen = new SplashScreen(this.Content, "Screens/splash", "Fonts/OCR");
+            homeScreen = new HomeScreen(this.Content, "Screens/home", "Fonts/OCR");
+            optionsScreen = new OptionsScreen(this.Content, "Screens/options", "Fonts/OCR");
+            gameOverScreen = new GameOverScreen(this.Content, "Screens/gameover", "Fonts/OCR");
+            quitScreen = new QuitScreen(this.Content, "Screens/quit", "Fonts/OCR");
             base.Initialize();
         }
 
@@ -98,8 +73,6 @@ namespace AlienGrab
             this.GraphicsDevice.BlendState = BlendState.Opaque;
             this.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
             this.GraphicsDevice.SamplerStates[0] = SamplerState.LinearWrap;
-            // TODO: use this.Content to load your game content here
-            CreateLevel();
         }
 
         /// <summary>
@@ -111,12 +84,7 @@ namespace AlienGrab
             // TODO: Unload any non ContentManager content here
         }
 
-        protected void CreateLevel()
-        {            
-            level = new Level(this, particleLibrary, startPeeps, startFuel, levelCount, score, lives);
-            level.LoadContent(Content);
-            levelCount++;
-        }
+
 
         /// <summary>
         /// Allows the game to run logic such as updating the world,
@@ -132,21 +100,33 @@ namespace AlienGrab
             // TODO: Add your update logic here
             input.Update();
 
-            if (gameState == GameState.LevelComplete)
+            switch (gameState)
             {
-                startPeeps++;
-                if (startPeeps > 16)
-                {
-                    startPeeps = 3;
-                    startFuel -= 100;
-                }
-                CreateLevel();
-                gameState = GameState.Playing;
-            }
-
-            if (gameState == GameState.Playing)
-            {
-                level.Update(gameTime, input, controllingPlayer, ref gameState, ref score, ref lives);
+                case ApplicationState.Splash:       splashScreen.Update(ref gameState, ref controllingPlayer);
+                                                    break;
+                case ApplicationState.Home:         homeScreen.Update(ref gameState, input, controllingPlayer);
+                                                    game.Initialize(this);
+                                                    break;
+                case ApplicationState.Options:      optionsScreen.Update(ref gameState, input, controllingPlayer);
+                                                    break;
+                case ApplicationState.Quit:         
+                    {
+                     switch(quitScreen.Update(input, controllingPlayer))
+                     {
+                         case 0:    gameState = ApplicationState.Home;
+                                    break;
+                         case 1:    this.Exit();
+                                    break;
+                     }
+                     break;
+                    }
+                case ApplicationState.Trial:        break;
+                case ApplicationState.GameOver:     gameOverScreen.Update(game.GetFinalLevel(), game.GetFinalScore(), ref gameState, input, controllingPlayer);
+                                                    break;
+                case ApplicationState.GameComplete: break;
+                //ApplicationState.Playing || ApplicationState.Paused || ApplicationState.LevelComplete
+                default:                            game.Update(gameTime, ref gameState, input, controllingPlayer);
+                                                    break;
             }
 
             base.Update(gameTime);
@@ -159,19 +139,27 @@ namespace AlienGrab
         protected override void Draw(GameTime gameTime)
         {
             // TODO: Add your drawing code here
-            this.GraphicsDevice.Clear(Color.CornflowerBlue);            
+            this.GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            this.GraphicsDevice.BlendState = BlendState.Opaque;
-            this.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
-            this.GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
-            this.GraphicsDevice.SamplerStates[1] = SamplerState.PointClamp;
-
-            if (gameState == GameState.Playing)
+            switch (gameState)
             {
-                level.Draw(gameTime, spriteBatch);
+                case ApplicationState.Splash:       splashScreen.Draw(spriteBatch);
+                                                    break;
+                case ApplicationState.Home:         homeScreen.Draw(spriteBatch);
+                                                    break;
+                case ApplicationState.Quit:         homeScreen.Draw(spriteBatch);
+                                                    quitScreen.Draw(spriteBatch);
+                                                    break;
+                case ApplicationState.Options:      optionsScreen.Draw(spriteBatch);
+                                                    break;
+                case ApplicationState.Trial:        break;
+                case ApplicationState.GameOver:     gameOverScreen.Draw(spriteBatch);
+                                                    break;
+                case ApplicationState.GameComplete: break;
+                //ApplicationState.Playing || ApplicationState.Paused || ApplicationState.LevelComplete
+                default:                            game.Draw(gameTime, gameState, spriteBatch);
+                                                    break;
             }
-            this.GraphicsDevice.RasterizerState = RasterizerState.CullNone;                        
-            this.GraphicsDevice.SamplerStates[0] = SamplerState.LinearWrap;
             
             base.Draw(gameTime);
         }

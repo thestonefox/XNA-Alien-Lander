@@ -20,6 +20,7 @@ namespace AlienGrab
         public Matrix[] elementsWorldMatrix;
         public BoundingBox Bounds;
         public bool HitTest;
+        public bool Active;
 
         public bool OverrideFirstCollision;
 
@@ -36,9 +37,13 @@ namespace AlienGrab
         protected Matrix meshWorld;
 
         protected BoundingBox volume;
-        protected bool hasBounds;
+        protected bool hasBounds;        
 
-        public bool Active;
+        //Temporary variables pre assigned to reduce garabge collection issues
+        private Matrix boundsWorld;
+        private Matrix lightViewProjection;
+        private String techniqueName;
+        private ModelMesh meshM;
 
         public Base3DObject(Game game, String modelAssetName, LightSource _light)
             : base(game)
@@ -129,7 +134,7 @@ namespace AlienGrab
         {
             if (hasBounds)
             {
-                Matrix boundsWorld = Matrix.CreateScale(Scale) * Matrix.CreateTranslation(Position);
+                boundsWorld = Matrix.CreateScale(Scale) * Matrix.CreateTranslation(Position);
                 Bounds = new BoundingBox(Vector3.Transform(volume.Min, boundsWorld), Vector3.Transform(volume.Max, boundsWorld));
             }
             world = Matrix.CreateScale(Scale) * (Matrix.CreateRotationX(Rotation.X) * Matrix.CreateRotationY(Rotation.Y) * Matrix.CreateRotationZ(Rotation.Z)) * Matrix.CreateTranslation(Position);
@@ -137,12 +142,12 @@ namespace AlienGrab
 
         protected void DrawModel(BaseCamera camera, bool createShadowMap, ref RenderTarget2D shadowRenderTarget)
         {
-            Matrix lightViewProjection = light.CreateLightViewProjectionMatrix();
-            String techniqueName = createShadowMap ? "CreateShadowMap" : "DrawWithShadowMap";
+            lightViewProjection = light.CreateLightViewProjectionMatrix();
+            techniqueName = createShadowMap ? "CreateShadowMap" : "DrawWithShadowMap";
    
             for(int meshIndex = 0; meshIndex < mesh.Meshes.Count; meshIndex++)
             {                
-                ModelMesh meshM = mesh.Meshes[meshIndex];
+                meshM = mesh.Meshes[meshIndex];
                 // Do the world stuff. 
                 // Scale * transform * pos * rotation
                 if (elementsWorldMatrix.Length == 0)
@@ -198,7 +203,7 @@ namespace AlienGrab
                 // Draw the model. A model can have multiple meshes, so loop.
                 for(int meshIndex = 0; meshIndex < mesh.Meshes.Count; meshIndex++)
                 {                
-                    ModelMesh meshM = mesh.Meshes[meshIndex];
+                    meshM = mesh.Meshes[meshIndex];
                     // This is where the mesh orientation is set, as well 
                     // as our camera and projection.
                     foreach (BasicEffect effect in meshM.Effects)

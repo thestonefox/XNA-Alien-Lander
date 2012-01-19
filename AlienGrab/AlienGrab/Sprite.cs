@@ -27,6 +27,8 @@ namespace AlienGrab
         protected Texture2D texture;
         protected bool alive;
 
+        private Rectangle source;
+
         public Sprite(Texture2D _texture)
         {
             Initialise(_texture, _texture.Width, _texture.Height);
@@ -52,7 +54,7 @@ namespace AlienGrab
         {
             if (alive)
             {
-                Rectangle source = new Rectangle(0, 0, (int)Width, (int)Height);
+                source = new Rectangle(0, 0, (int)Width, (int)Height);
                 spriteBatch.Draw(texture, Position, source, new Color(Colour.R, Colour.G, Colour.B, Alpha), Rotation, center, Scale, SpriteEffects.None, Depth);
             }
         }

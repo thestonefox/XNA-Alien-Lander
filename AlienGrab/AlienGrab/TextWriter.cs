@@ -11,12 +11,14 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
 namespace AlienGrab
-{
+{    
     class TextWriter
     {
+        private static Vector2 FontOrigin;
+
         public static void WriteText(SpriteBatch sb, SpriteFont font, String text, Vector2 position, Color color, int align)
         {
-            Vector2 FontOrigin = Vector2.Zero;
+            FontOrigin = Vector2.Zero;
             if (align == 1)
                 FontOrigin = font.MeasureString(text) / 2;
             if (align == 2)

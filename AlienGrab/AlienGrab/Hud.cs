@@ -24,6 +24,8 @@ namespace AlienGrab
         protected Sprite peepIcon;
         protected Sprite bar;
 
+        private Color color;
+
         public Hud(ContentManager content, Rectangle _safeArea)
         {
             safeArea = _safeArea;
@@ -48,8 +50,8 @@ namespace AlienGrab
 
         public void Draw(SpriteBatch sb)
         {
-            Color color = new Color(0.3f, 0.3f, 0.3f, 0.1f);
-            TextWriter.WriteText(sb, text, "SCORE: " + score.ToString().PadLeft(10, '0'), new Vector2(safeArea.Left, safeArea.Top), color, 0);
+            color = new Color(0.5f, 0.5f, 0.5f, 0.1f);
+            TextWriter.WriteText(sb, text, "SCORE: " + score.ToString().PadLeft(12, '0'), new Vector2(safeArea.Left, safeArea.Top), color, 0);
 
             lifeIcon.Position = new Vector2(safeArea.Right-60, safeArea.Top+18);
             lifeIcon.Draw(sb);

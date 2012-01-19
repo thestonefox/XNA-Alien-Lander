@@ -26,6 +26,8 @@ namespace AlienGrab
 
         protected Vector3 blockDimensions = new Vector3(165,60,165);
 
+        private CollisionType ct;
+
         public Map(Game _game, Vector3 coordinates, LightSource light, int totalPeeps)
         {
             game = _game;
@@ -65,7 +67,7 @@ namespace AlienGrab
         public CollisionType CheckBuildingCollision(Base3DObject bob)
         {
             //3 types of collision: no collision, crash and landing
-            CollisionType ct = CollisionType.None;
+            ct = CollisionType.None;
             for (int c = 0; c < blocks.Length; c++)
             {
                 if (blocks[c].Collided(bob))
