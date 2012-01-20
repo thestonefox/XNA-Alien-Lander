@@ -105,8 +105,8 @@ namespace AlienGrab
             {
                 Rotation.Y += MathHelper.ToRadians(5.0f);
                 if (
-                    (input.IsNewButtonHeld(Buttons.LeftThumbstickLeft, controllingPlayer[0], out controllingPlayer[1]) ||
-                    input.IsNewKeyHeld(Keys.Left, controllingPlayer[0], out controllingPlayer[1]))
+                    (input.IsNewButtonHeld(ButtonMappings.Pad_LeftStickLeft, controllingPlayer[0], out controllingPlayer[1]) ||
+                    input.IsNewKeyHeld(ButtonMappings.Keyboard_LeftStickLeft, controllingPlayer[0], out controllingPlayer[1]))
                     && (hasPlayArea == false || (hasPlayArea == true && Bounds.Max.X > playArea.Min.X))
                     )
                 {
@@ -114,8 +114,8 @@ namespace AlienGrab
                     acceleration.X += accelerationBit;
                 }
                 else if (
-                    (input.IsNewButtonHeld(Buttons.LeftThumbstickRight, controllingPlayer[0], out controllingPlayer[1]) ||
-                    input.IsNewKeyHeld(Keys.Right, controllingPlayer[0], out controllingPlayer[1]))
+                    (input.IsNewButtonHeld(ButtonMappings.Pad_LeftStickRight, controllingPlayer[0], out controllingPlayer[1]) ||
+                    input.IsNewKeyHeld(ButtonMappings.Keyboard_LeftStickRight, controllingPlayer[0], out controllingPlayer[1]))
                     && (hasPlayArea == false || (hasPlayArea == true && Bounds.Min.X < playArea.Max.X))
                     )
                 {
@@ -128,8 +128,8 @@ namespace AlienGrab
                 }
 
                 if (
-                    (input.IsNewButtonHeld(Buttons.LeftThumbstickUp, controllingPlayer[0], out controllingPlayer[1]) ||
-                    input.IsNewKeyHeld(Keys.Up, controllingPlayer[0], out controllingPlayer[1]))
+                    (input.IsNewButtonHeld(ButtonMappings.Pad_LeftStickUp, controllingPlayer[0], out controllingPlayer[1]) ||
+                    input.IsNewKeyHeld(ButtonMappings.Keyboard_LeftStickUp, controllingPlayer[0], out controllingPlayer[1]))
                     && (hasPlayArea == false || (hasPlayArea == true && Bounds.Max.Z > playArea.Min.Z))
                     )
                 {
@@ -137,8 +137,8 @@ namespace AlienGrab
                     acceleration.Z += accelerationBit;
                 }
                 else if (
-                    (input.IsNewButtonHeld(Buttons.LeftThumbstickDown, controllingPlayer[0], out controllingPlayer[1]) ||
-                    input.IsNewKeyHeld(Keys.Down, controllingPlayer[0], out controllingPlayer[1]))
+                    (input.IsNewButtonHeld(ButtonMappings.Pad_LeftStickDown, controllingPlayer[0], out controllingPlayer[1]) ||
+                    input.IsNewKeyHeld(ButtonMappings.Keyboard_LeftStickDown, controllingPlayer[0], out controllingPlayer[1]))
                     && (hasPlayArea == false || (hasPlayArea == true && Bounds.Min.Z < playArea.Max.Z))
                     )
                 {
@@ -151,9 +151,9 @@ namespace AlienGrab
                 }
 
                 if (Fuel>0 && 
-                    ((input.IsNewButtonHeld(Buttons.RightTrigger, controllingPlayer[0], out controllingPlayer[1]) ||
-                    input.IsNewButtonHeld(Buttons.A, controllingPlayer[0], out controllingPlayer[1]) ||
-                    input.IsNewKeyHeld(Keys.Space, controllingPlayer[0], out controllingPlayer[1]))
+                    ((input.IsNewButtonHeld(ButtonMappings.Pad_RightTrigger, controllingPlayer[0], out controllingPlayer[1]) ||
+                    input.IsNewButtonHeld(ButtonMappings.Pad_ABtn, controllingPlayer[0], out controllingPlayer[1]) ||
+                    input.IsNewKeyHeld(ButtonMappings.Keyboard_ABtn, controllingPlayer[0], out controllingPlayer[1]))
                     && (hasPlayArea == false || (hasPlayArea == true && Bounds.Min.Y < playArea.Max.Y)))
                     )
                 {

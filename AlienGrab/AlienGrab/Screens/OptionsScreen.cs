@@ -23,10 +23,10 @@ namespace AlienGrab
         {
             base.Update(input, controllingPlayer);
 
-            if ((input.IsNewButtonPress(Buttons.A, controllingPlayer[0], out controllingPlayer[1]) ||
-                    input.IsNewKeyPress(Keys.Space, controllingPlayer[0], out controllingPlayer[1])) ||
-                (input.IsNewButtonPress(Buttons.B, controllingPlayer[0], out controllingPlayer[1]) ||
-                    input.IsNewKeyPress(Keys.Escape, controllingPlayer[0], out controllingPlayer[1])))
+            if ((input.IsNewButtonPress(ButtonMappings.Pad_ABtn, controllingPlayer[0], out controllingPlayer[1]) ||
+                    input.IsNewKeyPress(ButtonMappings.Keyboard_ABtn, controllingPlayer[0], out controllingPlayer[1])) ||
+                (input.IsNewButtonPress(ButtonMappings.Pad_BBtn, controllingPlayer[0], out controllingPlayer[1]) ||
+                    input.IsNewKeyPress(ButtonMappings.Keyboard_BBtn, controllingPlayer[0], out controllingPlayer[1])))
             {
                 gameState = ApplicationState.Home;
             }

@@ -118,9 +118,11 @@ namespace AlienGrab
                     }
             }
 
-            //check for pause button
-            if (gameState != ApplicationState.LevelComplete && (input.IsNewButtonPress(Buttons.Start, controllingPlayer[0], out controllingPlayer[1]) ||
-                input.IsNewKeyPress(Keys.Delete, controllingPlayer[0], out controllingPlayer[1])))
+            //check for pause button or game pad being disconnected
+            if (gameState != ApplicationState.LevelComplete && ((input.IsNewButtonPress(ButtonMappings.Pad_Start, controllingPlayer[0], out controllingPlayer[1]) ||
+                input.IsNewKeyPress(ButtonMappings.Keyboard_Start, controllingPlayer[0], out controllingPlayer[1])) ||
+				input.GamePadConnected(controllingPlayer[0]) == false)
+				)
             {
                 if (gameState == ApplicationState.Playing)
                 {

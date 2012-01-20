@@ -54,21 +54,21 @@ namespace AlienGrab
 
         public void Update(InputState input, PlayerIndex[] controllingPlayer)
         {
-            if((input.IsNewButtonPress(Buttons.LeftThumbstickUp, controllingPlayer[0], out controllingPlayer[1]) ||
-                    input.IsNewKeyPress(Keys.Up, controllingPlayer[0], out controllingPlayer[1])))
+            if((input.IsNewButtonPress(ButtonMappings.Pad_LeftStickUp, controllingPlayer[0], out controllingPlayer[1]) ||
+                    input.IsNewKeyPress(ButtonMappings.Keyboard_LeftStickUp, controllingPlayer[0], out controllingPlayer[1])))
             {
                 menuIndex--;
             }
-            if ((input.IsNewButtonPress(Buttons.LeftThumbstickDown, controllingPlayer[0], out controllingPlayer[1]) ||
-                    input.IsNewKeyPress(Keys.Down, controllingPlayer[0], out controllingPlayer[1])))
+            if ((input.IsNewButtonPress(ButtonMappings.Pad_LeftStickDown, controllingPlayer[0], out controllingPlayer[1]) ||
+                    input.IsNewKeyPress(ButtonMappings.Keyboard_LeftStickDown, controllingPlayer[0], out controllingPlayer[1])))
             {
                 menuIndex++;
             }
 
             menuIndex = (int)MathHelper.Clamp(menuIndex, 0, options.Length-1);
 
-            if ((input.IsNewButtonPress(Buttons.A, controllingPlayer[0], out controllingPlayer[1]) ||
-                    input.IsNewKeyPress(Keys.Space, controllingPlayer[0], out controllingPlayer[1])))
+            if ((input.IsNewButtonPress(ButtonMappings.Pad_ABtn, controllingPlayer[0], out controllingPlayer[1]) ||
+                    input.IsNewKeyPress(ButtonMappings.Keyboard_ABtn, controllingPlayer[0], out controllingPlayer[1])))
             {
                 selectedIndex = menuIndex;
             }

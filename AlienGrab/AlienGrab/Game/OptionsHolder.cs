@@ -7,5 +7,19 @@ namespace AlienGrab
 {
     class OptionsHolder
     {
+	/*
+	StartLives
+	StartFuel
+	DecreaseFuel
+	FuelMultiplier
+	StartPeeps
+	PeepValue
+	IncPeeps
+	MaxPeeps
+	Thrust
+	Gravity
+	SafeVelocity
+	ScorePadding
+	*/
     }
 }

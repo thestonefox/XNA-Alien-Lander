@@ -78,8 +78,19 @@ namespace AlienGrab
                 {
                     GamePadWasConnected[i] = true;
                 }
+				else
+				{
+                    GamePadWasConnected[i] = false;
+				}
             }
         }
+		
+		public bool GamePadConnected(PlayerIndex? controllingPlayer)
+		{
+			playerIndex = controllingPlayer.Value;
+            int i = (int)playerIndex;
+			return GamePadWasConnected[i];
+		}
 
 
         /// <summary>
@@ -197,83 +208,6 @@ namespace AlienGrab
             }
         }
 
-
-        /// <summary>
-        /// Checks for a "menu select" input action.
-        /// The controllingPlayer parameter specifies which player to read input for.
-        /// If this is null, it will accept input from any player. When the action
-        /// is detected, the output playerIndex reports which player pressed it.
-        /// </summary>
-        public bool IsMenuSelect(PlayerIndex? controllingPlayer,
-                                 out PlayerIndex playerIndex)
-        {
-            return IsNewKeyPress(Keys.Space, controllingPlayer, out playerIndex) ||
-                   IsNewKeyPress(Keys.Enter, controllingPlayer, out playerIndex) ||
-                   IsNewButtonPress(Buttons.A, controllingPlayer, out playerIndex) ||
-                   IsNewButtonPress(Buttons.Start, controllingPlayer, out playerIndex);
-        }
-
-
-        /// <summary>
-        /// Checks for a "menu cancel" input action.
-        /// The controllingPlayer parameter specifies which player to read input for.
-        /// If this is null, it will accept input from any player. When the action
-        /// is detected, the output playerIndex reports which player pressed it.
-        /// </summary>
-        public bool IsMenuCancel(PlayerIndex? controllingPlayer,
-                                 out PlayerIndex playerIndex)
-        {
-            return IsNewKeyPress(Keys.Escape, controllingPlayer, out playerIndex) ||
-                   IsNewButtonPress(Buttons.B, controllingPlayer, out playerIndex) ||
-                   IsNewButtonPress(Buttons.Back, controllingPlayer, out playerIndex);
-        }
-
-
-        /// <summary>
-        /// Checks for a "menu up" input action.
-        /// The controllingPlayer parameter specifies which player to read
-        /// input for. If this is null, it will accept input from any player.
-        /// </summary>
-        public bool IsMenuUp(PlayerIndex? controllingPlayer)
-        {
-            PlayerIndex playerIndex;
-
-            return IsNewKeyPress(Keys.Up, controllingPlayer, out playerIndex) ||
-                   IsNewKeyPress(Keys.W, controllingPlayer, out playerIndex) ||
-                   IsNewButtonPress(Buttons.DPadUp, controllingPlayer, out playerIndex) ||
-                   IsNewButtonPress(Buttons.LeftThumbstickUp, controllingPlayer, out playerIndex);
-        }
-
-
-        /// <summary>
-        /// Checks for a "menu down" input action.
-        /// The controllingPlayer parameter specifies which player to read
-        /// input for. If this is null, it will accept input from any player.
-        /// </summary>
-        public bool IsMenuDown(PlayerIndex? controllingPlayer)
-        {
-            PlayerIndex playerIndex;
-
-            return IsNewKeyPress(Keys.Down, controllingPlayer, out playerIndex) ||
-                   IsNewKeyPress(Keys.S, controllingPlayer, out playerIndex) ||
-                   IsNewButtonPress(Buttons.DPadDown, controllingPlayer, out playerIndex) ||
-                   IsNewButtonPress(Buttons.LeftThumbstickDown, controllingPlayer, out playerIndex);
-        }
-
-
-        /// <summary>
-        /// Checks for a "pause the game" input action.
-        /// The controllingPlayer parameter specifies which player to read
-        /// input for. If this is null, it will accept input from any player.
-        /// </summary>
-        public bool IsPauseGame(PlayerIndex? controllingPlayer)
-        {
-            PlayerIndex playerIndex;
-
-            return IsNewKeyPress(Keys.Escape, controllingPlayer, out playerIndex) ||
-                   IsNewButtonPress(Buttons.Back, controllingPlayer, out playerIndex) ||
-                   IsNewButtonPress(Buttons.Start, controllingPlayer, out playerIndex);
-        }
 
         /// <summary>
         /// Creates the pad to rumble by a specified amount

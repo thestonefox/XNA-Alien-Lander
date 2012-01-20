@@ -29,7 +29,7 @@ namespace AlienGrab
                     gameState = ApplicationState.Home;
                 }
 
-                if (Keyboard.GetState().IsKeyDown(Keys.Space))
+                if (Keyboard.GetState().IsKeyDown(ButtonMappings.Keyboard_Start) || Keyboard.GetState().IsKeyDown(ButtonMappings.Keyboard_ABtn))
                 {
                     controllingPlayer[0] = PlayerIndex.One;
                     gameState = ApplicationState.Home;

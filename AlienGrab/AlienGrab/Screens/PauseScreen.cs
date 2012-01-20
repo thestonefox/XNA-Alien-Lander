@@ -48,8 +48,8 @@ namespace AlienGrab
                 }
             }
 
-            if (selectedIndex == 0 || (input.IsNewButtonPress(Buttons.B, controllingPlayer[0], out controllingPlayer[1]) ||
-                    input.IsNewKeyPress(Keys.Escape, controllingPlayer[0], out controllingPlayer[1])))
+            if (selectedIndex == 0 || (input.IsNewButtonPress(ButtonMappings.Pad_BBtn, controllingPlayer[0], out controllingPlayer[1]) ||
+                    input.IsNewKeyPress(ButtonMappings.Keyboard_BBtn, controllingPlayer[0], out controllingPlayer[1])))
             {
                 menuIndex = 0;
                 gameState = ApplicationState.Playing;
