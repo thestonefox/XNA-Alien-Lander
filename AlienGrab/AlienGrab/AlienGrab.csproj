@@ -107,21 +107,23 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Base3DObject.cs" />
-    <Compile Include="BaseCamera.cs" />
-    <Compile Include="DebugShapeRenderer.cs" />
-    <Compile Include="Enums.cs" />
-    <Compile Include="GameCamera.cs" />
+    <Compile Include="Core\Base3DObject.cs" />
+    <Compile Include="Core\BaseCamera.cs" />
+    <Compile Include="Game\OptionsHolder.cs" />
+    <Compile Include="Helper\ButtonMappings.cs" />
+    <Compile Include="Helper\DebugShapeRenderer.cs" />
+    <Compile Include="Core\Enums.cs" />
+    <Compile Include="Game\GameCamera.cs" />
     <Compile Include="Screens\GameOverScreen.cs" />
     <Compile Include="Screens\GameScreen.cs" />
-    <Compile Include="GameState.cs" />
-    <Compile Include="Hud.cs" />
-    <Compile Include="InputState.cs" />
-    <Compile Include="Level.cs" />
-    <Compile Include="LightSource.cs" />
-    <Compile Include="Map.cs" />
-    <Compile Include="MovingObject.cs" />
-    <Compile Include="ParticleLibrary.cs" />
+    <Compile Include="Game\GameState.cs" />
+    <Compile Include="Game\Hud.cs" />
+    <Compile Include="Core\InputState.cs" />
+    <Compile Include="Game\Level.cs" />
+    <Compile Include="Core\LightSource.cs" />
+    <Compile Include="Game\Map.cs" />
+    <Compile Include="Game\MovingObject.cs" />
+    <Compile Include="Helper\ParticleLibrary.cs" />
     <Compile Include="Particles\ParticleEmitter.cs" />
     <Compile Include="Particles\ParticleSettings.cs" />
     <Compile Include="Particles\ParticleSystem.cs" />
@@ -133,8 +135,8 @@
     <Compile Include="Particles\ParticleSystems\SmokePlumeParticleSystem.cs" />
     <Compile Include="Particles\ParticleVertex.cs" />
     <Compile Include="Particles\Projectile.cs" />
-    <Compile Include="Person.cs" />
-    <Compile Include="Player.cs" />
+    <Compile Include="Game\Person.cs" />
+    <Compile Include="Game\Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Game1.cs" />
@@ -144,8 +146,8 @@
     <Compile Include="Screens\PauseScreen.cs" />
     <Compile Include="Screens\QuitScreen.cs" />
     <Compile Include="Screens\SplashScreen.cs" />
-    <Compile Include="Sprite.cs" />
-    <Compile Include="TextWriter.cs" />
+    <Compile Include="Core\Sprite.cs" />
+    <Compile Include="Helper\TextWriter.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />
