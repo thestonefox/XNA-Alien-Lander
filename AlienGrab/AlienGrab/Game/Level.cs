@@ -27,6 +27,8 @@ namespace AlienGrab
         protected int levelNumber;
         protected Hud gameHud;
 
+        private OptionsHolder gameOptions = OptionsHolder.Instance;
+
         public Level(Game game, ParticleLibrary _particleEffects, int peeps, int fuel, int _levelNumber, int score, int lives)
         {
             levelNumber = _levelNumber;
@@ -90,7 +92,12 @@ namespace AlienGrab
                 if (map.CheckPeepCollision(playerOne))
                 {
                     peepsLeft--;
-                    playerOne.Score += 100;
+                    playerOne.Score += gameOptions.PeepValue;
+                }
+
+                if (map.CheckPowerupCollision(playerOne))
+                {
+                    playerOne.Fuel += gameOptions.PowerupFuel;
                 }
             }
 

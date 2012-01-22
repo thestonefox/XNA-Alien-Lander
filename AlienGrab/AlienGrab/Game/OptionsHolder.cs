@@ -5,21 +5,37 @@ using System.Text;
 
 namespace AlienGrab
 {
-    class OptionsHolder
+    public class OptionsHolder
     {
-	/*
-	StartLives
-	StartFuel
-	DecreaseFuel
-	FuelMultiplier
-	StartPeeps
-	PeepValue
-	IncPeeps
-	MaxPeeps
-	Thrust
-	Gravity
-	SafeVelocity
-	ScorePadding
-	*/
+        private static OptionsHolder instance;
+	    public int StartLives = 3;
+	    public int StartFuel = 1000;
+	    public int DecreaseFuel = 100;
+        public int PowerupFuel = 100;
+	    public int FuelMultiplier = 2;
+	    public int StartPeeps = 1;
+	    public int PeepValue = 10;
+	    public int IncPeeps = 1;
+	    public int MaxPeeps = 16;
+	    public float Thrust = 0.035f;
+	    public float Gravity = 0.035f;
+	    public float SafeVelocity = -0.8f;
+	    public int ScorePadding = 10;
+
+        private OptionsHolder()
+        {
+        }
+
+        public static OptionsHolder Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = new OptionsHolder();
+                }
+                return instance;
+            }
+        }
     }
 }

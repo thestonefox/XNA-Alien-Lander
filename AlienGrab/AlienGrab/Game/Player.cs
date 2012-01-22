@@ -26,11 +26,13 @@ namespace AlienGrab
         public int Lives;        
         public int Fuel;
         public int Score; 
+
+        private OptionsHolder gameOptions = OptionsHolder.Instance;
         public Player(Game game, String assetName, LightSource light, Vector3 _startPosition, int _startFuel, int _score, int _lives)
             : base(game, assetName, light)
         {
-            thrust = 0.035f;
-            gravity = 0.035f;
+            thrust = gameOptions.Thrust;
+            gravity = gameOptions.Gravity;
             particleLibrary = null;
             deathTimer = 50;
             Lives = _lives;
@@ -64,7 +66,7 @@ namespace AlienGrab
 
         public bool SafeDescent()
         {
-            if (velocity.Y < -0.8f)
+            if (velocity.Y < gameOptions.SafeVelocity)
             {
                 return false;
             }
@@ -73,6 +75,10 @@ namespace AlienGrab
 
         public override void Update(GameTime gameTime)
         {
+            if (Fuel > startFuel)
+            {
+                Fuel = startFuel;
+            }
             if (deathCounter == deathTimer - 10)
             {
                 Active = false;

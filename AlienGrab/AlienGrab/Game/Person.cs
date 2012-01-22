@@ -39,7 +39,7 @@ namespace AlienGrab
 
         public override void Initialize()
         {
-            Scale = new Vector3(0.3f, 0.3f, 0.3f);
+            Scale = new Vector3(0.25f, 0.25f, 0.25f);
             OverrideFirstCollision = true;
             elementsWorldMatrix = meshWorldMatrices;
             base.Initialize();

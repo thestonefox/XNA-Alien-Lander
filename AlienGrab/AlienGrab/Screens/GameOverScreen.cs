@@ -17,6 +17,7 @@ namespace AlienGrab
         protected int finalLevel;
         protected int finalScore;
         protected int drawState;
+        private OptionsHolder gameOptions = OptionsHolder.Instance;
 
         public GameOverScreen(ContentManager content, String assetName, String fontName)
             : base(content, assetName, fontName)
@@ -60,7 +61,7 @@ namespace AlienGrab
             }
             if (drawState <= 0)
             {
-                TextWriter.WriteText(spriteBatch, font, finalScore.ToString().PadLeft(12, '0'), new Vector2(660, 389), Color.White, 0);
+                TextWriter.WriteText(spriteBatch, font, finalScore.ToString().PadLeft(gameOptions.ScorePadding, '0'), new Vector2(660, 389), Color.White, 0);
             }
         }
     }

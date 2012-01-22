@@ -98,7 +98,7 @@ namespace AlienGrab
 
             switch (gameState)
             {
-                case ApplicationState.Splash:       splashScreen.Update(ref gameState, ref controllingPlayer);
+                case ApplicationState.Splash:       splashScreen.Update(ref gameState, input, ref controllingPlayer);
                                                     break;
                 case ApplicationState.Home:         homeScreen.Update(ref gameState, input, controllingPlayer);
                                                     game.Initialize(this);
@@ -135,7 +135,7 @@ namespace AlienGrab
         protected override void Draw(GameTime gameTime)
         {
             // TODO: Add your drawing code here
-            this.GraphicsDevice.Clear(Color.CornflowerBlue);
+            this.GraphicsDevice.Clear(Color.Black);
 
             switch (gameState)
             {

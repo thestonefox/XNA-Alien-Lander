@@ -19,8 +19,9 @@ namespace AlienGrab
         {
         }
 
-        public void Update(ref ApplicationState gameState, ref PlayerIndex[] controllingPlayer)
+        public void Update(ref ApplicationState gameState, InputState input, ref PlayerIndex[] controllingPlayer)
         {
+            base.Update(input, controllingPlayer);
             for (PlayerIndex index = PlayerIndex.One; index <= PlayerIndex.Four; index++)
             {
                 if (GamePad.GetState(index).Buttons.Start == ButtonState.Pressed || GamePad.GetState(index).Buttons.A == ButtonState.Pressed)

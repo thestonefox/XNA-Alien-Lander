@@ -21,6 +21,9 @@ namespace AlienGrab
         protected int menuIndex;
         protected int selectedIndex;
         protected int menuAlignment;
+
+        protected int loaded;
+
         public Color menuColour;
         public Color selectedColour;
 
@@ -36,6 +39,7 @@ namespace AlienGrab
             menuAlignment = 0;
             menuColour = Color.White;
             selectedColour = Color.Yellow;
+            loaded = 0;
             Reset();
         }
 
@@ -54,6 +58,10 @@ namespace AlienGrab
 
         public void Update(InputState input, PlayerIndex[] controllingPlayer)
         {
+            if (loaded < 2)
+            {
+                loaded++;
+            }
             if((input.IsNewButtonPress(ButtonMappings.Pad_LeftStickUp, controllingPlayer[0], out controllingPlayer[1]) ||
                     input.IsNewKeyPress(ButtonMappings.Keyboard_LeftStickUp, controllingPlayer[0], out controllingPlayer[1])))
             {
@@ -81,8 +89,15 @@ namespace AlienGrab
         public virtual void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Begin();
-            background.Draw(spriteBatch);
-            DrawOptions(spriteBatch);
+            if (loaded > 1)
+            {
+                background.Draw(spriteBatch);
+                DrawOptions(spriteBatch);
+            }
+            else
+            {
+                TextWriter.WriteText(spriteBatch, font, "LOADING, PLEASE WAIT", background.Position, menuColour, 1);
+            }
             spriteBatch.End();
         }
 

@@ -32,7 +32,7 @@ namespace AlienGrab
         public readonly KeyboardState[] LastKeyboardStates;
         public readonly GamePadState[] LastGamePadStates;
 
-        public readonly bool[] GamePadWasConnected;
+        public readonly GamePadStateValues[] GamePadWasConnected;
 
         #endregion
 
@@ -50,7 +50,7 @@ namespace AlienGrab
             LastKeyboardStates = new KeyboardState[MaxInputs];
             LastGamePadStates = new GamePadState[MaxInputs];
 
-            GamePadWasConnected = new bool[MaxInputs];
+            GamePadWasConnected = new GamePadStateValues[MaxInputs];
         }
 
 
@@ -74,18 +74,23 @@ namespace AlienGrab
 
                 // Keep track of whether a gamepad has ever been
                 // connected, so we can detect if it is unplugged.
+            
                 if (CurrentGamePadStates[i].IsConnected)
                 {
-                    GamePadWasConnected[i] = true;
+                    GamePadWasConnected[i] = GamePadStateValues.Connected;
                 }
-				else
-				{
-                    GamePadWasConnected[i] = false;
-				}
+                else if (GamePadWasConnected[i] == GamePadStateValues.Connected)
+                {
+                    GamePadWasConnected[i] = GamePadStateValues.Disconnected;
+                }
+                else
+                {
+                    GamePadWasConnected[i] = GamePadStateValues.Null;
+                }
             }
         }
-		
-		public bool GamePadConnected(PlayerIndex? controllingPlayer)
+
+        public GamePadStateValues GamePadConnected(PlayerIndex? controllingPlayer, out PlayerIndex playerIndex)
 		{
 			playerIndex = controllingPlayer.Value;
             int i = (int)playerIndex;

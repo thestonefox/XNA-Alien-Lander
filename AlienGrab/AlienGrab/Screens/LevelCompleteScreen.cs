@@ -18,6 +18,7 @@ namespace AlienGrab
         protected int livesLeft;
         protected int score;
         protected int drawState;
+        private OptionsHolder gameOptions = OptionsHolder.Instance;
 
         public LevelCompleteScreen(ContentManager content, String assetName, String fontName)
             : base(content, assetName, fontName)
@@ -58,7 +59,7 @@ namespace AlienGrab
         {
             if (drawState < 100)
             {
-                TextWriter.WriteText(spriteBatch, font, fuelLeft + " X 2", new Vector2(660, 292), Color.White, 0);
+                TextWriter.WriteText(spriteBatch, font, fuelLeft + " X "+gameOptions.FuelMultiplier, new Vector2(660, 292), Color.White, 0);
             }
             if (drawState < 50)
             {
@@ -66,7 +67,7 @@ namespace AlienGrab
             }
             if (drawState <= 0)
             {
-                TextWriter.WriteText(spriteBatch, font, score.ToString().PadLeft(12, '0'), new Vector2(660, 412), Color.White, 0);
+                TextWriter.WriteText(spriteBatch, font, score.ToString().PadLeft(gameOptions.ScorePadding, '0'), new Vector2(660, 412), Color.White, 0);
             }
         }
     }

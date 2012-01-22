@@ -18,7 +18,8 @@ namespace AlienGrab
         protected Game game;
         protected int[,] layout;
         protected Base3DObject[] blocks;
-        public Person[] peeps;
+        protected Person[] peeps;
+        protected Base3DObject[] powerups;
         protected float playAreaCeiling;
         protected BoundingBox playArea;
         protected Vector3 playerStart;
@@ -35,6 +36,7 @@ namespace AlienGrab
             layout = new int[(int)coordinates.Z, (int)coordinates.X];
             playerStart = Vector3.Zero;
             peeps = new Person[totalPeeps];
+            powerups = new Base3DObject[1];
             GenerateMap((int)coordinates.Y, light);
         }
 
@@ -48,7 +50,12 @@ namespace AlienGrab
             for (int c = 0; c < peeps.Length; c++)
             {
                 peeps[c].Update(gameTime);
-            }            
+            }
+
+            for (int c = 0; c < powerups.Length; c++)
+            {
+                powerups[c].Update(gameTime);
+            }   
         }
 
         public void Draw(BaseCamera camera, ref RenderTarget2D shadowRenderTarget)
@@ -61,7 +68,12 @@ namespace AlienGrab
             for (int c = 0; c < peeps.Length; c++)
             {
                 peeps[c].Draw(camera, ref shadowRenderTarget);
-            }       
+            }
+
+            for (int c = 0; c < powerups.Length; c++)
+            {
+                powerups[c].Draw(camera, ref shadowRenderTarget);
+            }  
         }
 
         public CollisionType CheckBuildingCollision(Base3DObject bob)
@@ -103,6 +115,19 @@ namespace AlienGrab
             return false;
         }
 
+        public bool CheckPowerupCollision(Base3DObject bob)
+        {
+            for (int c = 0; c < powerups.Length; c++)
+            {
+                if (powerups[c].Collided(bob))
+                {
+                    powerups[c].Active = false;
+                    return true;
+                }
+            }
+            return false;
+        }
+
         protected Vector3 CalculatePosition(Vector3 coordinates)
         {
             return new Vector3(coordinates.X * blockDimensions.X, coordinates.Y * blockDimensions.Y, coordinates.Z * blockDimensions.Z);
@@ -114,6 +139,7 @@ namespace AlienGrab
             Random random = new Random();
             List<int[]> positions = new List<int[]>();
             int peepsLeft = 0;
+            int powerupsLeft = 0;
             
             for (int d = 0; d < layout.GetLength(0); d++)
             {
@@ -143,14 +169,26 @@ namespace AlienGrab
                             //else use the building for a peep or a power up
                             else
                             {
+                                bool addedPeep = false;
                                 if (peepsLeft < peeps.Length && (random.Next(0, 5) == 1 || d >= layout.GetLength(0)-2))
                                 {
+                                    //new peep
                                     Person peep = new Person(game, "Models/person", light);
                                     peep.LoadContent(true);
                                     peep.Position = new Vector3(w * blockDimensions.X, (h * blockDimensions.Y) + blockDimensions.Y, d * blockDimensions.Z);
                                     peep.Initialize();
                                     peeps[peepsLeft] = peep;
                                     peepsLeft++;
+                                    addedPeep = true;
+                                }
+                                if(powerupsLeft < powerups.Length && (random.Next(0,5)==1) && addedPeep==false)
+                                {
+                                    Base3DObject powerup = new Base3DObject(game, "Models/person", light);
+                                    powerup.LoadContent(true);
+                                    powerup.Position = new Vector3(w * blockDimensions.X, (h * blockDimensions.Y) + blockDimensions.Y, d * blockDimensions.Z);
+                                    powerup.Initialize();
+                                    powerups[powerupsLeft] = powerup;
+                                    powerupsLeft++;
                                 }
                             }
                         }

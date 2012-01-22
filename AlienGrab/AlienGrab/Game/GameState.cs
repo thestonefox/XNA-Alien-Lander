@@ -28,6 +28,7 @@ namespace AlienGrab
 
         private PauseScreen pauseScreen;
         private LevelCompleteScreen levelCompleteScreen;
+        private OptionsHolder gameOptions = OptionsHolder.Instance;
 
         public void Initialize(Game _game)
         {
@@ -35,11 +36,11 @@ namespace AlienGrab
             pauseScreen = new PauseScreen(game.Content, "Screens/pause", "Fonts/OCR");
             levelCompleteScreen = new LevelCompleteScreen(game.Content, "Screens/levelcomplete", "Fonts/OCR");
             InitParticles();
-            startPeeps = 1;
-            startFuel = 1000;
+            startPeeps = gameOptions.StartPeeps;
+            startFuel = gameOptions.StartFuel;
             levelCount = 0;
             score = 0;
-            lives = 3;
+            lives = gameOptions.StartLives;
             fuel = startFuel;            
             CreateLevel();
         }
@@ -88,12 +89,12 @@ namespace AlienGrab
                     {
                         if (updateScore == false)
                         {
-                            score += (fuel * 2) * lives;
-                            startPeeps++;
-                            if (startPeeps > 16)
+                            score += (fuel * gameOptions.FuelMultiplier) * lives;
+                            startPeeps += gameOptions.IncPeeps;
+                            if (startPeeps > gameOptions.MaxPeeps)
                             {
-                                startPeeps = 3;
-                                startFuel -= 100;
+                                startPeeps = gameOptions.StartPeeps;
+                                startFuel -= gameOptions.DecreaseFuel;
                             }
                             updateScore = true;
                         }                        
@@ -121,7 +122,7 @@ namespace AlienGrab
             //check for pause button or game pad being disconnected
             if (gameState != ApplicationState.LevelComplete && ((input.IsNewButtonPress(ButtonMappings.Pad_Start, controllingPlayer[0], out controllingPlayer[1]) ||
                 input.IsNewKeyPress(ButtonMappings.Keyboard_Start, controllingPlayer[0], out controllingPlayer[1])) ||
-				input.GamePadConnected(controllingPlayer[0]) == false)
+                input.GamePadConnected(controllingPlayer[0], out controllingPlayer[1]) == GamePadStateValues.Disconnected)
 				)
             {
                 if (gameState == ApplicationState.Playing)
