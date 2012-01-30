@@ -15,7 +15,7 @@ namespace AlienGrab
     class GameScreen
     {
         protected Sprite background;
-        protected String[] options;
+        protected List<String> options;
         protected Vector2 optionsPosition;
         protected SpriteFont font;
         protected int menuIndex;
@@ -35,7 +35,7 @@ namespace AlienGrab
             background = new Sprite(content.Load<Texture2D>(assetName));
             background.Position = new Vector2(background.Width/2, background.Height/2);
             font = content.Load<SpriteFont>(fontName);
-            options = new String[0];  
+            options = new List<String>();  
             menuAlignment = 0;
             menuColour = Color.White;
             selectedColour = Color.Yellow;
@@ -43,9 +43,8 @@ namespace AlienGrab
             Reset();
         }
 
-        public void SetOptions(String[] _options, Vector2 position, int _menuAlignment)
+        public void SetOptions(Vector2 position, int _menuAlignment)
         {
-            options = _options;
             optionsPosition = position;
             menuAlignment = _menuAlignment;
         }
@@ -73,7 +72,7 @@ namespace AlienGrab
                 menuIndex++;
             }
 
-            menuIndex = (int)MathHelper.Clamp(menuIndex, 0, options.Length-1);
+            menuIndex = (int)MathHelper.Clamp(menuIndex, 0, options.Count-1);
 
             if ((input.IsNewButtonPress(ButtonMappings.Pad_ABtn, controllingPlayer[0], out controllingPlayer[1]) ||
                     input.IsNewKeyPress(ButtonMappings.Keyboard_ABtn, controllingPlayer[0], out controllingPlayer[1])))
@@ -102,8 +101,8 @@ namespace AlienGrab
         }
 
         protected virtual void DrawOptions(SpriteBatch spriteBatch)
-        {            
-            for (int i = 0; i < options.Length; i++)
+        {
+            for (int i = 0; i < options.Count; i++)
             {
                 drawColour = menuColour;
                 if (menuIndex == i)

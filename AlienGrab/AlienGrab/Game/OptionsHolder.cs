@@ -21,6 +21,8 @@ namespace AlienGrab
 	    public float Gravity = 0.035f;
 	    public float SafeVelocity = -0.8f;
 	    public int ScorePadding = 10;
+        public bool IsTrial = false;
+        public int LifeAtScore = 50000;
 
         private OptionsHolder()
         {

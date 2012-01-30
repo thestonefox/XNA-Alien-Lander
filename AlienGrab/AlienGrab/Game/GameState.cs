@@ -87,6 +87,11 @@ namespace AlienGrab
             {
                 case ApplicationState.LevelComplete:
                     {
+                        if (gameOptions.IsTrial == true && levelCount >= 3)
+                        {
+                            gameState = ApplicationState.Trial;
+                            break;
+                        }
                         if (updateScore == false)
                         {
                             score += (fuel * gameOptions.FuelMultiplier) * lives;
@@ -120,7 +125,7 @@ namespace AlienGrab
             }
 
             //check for pause button or game pad being disconnected
-            if (gameState != ApplicationState.LevelComplete && ((input.IsNewButtonPress(ButtonMappings.Pad_Start, controllingPlayer[0], out controllingPlayer[1]) ||
+            if ((gameState != ApplicationState.LevelComplete || gameState != ApplicationState.Trial) && ((input.IsNewButtonPress(ButtonMappings.Pad_Start, controllingPlayer[0], out controllingPlayer[1]) ||
                 input.IsNewKeyPress(ButtonMappings.Keyboard_Start, controllingPlayer[0], out controllingPlayer[1])) ||
                 input.GamePadConnected(controllingPlayer[0], out controllingPlayer[1]) == GamePadStateValues.Disconnected)
 				)

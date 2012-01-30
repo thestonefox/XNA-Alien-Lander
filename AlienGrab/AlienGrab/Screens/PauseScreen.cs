@@ -20,7 +20,9 @@ namespace AlienGrab
         public PauseScreen(ContentManager content, String assetName, String fontName)
             : base(content, assetName, fontName)
         {
-            SetOptions(new String[] { "Resume Game", "Quit To Menu" }, new Vector2(650, 310), 1);
+            options.Add("Resume Game");
+            options.Add("Quit To Menu");
+            SetOptions(new Vector2(650, 310), 1);
             quitScreen = new QuitScreen(content, "Screens/quit", fontName);
             Reset();
         }

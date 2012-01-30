@@ -54,6 +54,8 @@ namespace AlienGrab
             color = new Color(0.5f, 0.5f, 0.5f, 0.1f);
             TextWriter.WriteText(sb, text, "SCORE: " + score.ToString().PadLeft(gameOptions.ScorePadding, '0'), new Vector2(safeArea.Left, safeArea.Top), color, 0);
 
+            //TextWriter.WriteText(sb, text, "" + gameOptions.IsTrial, new Vector2(safeArea.Left, safeArea.Top+40), color, 0);
+
             lifeIcon.Position = new Vector2(safeArea.Right-60, safeArea.Top+18);
             lifeIcon.Draw(sb);
 

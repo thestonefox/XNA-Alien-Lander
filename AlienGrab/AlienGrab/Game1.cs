@@ -30,13 +30,17 @@ namespace AlienGrab
         private OptionsScreen optionsScreen;
         private GameOverScreen gameOverScreen;
         private QuitScreen quitScreen;
+        private TrialScreen trialScreen;
+        private OptionsHolder gameOptions = OptionsHolder.Instance;
         
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             graphics.PreferredBackBufferWidth = 1280;
             graphics.PreferredBackBufferHeight = 720;
-            Content.RootDirectory = "Content";            
+            Content.RootDirectory = "Content";
+            Components.Add(new GamerServicesComponent(this));
+
             gameState = ApplicationState.Splash;
             game = new GameState();
         }
@@ -59,6 +63,8 @@ namespace AlienGrab
             optionsScreen = new OptionsScreen(this.Content, "Screens/options", "Fonts/OCR");
             gameOverScreen = new GameOverScreen(this.Content, "Screens/gameover", "Fonts/OCR");
             quitScreen = new QuitScreen(this.Content, "Screens/quit", "Fonts/OCR");
+            trialScreen = new TrialScreen(this.Content, "Screens/trial", "Fonts/OCR");
+            
             base.Initialize();
         }
 
@@ -95,13 +101,11 @@ namespace AlienGrab
         {
             // TODO: Add your update logic here
             input.Update();
-
             switch (gameState)
             {
                 case ApplicationState.Splash:       splashScreen.Update(ref gameState, input, ref controllingPlayer);
                                                     break;
-                case ApplicationState.Home:         homeScreen.Update(ref gameState, input, controllingPlayer);
-                                                    game.Initialize(this);
+                case ApplicationState.Home:         homeScreen.Update(ref gameState, input, controllingPlayer);                                                    
                                                     break;
                 case ApplicationState.Options:      optionsScreen.Update(ref gameState, input, controllingPlayer);
                                                     break;
@@ -116,15 +120,23 @@ namespace AlienGrab
                      }
                      break;
                     }
-                case ApplicationState.Trial:        break;
+                case ApplicationState.Trial:        trialScreen.Update(ref gameState, input, controllingPlayer);
+                                                    break;
                 case ApplicationState.GameOver:     gameOverScreen.Update(game.GetFinalLevel(), game.GetFinalScore(), ref gameState, input, controllingPlayer);
                                                     break;
                 case ApplicationState.GameComplete: break;
+                case ApplicationState.InitaliseGame: break;
                 //ApplicationState.Playing || ApplicationState.Paused || ApplicationState.LevelComplete
                 default:                            game.Update(gameTime, ref gameState, input, controllingPlayer);
                                                     break;
             }
+            if (gameState == ApplicationState.InitaliseGame)
+            {
+                game.Initialize(this);
+                gameState = ApplicationState.Playing;
+            }
 
+            gameOptions.IsTrial = Guide.IsTrialMode;
             base.Update(gameTime);
         }
 
@@ -148,10 +160,12 @@ namespace AlienGrab
                                                     break;
                 case ApplicationState.Options:      optionsScreen.Draw(spriteBatch);
                                                     break;
-                case ApplicationState.Trial:        break;
+                case ApplicationState.Trial:        trialScreen.Draw(spriteBatch);
+                                                    break;
                 case ApplicationState.GameOver:     gameOverScreen.Draw(spriteBatch);
                                                     break;
                 case ApplicationState.GameComplete: break;
+                case ApplicationState.InitaliseGame: break;
                 //ApplicationState.Playing || ApplicationState.Paused || ApplicationState.LevelComplete
                 default:                            game.Draw(gameTime, gameState, spriteBatch);
                                                     break;

@@ -17,7 +17,9 @@ namespace AlienGrab
         public QuitScreen(ContentManager content, String assetName, String fontName)
             : base(content, assetName, fontName)
         {
-            SetOptions(new String[] { "No, Go Back", "Yes, I'm Sure" }, new Vector2(650, 320), 1);
+            options.Add("No, Go Back");
+            options.Add("Yes, I'm Sure");
+            SetOptions(new Vector2(650, 320), 1);
         }
 
         public new int Update(InputState input, PlayerIndex[] controllingPlayer)
