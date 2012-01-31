@@ -29,7 +29,7 @@ namespace AlienGrab
 
         private OptionsHolder gameOptions = OptionsHolder.Instance;
 
-        public Level(Game game, ParticleLibrary _particleEffects, int peeps, int fuel, int _levelNumber, int score, int lives)
+        public Level(Game game, ParticleLibrary _particleEffects, int peeps, int fuel, int _levelNumber, int score, int lives, int lifeCounter)
         {
             levelNumber = _levelNumber;
             particleEffects = _particleEffects;
@@ -46,7 +46,7 @@ namespace AlienGrab
 
             peepsLeft = peeps;
             map = new Map(game, new Vector3(8, 8, 4), light, peepsLeft);            
-            playerOne = new Player(game, "Models/ship", light, map.GetPlayerStartPosition(), fuel, score, lives);
+            playerOne = new Player(game, "Models/ship", light, map.GetPlayerStartPosition(), fuel, score, lives, lifeCounter);
             playerOne.SetPlayArea(map.GetPlayArea());
             playerOne.AttachParticleLibrary(particleEffects);
             playerCollisionCheck = CollisionType.None;

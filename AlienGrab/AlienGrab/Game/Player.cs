@@ -22,13 +22,14 @@ namespace AlienGrab
         protected Vector3 startPosition;
         protected Vector3 diePosition;
         protected int startFuel;
+		protected int lifeCounter;
 
         public int Lives;        
         public int Fuel;
         public int Score; 
 
         private OptionsHolder gameOptions = OptionsHolder.Instance;
-        public Player(Game game, String assetName, LightSource light, Vector3 _startPosition, int _startFuel, int _score, int _lives)
+        public Player(Game game, String assetName, LightSource light, Vector3 _startPosition, int _startFuel, int _score, int _lives, int _lifeCounter)
             : base(game, assetName, light)
         {
             thrust = gameOptions.Thrust;
@@ -36,6 +37,7 @@ namespace AlienGrab
             particleLibrary = null;
             deathTimer = 50;
             Lives = _lives;
+			lifeCounter = _lifeCounter;
             Score = _score;
             startPosition = _startPosition;
             startFuel = _startFuel;
@@ -76,7 +78,11 @@ namespace AlienGrab
         public override void Update(GameTime gameTime)
         {
             //if my score is greater than multiples of 50,000 then give me an extra life
-
+			if(Math.Floor(Score/gameOptions.LifeAtScore) == lifeCounter)
+			{
+				lifeCounter++;
+				Lives++;
+			}
             //
             if (Fuel > startFuel)
             {

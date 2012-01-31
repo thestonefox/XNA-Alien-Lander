@@ -23,6 +23,7 @@ namespace AlienGrab
         private int score;
         private int lives;
         private int fuel;
+		private int lifeCounter;
         private bool updateScore;
         private Game game;
 
@@ -41,6 +42,7 @@ namespace AlienGrab
             levelCount = 0;
             score = 0;
             lives = gameOptions.StartLives;
+			lifeCounter = 0;
             fuel = startFuel;            
             CreateLevel();
         }
@@ -66,7 +68,7 @@ namespace AlienGrab
 
         protected void CreateLevel()
         {
-            level = new Level(game, particleLibrary, startPeeps, startFuel, levelCount, score, lives);
+            level = new Level(game, particleLibrary, startPeeps, startFuel, levelCount, score, lives, lifeCounter);
             level.LoadContent(game.Content);
             levelCount++;
         }
