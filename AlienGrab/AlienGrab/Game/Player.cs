@@ -78,7 +78,7 @@ namespace AlienGrab
         public override void Update(GameTime gameTime)
         {
             //if my score is greater than multiples of 50,000 then give me an extra life
-			if(Math.Floor(Score/gameOptions.LifeAtScore) == lifeCounter)
+			if((int)Math.Floor((double)Score/gameOptions.LifeAtScore) == lifeCounter)
 			{
 				lifeCounter++;
 				Lives++;
