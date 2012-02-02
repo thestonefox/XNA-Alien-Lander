@@ -14,9 +14,7 @@ namespace AlienGrab
 {
     class Level
     {
-        protected GameCamera camera;
-        protected LightSource light;
-        protected RenderTarget2D shadowRenderTarget;
+        protected Scene scene;
 
         protected Map map;
         protected Player playerOne;
@@ -29,28 +27,20 @@ namespace AlienGrab
 
         private OptionsHolder gameOptions = OptionsHolder.Instance;
 
-        public Level(Game game, ParticleLibrary _particleEffects, int peeps, int fuel, int _levelNumber, int score, int lives, int lifeCounter)
+        public Level(Game game, ParticleLibrary _particleEffects, Scene _scene, Player _playerOne, int peeps, int _levelNumber)
         {
             levelNumber = _levelNumber;
             particleEffects = _particleEffects;
-            camera = new GameCamera(50.0f, 
-                                    new Vector3[] { new Vector3(-200.0f, -1050.0f, -520.0f), new Vector3(1350.0f, -150.0f, -430.0f) }, 
-                                    new Vector3[] { new Vector3(-320.0f, 430.0f, 570.0f), new Vector3(1230.0f, 1230.0f, 1180.0f) }, 
-                                    game.GraphicsDevice.Viewport.AspectRatio, 10.0f, 10000.0f, 
-                                    new Vector3(-320.0f, 680.0f, 1180.0f),
-                                    new Vector3(1350.0f, -400.0f, -520.0f));
-
-            light = new LightSource(new Vector3(-0.3f, 500.0f, 0.5f), camera);
-
-            shadowRenderTarget = new RenderTarget2D(game.GraphicsDevice, 2048, 2048, false, SurfaceFormat.Single, DepthFormat.Depth24);
-
             peepsLeft = peeps;
-            map = new Map(game, new Vector3(8, 8, 4), light, peepsLeft);            
-            playerOne = new Player(game, "Models/ship", light, map.GetPlayerStartPosition(), fuel, score, lives, lifeCounter);
+            scene = _scene;
+            map = new Map(game, new Vector3(8, 8, 4), scene.Light, peepsLeft); 
+            playerOne = _playerOne;
+			playerOne.SetStartPosition(map.GetPlayerStartPosition());
             playerOne.SetPlayArea(map.GetPlayArea());
             playerOne.AttachParticleLibrary(particleEffects);
+			playerOne.Reset();
             playerCollisionCheck = CollisionType.None;
-            skybox = new Base3DObject(game, "Models/skybox", light);
+            skybox = new Base3DObject(game, "Models/skybox", scene.Light);
             gameHud = new Hud(game.Content, game.GraphicsDevice.Viewport.TitleSafeArea);
         }
 
@@ -63,9 +53,9 @@ namespace AlienGrab
             playerOne.LoadContent(true);
         }
 
-        public void Update(GameTime gameTime, InputState input, PlayerIndex[] controllingPlayer, ref ApplicationState gameState, ref int score, ref int lives, ref int fuel)
+        public void Update(GameTime gameTime, InputState input, PlayerIndex[] controllingPlayer, ref ApplicationState appState, ref Player playerOne)
         {
-            camera.Move(input, controllingPlayer);
+            scene.Camera.Move(input, controllingPlayer);
             skybox.Update(gameTime);
             map.Update(gameTime);
             playerOne.Move(input, controllingPlayer);
@@ -101,38 +91,30 @@ namespace AlienGrab
                 }
             }
 
-            score = playerOne.Score;
-            lives = playerOne.Lives;
-            fuel = playerOne.Fuel;
-
-
             if (playerOne.Lives <= 0)
             {
-                gameState = ApplicationState.GameOver;
+                appState = ApplicationState.GameOver;
             }
-            if (peepsLeft <= 0)
+            if (peepsLeft <= 0 && playerOne.Lives>0)
             {
-                gameState = ApplicationState.LevelComplete;
+                appState = ApplicationState.LevelComplete;
             }
 
             gameHud.Update(gameTime, playerOne.Lives, playerOne.Score, playerOne.Fuel, peepsLeft);
 
-
-
-
             if (Keyboard.GetState().IsKeyDown(Keys.P))
             {
-                Console.WriteLine(camera.Position + " - " + camera.View + "." + " - " + playerOne.Position);
-            }            
+                Console.WriteLine(scene.Camera.Position + " - " + scene.Camera.View + "." + " - " + playerOne.Position);
+            }
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
-        {            
-            particleEffects.Draw(camera);            
-            playerOne.DrawShadow(camera, ref shadowRenderTarget);
-            map.Draw(camera, ref shadowRenderTarget);
-            playerOne.Draw(camera, ref shadowRenderTarget);
-            skybox.Draw(camera);
+        {
+            particleEffects.Draw(scene.Camera);
+            playerOne.DrawShadow(scene.Camera, ref scene.ShadowRenderTarget);
+            map.Draw(scene.Camera, ref scene.ShadowRenderTarget);
+            playerOne.Draw(scene.Camera, ref scene.ShadowRenderTarget);
+            skybox.Draw(scene.Camera);
 
             spriteBatch.Begin();
             gameHud.Draw(spriteBatch);

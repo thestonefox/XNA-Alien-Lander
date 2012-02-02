@@ -12,14 +12,14 @@ using Microsoft.Xna.Framework.Media;
 
 namespace AlienGrab
 {
-    class OptionsScreen : GameScreen
+    class OptionsScreen : BaseScreen
     {
         public OptionsScreen(ContentManager content, String assetName, String fontName)
             : base(content, assetName, fontName)
         {
         }
 
-        public void Update(ref ApplicationState gameState, InputState input, PlayerIndex[] controllingPlayer)
+        public void Update(ref ApplicationState appState, InputState input, PlayerIndex[] controllingPlayer)
         {
             base.Update(input, controllingPlayer);
 
@@ -28,7 +28,7 @@ namespace AlienGrab
                 (input.IsNewButtonPress(ButtonMappings.Pad_BBtn, controllingPlayer[0], out controllingPlayer[1]) ||
                     input.IsNewKeyPress(ButtonMappings.Keyboard_BBtn, controllingPlayer[0], out controllingPlayer[1])))
             {
-                gameState = ApplicationState.Home;
+                appState = ApplicationState.Home;
             }
         }
     }

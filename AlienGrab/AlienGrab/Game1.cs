@@ -21,9 +21,9 @@ namespace AlienGrab
 
         private InputState input;
         private PlayerIndex[] controllingPlayer;
-        private ApplicationState gameState;
+        private ApplicationState appState;
 
-        private GameState game;
+        private GameState gameState;
 
         private SplashScreen splashScreen;
         private HomeScreen homeScreen;
@@ -41,8 +41,8 @@ namespace AlienGrab
             Content.RootDirectory = "Content";
             Components.Add(new GamerServicesComponent(this));
 
-            gameState = ApplicationState.Splash;
-            game = new GameState();
+            appState = ApplicationState.Splash;
+            gameState = new GameState();
         }
 
 
@@ -101,39 +101,39 @@ namespace AlienGrab
         {
             // TODO: Add your update logic here
             input.Update();
-            switch (gameState)
+            switch (appState)
             {
-                case ApplicationState.Splash:       splashScreen.Update(ref gameState, input, ref controllingPlayer);
+                case ApplicationState.Splash:       splashScreen.Update(ref appState, input, ref controllingPlayer);
                                                     break;
-                case ApplicationState.Home:         homeScreen.Update(ref gameState, input, controllingPlayer);                                                    
+                case ApplicationState.Home:         homeScreen.Update(ref appState, input, controllingPlayer);                                                    
                                                     break;
-                case ApplicationState.Options:      optionsScreen.Update(ref gameState, input, controllingPlayer);
+                case ApplicationState.Options:      optionsScreen.Update(ref appState, input, controllingPlayer);
                                                     break;
                 case ApplicationState.Quit:         
                     {
                      switch(quitScreen.Update(input, controllingPlayer))
                      {
-                         case 0:    gameState = ApplicationState.Home;
+                         case 0:    appState = ApplicationState.Home;
                                     break;
                          case 1:    this.Exit();
                                     break;
                      }
                      break;
                     }
-                case ApplicationState.Trial:        trialScreen.Update(ref gameState, input, controllingPlayer);
+                case ApplicationState.Trial:        trialScreen.Update(ref appState, input, controllingPlayer);
                                                     break;
-                case ApplicationState.GameOver:     gameOverScreen.Update(game.GetFinalLevel(), game.GetFinalScore(), ref gameState, input, controllingPlayer);
+                case ApplicationState.GameOver:     gameOverScreen.Update(gameState.GetFinalLevel(), gameState.GetFinalScore(), ref appState, input, controllingPlayer);
                                                     break;
                 case ApplicationState.GameComplete: break;
                 case ApplicationState.InitaliseGame: break;
                 //ApplicationState.Playing || ApplicationState.Paused || ApplicationState.LevelComplete
-                default:                            game.Update(gameTime, ref gameState, input, controllingPlayer);
+                default:                            gameState.Update(gameTime, ref appState, input, controllingPlayer);
                                                     break;
             }
-            if (gameState == ApplicationState.InitaliseGame)
+            if (appState == ApplicationState.InitaliseGame)
             {
-                game.Initialize(this);
-                gameState = ApplicationState.Playing;
+                gameState.Initialize(this);
+                appState = ApplicationState.Playing;
             }
 
             gameOptions.IsTrial = Guide.IsTrialMode;
@@ -149,7 +149,7 @@ namespace AlienGrab
             // TODO: Add your drawing code here
             this.GraphicsDevice.Clear(Color.Black);
 
-            switch (gameState)
+            switch (appState)
             {
                 case ApplicationState.Splash:       splashScreen.Draw(spriteBatch);
                                                     break;
@@ -167,7 +167,7 @@ namespace AlienGrab
                 case ApplicationState.GameComplete: break;
                 case ApplicationState.InitaliseGame: break;
                 //ApplicationState.Playing || ApplicationState.Paused || ApplicationState.LevelComplete
-                default:                            game.Draw(gameTime, gameState, spriteBatch);
+                default:                            gameState.Draw(gameTime, appState, spriteBatch);
                                                     break;
             }
             

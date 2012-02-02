@@ -21,28 +21,28 @@ namespace AlienGrab
         protected int deathCounter;
         protected Vector3 startPosition;
         protected Vector3 diePosition;
-        protected int startFuel;
 		protected int lifeCounter;
 
         public int Lives;        
+		public int StartFuel;
         public int Fuel;
         public int Score; 
 
         private OptionsHolder gameOptions = OptionsHolder.Instance;
-        public Player(Game game, String assetName, LightSource light, Vector3 _startPosition, int _startFuel, int _score, int _lives, int _lifeCounter)
+        public Player(Game game, String assetName, LightSource light)
             : base(game, assetName, light)
         {
             thrust = gameOptions.Thrust;
             gravity = gameOptions.Gravity;
             particleLibrary = null;
             deathTimer = 50;
-            Lives = _lives;
-			lifeCounter = _lifeCounter;
-            Score = _score;
-            startPosition = _startPosition;
-            startFuel = _startFuel;
-            ResetPlayer();
+			lifeCounter = 1;
         }
+		
+		public void SetStartPosition(Vector3 _startPosition)
+		{
+			startPosition = _startPosition;
+		}
 
         public void AttachParticleLibrary(ParticleLibrary _particleLibrary)
         {
@@ -84,9 +84,9 @@ namespace AlienGrab
 				Lives++;
 			}
             //
-            if (Fuel > startFuel)
+            if (Fuel > StartFuel)
             {
-                Fuel = startFuel;
+                Fuel = StartFuel;
             }
             if (deathCounter == deathTimer - 10)
             {
@@ -101,15 +101,15 @@ namespace AlienGrab
 
             if (deathCounter == 1)
             {
-                ResetPlayer();
+                Reset();
             }
             base.Update(gameTime);
         }
 
-        protected void ResetPlayer()
+        public void Reset()
         {            
             deathCounter = 0;
-            Fuel = startFuel;
+            Fuel = StartFuel;
             Position = startPosition;
             Active = true;
         }

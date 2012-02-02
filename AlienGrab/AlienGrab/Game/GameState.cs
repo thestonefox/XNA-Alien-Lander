@@ -15,15 +15,12 @@ namespace AlienGrab
     class GameState
     {
         private Level level;
+		private Player playerOne;
+        private Scene scene;
         private ParticleLibrary particleLibrary;
 
         private int levelCount;
         private int startPeeps;
-        private int startFuel;        
-        private int score;
-        private int lives;
-        private int fuel;
-		private int lifeCounter;
         private bool updateScore;
         private Game game;
 
@@ -34,16 +31,17 @@ namespace AlienGrab
         public void Initialize(Game _game)
         {
             game = _game;
+            scene = new Scene(game);
             pauseScreen = new PauseScreen(game.Content, "Screens/pause", "Fonts/OCR");
             levelCompleteScreen = new LevelCompleteScreen(game.Content, "Screens/levelcomplete", "Fonts/OCR");
             InitParticles();
             startPeeps = gameOptions.StartPeeps;
-            startFuel = gameOptions.StartFuel;
-            levelCount = 0;
-            score = 0;
-            lives = gameOptions.StartLives;
-			lifeCounter = 0;
-            fuel = startFuel;            
+            levelCount = 0;			
+			playerOne = new Player(game, "Models/ship", scene.Light);
+			playerOne.Fuel=gameOptions.StartFuel;
+			playerOne.StartFuel=gameOptions.StartFuel;
+			playerOne.Score = 0;
+			playerOne.Lives = gameOptions.StartLives;
             CreateLevel();
         }
 
@@ -68,14 +66,14 @@ namespace AlienGrab
 
         protected void CreateLevel()
         {
-            level = new Level(game, particleLibrary, startPeeps, startFuel, levelCount, score, lives, lifeCounter);
+            level = new Level(game, particleLibrary, scene, playerOne, startPeeps, levelCount);
             level.LoadContent(game.Content);
             levelCount++;
         }
 
         public int GetFinalScore()
         {
-            return score;
+            return playerOne.Score;
         }
 
         public int GetFinalLevel()
@@ -83,68 +81,68 @@ namespace AlienGrab
             return levelCount;
         }
 
-        public void Update(GameTime gameTime, ref ApplicationState gameState, InputState input, PlayerIndex[] controllingPlayer)
+        public void Update(GameTime gameTime, ref ApplicationState appState, InputState input, PlayerIndex[] controllingPlayer)
         {
-            switch (gameState)
+            switch (appState)
             {
                 case ApplicationState.LevelComplete:
                     {
                         if (gameOptions.IsTrial == true && levelCount >= 3)
                         {
-                            gameState = ApplicationState.Trial;
+                            appState = ApplicationState.Trial;
                             break;
                         }
                         if (updateScore == false)
                         {
-                            score += (fuel * gameOptions.FuelMultiplier) * lives;
+                            playerOne.Score += (playerOne.Fuel * gameOptions.FuelMultiplier) * playerOne.Lives;
                             startPeeps += gameOptions.IncPeeps;
                             if (startPeeps > gameOptions.MaxPeeps)
                             {
                                 startPeeps = gameOptions.StartPeeps;
-                                startFuel -= gameOptions.DecreaseFuel;
+                                playerOne.StartFuel -= gameOptions.DecreaseFuel;
                             }
                             updateScore = true;
                         }                        
                         
-                        if (levelCompleteScreen.Update(fuel, lives, score, input, controllingPlayer))
+                        if (levelCompleteScreen.Update(playerOne.Fuel, playerOne.Lives, playerOne.Score, input, controllingPlayer))
                         {
                             updateScore = false;
                             CreateLevel();
-                            gameState = ApplicationState.Playing;
+                            appState = ApplicationState.Playing;
                         }
                         break;
                     }
                 case ApplicationState.Playing:
                     {
-                        level.Update(gameTime, input, controllingPlayer, ref gameState, ref score, ref lives, ref fuel);                
+                        level.Update(gameTime, input, controllingPlayer, ref appState, ref playerOne);                
                         break;
                     }
                 case ApplicationState.Paused:
                     {
-                        pauseScreen.Update(ref gameState, input, controllingPlayer);
+                        pauseScreen.Update(ref appState, input, controllingPlayer);
                         break;
                     }
             }
 
             //check for pause button or game pad being disconnected
-            if ((gameState != ApplicationState.LevelComplete || gameState != ApplicationState.Trial) && ((input.IsNewButtonPress(ButtonMappings.Pad_Start, controllingPlayer[0], out controllingPlayer[1]) ||
+            if ((appState != ApplicationState.LevelComplete || appState != ApplicationState.Trial) && ((input.IsNewButtonPress(ButtonMappings.Pad_Start, controllingPlayer[0], out controllingPlayer[1]) ||
                 input.IsNewKeyPress(ButtonMappings.Keyboard_Start, controllingPlayer[0], out controllingPlayer[1])) ||
                 input.GamePadConnected(controllingPlayer[0], out controllingPlayer[1]) == GamePadStateValues.Disconnected)
 				)
             {
-                if (gameState == ApplicationState.Playing)
+                if (appState == ApplicationState.Playing)
                 {
                     pauseScreen.Reset();
-                    gameState = ApplicationState.Paused;
+                    appState = ApplicationState.Paused;
                 }
                 else
                 {
-                    gameState = ApplicationState.Playing;
+                    appState = ApplicationState.Playing;
                 }
             }
         }
 
-        public void Draw(GameTime gameTime, ApplicationState gameState, SpriteBatch spriteBatch)
+        public void Draw(GameTime gameTime, ApplicationState appState, SpriteBatch spriteBatch)
         {
             game.GraphicsDevice.BlendState = BlendState.Opaque;
             game.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
@@ -155,7 +153,7 @@ namespace AlienGrab
             game.GraphicsDevice.SamplerStates[0] = SamplerState.LinearWrap;
 
             //draw overlays
-            switch (gameState)
+            switch (appState)
             {
                 case ApplicationState.Paused: pauseScreen.Draw(spriteBatch);
                     break;

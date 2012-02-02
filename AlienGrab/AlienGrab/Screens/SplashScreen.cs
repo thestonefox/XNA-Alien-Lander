@@ -12,14 +12,14 @@ using Microsoft.Xna.Framework.Media;
 
 namespace AlienGrab
 {
-    class SplashScreen : GameScreen
+    class SplashScreen : BaseScreen
     {
         public SplashScreen(ContentManager content, String assetName, String fontName)
             : base(content, assetName, fontName)
         {
         }
 
-        public void Update(ref ApplicationState gameState, InputState input, ref PlayerIndex[] controllingPlayer)
+        public void Update(ref ApplicationState appState, InputState input, ref PlayerIndex[] controllingPlayer)
         {
             base.Update(input, controllingPlayer);
             for (PlayerIndex index = PlayerIndex.One; index <= PlayerIndex.Four; index++)
@@ -27,13 +27,13 @@ namespace AlienGrab
                 if (GamePad.GetState(index).Buttons.Start == ButtonState.Pressed || GamePad.GetState(index).Buttons.A == ButtonState.Pressed)
                 {
                     controllingPlayer[0] = index;
-                    gameState = ApplicationState.Home;
+                    appState = ApplicationState.Home;
                 }
 
                 if (Keyboard.GetState().IsKeyDown(ButtonMappings.Keyboard_Start) || Keyboard.GetState().IsKeyDown(ButtonMappings.Keyboard_ABtn))
                 {
                     controllingPlayer[0] = PlayerIndex.One;
-                    gameState = ApplicationState.Home;
+                    appState = ApplicationState.Home;
                 }
             }
         }

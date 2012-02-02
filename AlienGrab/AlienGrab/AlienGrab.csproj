@@ -110,13 +110,14 @@
     <Compile Include="Core\Base3DObject.cs" />
     <Compile Include="Core\BaseCamera.cs" />
     <Compile Include="Core\PlayerIndexExtensions.cs" />
+    <Compile Include="Game\Scene.cs" />
     <Compile Include="Game\OptionsHolder.cs" />
     <Compile Include="Helper\ButtonMappings.cs" />
     <Compile Include="Helper\DebugShapeRenderer.cs" />
     <Compile Include="Core\Enums.cs" />
     <Compile Include="Game\GameCamera.cs" />
+    <Compile Include="Screens\BaseScreen.cs" />
     <Compile Include="Screens\GameOverScreen.cs" />
-    <Compile Include="Screens\GameScreen.cs" />
     <Compile Include="Game\GameState.cs" />
     <Compile Include="Game\Hud.cs" />
     <Compile Include="Core\InputState.cs" />

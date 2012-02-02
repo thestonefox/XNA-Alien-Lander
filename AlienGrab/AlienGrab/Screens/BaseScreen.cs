@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace AlienGrab
 {
-    class GameScreen
+    class BaseScreen
     {
         protected Sprite background;
         protected List<String> options;
@@ -30,7 +30,7 @@ namespace AlienGrab
         private Vector2 heightOffset;
         private Color drawColour;
 
-        public GameScreen(ContentManager content, String assetName, String fontName)
+        public BaseScreen(ContentManager content, String assetName, String fontName)
         {
             background = new Sprite(content.Load<Texture2D>(assetName));
             background.Position = new Vector2(background.Width/2, background.Height/2);

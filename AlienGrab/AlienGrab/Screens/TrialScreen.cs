@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace AlienGrab
 {
-    class TrialScreen : GameScreen
+    class TrialScreen : BaseScreen
     {
         private OptionsHolder gameOptions = OptionsHolder.Instance;
 
@@ -21,13 +21,13 @@ namespace AlienGrab
         {
         }
 
-        public void Update(ref ApplicationState gameState, InputState input, PlayerIndex[] controllingPlayer)
+        public void Update(ref ApplicationState appState, InputState input, PlayerIndex[] controllingPlayer)
         {
             base.Update(input, controllingPlayer);
 
             if (gameOptions.IsTrial == false)
                 {
-                    gameState = ApplicationState.LevelComplete;
+                    appState = ApplicationState.LevelComplete;
                 }
 
             if ((input.IsNewButtonPress(ButtonMappings.Pad_XBtn, controllingPlayer[0], out controllingPlayer[1]) ||
@@ -45,7 +45,7 @@ namespace AlienGrab
             if ((input.IsNewButtonPress(ButtonMappings.Pad_BBtn, controllingPlayer[0], out controllingPlayer[1]) ||
                     input.IsNewKeyPress(ButtonMappings.Keyboard_BBtn, controllingPlayer[0], out controllingPlayer[1])))
             {
-                gameState = ApplicationState.Quit;
+                appState = ApplicationState.Quit;
             }
         }
     }

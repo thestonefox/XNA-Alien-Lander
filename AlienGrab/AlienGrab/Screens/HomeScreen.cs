@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace AlienGrab
 {
-    class HomeScreen : GameScreen
+    class HomeScreen : BaseScreen
     {
         private OptionsHolder gameOptions = OptionsHolder.Instance;
         private bool addBuyOption = false;
@@ -26,7 +26,7 @@ namespace AlienGrab
             SetOptions(new Vector2(650, 310), 1);
         }
 
-        public void Update(ref ApplicationState gameState, InputState input, PlayerIndex[] controllingPlayer)
+        public void Update(ref ApplicationState appState, InputState input, PlayerIndex[] controllingPlayer)
         {
             base.Update(input, controllingPlayer);
             if (gameOptions.IsTrial == true && addBuyOption == false)
@@ -42,11 +42,11 @@ namespace AlienGrab
 
             switch (selectedIndex)
             {
-                case 0: gameState = ApplicationState.InitaliseGame;
+                case 0: appState = ApplicationState.InitaliseGame;
                     break;
-                case 1: gameState = ApplicationState.Options;
+                case 1: appState = ApplicationState.Options;
                     break;
-                case 2: gameState = ApplicationState.Quit;
+                case 2: appState = ApplicationState.Quit;
                     break;
                 case 3: if (controllingPlayer[0].CanBuyGame()) { Guide.ShowMarketplace(controllingPlayer[0]); }
                     break;

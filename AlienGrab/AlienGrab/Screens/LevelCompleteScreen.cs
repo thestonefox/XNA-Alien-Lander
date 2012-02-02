@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace AlienGrab
 {
-    class LevelCompleteScreen : GameScreen
+    class LevelCompleteScreen : BaseScreen
     {
         protected int fuelLeft;
         protected int livesLeft;

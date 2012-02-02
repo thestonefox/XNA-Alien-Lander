@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace AlienGrab
 {
-    class QuitScreen : GameScreen
+    class QuitScreen : BaseScreen
     {
         public QuitScreen(ContentManager content, String assetName, String fontName)
             : base(content, assetName, fontName)

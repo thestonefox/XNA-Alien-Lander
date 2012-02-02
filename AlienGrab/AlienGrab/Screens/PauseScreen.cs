@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace AlienGrab
 {
-    class PauseScreen : GameScreen
+    class PauseScreen : BaseScreen
     {
         protected QuitScreen quitScreen;
         protected bool confirm;
@@ -33,7 +33,7 @@ namespace AlienGrab
             base.Reset();
         }
 
-        public void Update(ref ApplicationState gameState, InputState input, PlayerIndex[] controllingPlayer)
+        public void Update(ref ApplicationState appState, InputState input, PlayerIndex[] controllingPlayer)
         {
             base.Update(input, controllingPlayer);
 
@@ -41,7 +41,7 @@ namespace AlienGrab
             {
                 switch(quitScreen.Update(input, controllingPlayer))
                 {
-                    case 1: gameState = ApplicationState.Home;
+                    case 1: appState = ApplicationState.Home;
                             break;
 
                     case 0: confirm = false;
@@ -54,7 +54,7 @@ namespace AlienGrab
                     input.IsNewKeyPress(ButtonMappings.Keyboard_BBtn, controllingPlayer[0], out controllingPlayer[1])))
             {
                 menuIndex = 0;
-                gameState = ApplicationState.Playing;
+                appState = ApplicationState.Playing;
             }
             else if(selectedIndex == 1)
             {
