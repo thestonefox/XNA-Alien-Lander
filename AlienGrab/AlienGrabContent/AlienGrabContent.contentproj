@@ -62,14 +62,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\cube.FBX">
-      <Name>cube</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>ShadowBoundsModelProcessor</Processor>
-      <ProcessorParameters_CustomEffect>Effects/ShadowEffect.fx</ProcessorParameters_CustomEffect>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Models\ship.FBX">
       <Name>ship</Name>
       <Importer>FbxImporter</Importer>
@@ -196,6 +188,52 @@
       <Name>trial</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Models\building_1.fbx">
+      <Name>building_1</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ShadowBoundsModelProcessor</Processor>
+      <ProcessorParameters_CustomEffect>Effects/ShadowEffect.fx</ProcessorParameters_CustomEffect>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Models\building_2.fbx">
+      <Name>building_2</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ShadowBoundsModelProcessor</Processor>
+      <ProcessorParameters_CustomEffect>Effects/ShadowEffect.fx</ProcessorParameters_CustomEffect>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Models\building_3.fbx">
+      <Name>building_3</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ShadowBoundsModelProcessor</Processor>
+      <ProcessorParameters_CustomEffect>Effects/ShadowEffect.fx</ProcessorParameters_CustomEffect>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Models\building_4.fbx">
+      <Name>building_4</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ShadowBoundsModelProcessor</Processor>
+      <ProcessorParameters_CustomEffect>Effects/ShadowEffect.fx</ProcessorParameters_CustomEffect>
+    </Compile>
+    <Compile Include="Models\building_5.fbx">
+      <Name>building_5</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ShadowBoundsModelProcessor</Processor>
+      <ProcessorParameters_CustomEffect>Effects/ShadowEffect.fx</ProcessorParameters_CustomEffect>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Models\powerup_fuel.FBX">
+      <Name>powerup_fuel</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ShadowBoundsModelProcessor</Processor>
+      <ProcessorParameters_CustomEffect>Effects/ShadowEffect.fx</ProcessorParameters_CustomEffect>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />

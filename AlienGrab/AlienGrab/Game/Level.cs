@@ -33,6 +33,7 @@ namespace AlienGrab
             particleEffects = _particleEffects;
             peepsLeft = peeps;
             scene = _scene;
+            scene.Camera.ResetCamera();
             map = new Map(game, new Vector3(8, 8, 4), scene.Light, peepsLeft); 
             playerOne = _playerOne;
 			playerOne.SetStartPosition(map.GetPlayerStartPosition());

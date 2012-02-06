@@ -154,9 +154,10 @@ namespace AlienGrab
                         layout[d, w] = random.Next((layout.GetLength(0) - d), maxHeight);
                     }
                     blockCounter += layout[d, w];
+                    int buildingType = random.Next(1, 6);
                     for (int h = 0; h < layout[d, w]; h++)
                     {
-                        int[] coords = new int[3] { w, h, d };
+                        int[] coords = new int[4] { w, h, d, buildingType };
                         positions.Add(coords);
                         //this is the top block of the current building
                         if (h == layout[d, w] - 1)
@@ -183,7 +184,7 @@ namespace AlienGrab
                                 }
                                 if(powerupsLeft < powerups.Length && (random.Next(0,5)==1) && addedPeep==false)
                                 {
-                                    Base3DObject powerup = new Base3DObject(game, "Models/person", light);
+                                    Base3DObject powerup = new Base3DObject(game, "Models/powerup_fuel", light);
                                     powerup.LoadContent(true);
                                     powerup.Position = new Vector3(w * blockDimensions.X, (h * blockDimensions.Y) + blockDimensions.Y, d * blockDimensions.Z);
                                     powerup.Initialize();
@@ -197,11 +198,11 @@ namespace AlienGrab
             }
             blocks = new Base3DObject[blockCounter];            
             Vector3 minPlayArea = Vector3.Zero;
-            Vector3 maxPlayArea = Vector3.Zero;
+            Vector3 maxPlayArea = Vector3.Zero;            
             for (int c = 0; c < blocks.Length; c++)
             {
                 int[] coords = (int[])positions[c];
-                blocks[c] = new Base3DObject(game, "Models/cube", light);
+                blocks[c] = new Base3DObject(game, "Models/building_"+ coords[3], light);
                 blocks[c].LoadContent(true);
                 blocks[c].Position = CalculatePosition(new Vector3(coords[0], coords[1], coords[2]));
                 blocks[c].Initialize();
