@@ -24,6 +24,10 @@ namespace AlienGrab
         public bool IsTrial = false;
         public int LifeAtScore = 100000;
 
+        public float MusicVolumeAtPlay = 0.18f;
+        public float MusicVolumeAtTransition = 0.18f;
+        public float MusicVolumeAtPause = 0.05f;
+
         private OptionsHolder()
         {
         }

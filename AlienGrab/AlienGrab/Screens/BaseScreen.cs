@@ -29,16 +29,19 @@ namespace AlienGrab
 
         private Vector2 heightOffset;
         private Color drawColour;
+        private SoundPlayer soundPlayer;
 
         public BaseScreen(ContentManager content, String assetName, String fontName)
         {
             background = new Sprite(content.Load<Texture2D>(assetName));
             background.Position = new Vector2(background.Width/2, background.Height/2);
             font = content.Load<SpriteFont>(fontName);
+            soundPlayer = new SoundPlayer(content);
+            soundPlayer.AddSound("Select", "Audio\\Effects\\select", false);
             options = new List<String>();  
             menuAlignment = 0;
             menuColour = Color.White;
-            selectedColour = Color.Yellow;
+            selectedColour = Color.Blue;
             loaded = 0;
             Reset();
         }
@@ -78,6 +81,7 @@ namespace AlienGrab
                     input.IsNewKeyPress(ButtonMappings.Keyboard_ABtn, controllingPlayer[0], out controllingPlayer[1])))
             {
                 selectedIndex = menuIndex;
+                soundPlayer.PlaySound("Select");
             }
             else
             {

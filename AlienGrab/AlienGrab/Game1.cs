@@ -105,6 +105,7 @@ namespace AlienGrab
             {
                 case ApplicationState.Splash:       splashScreen.Update(ref appState, input, ref controllingPlayer);
                                                     break;
+                case ApplicationState.InitaliseApp: break;
                 case ApplicationState.Home:         homeScreen.Update(ref appState, input, controllingPlayer);                                                    
                                                     break;
                 case ApplicationState.Options:      optionsScreen.Update(ref appState, input, controllingPlayer);
@@ -113,7 +114,7 @@ namespace AlienGrab
                     {
                      switch(quitScreen.Update(input, controllingPlayer))
                      {
-                         case 0:    appState = ApplicationState.Home;
+                         case 0: appState = ApplicationState.InitaliseApp;
                                     break;
                          case 1:    this.Exit();
                                     break;
@@ -125,7 +126,8 @@ namespace AlienGrab
                 case ApplicationState.GameOver:     gameOverScreen.Update(gameState.GetFinalLevel(), gameState.GetFinalScore(), ref appState, input, controllingPlayer);
                                                     break;
                 case ApplicationState.GameComplete: break;
-                case ApplicationState.InitaliseGame: break;
+                case ApplicationState.InitaliseGame: MediaPlayer.Stop(); 
+                                                    break;
                 //ApplicationState.Playing || ApplicationState.Paused || ApplicationState.LevelComplete
                 default:                            gameState.Update(gameTime, ref appState, input, controllingPlayer);
                                                     break;
@@ -134,6 +136,14 @@ namespace AlienGrab
             {
                 gameState.Initialize(this);
                 appState = ApplicationState.Playing;
+            }
+
+            if (appState == ApplicationState.InitaliseApp)
+            {
+                MediaPlayer.IsRepeating = true;
+                MediaPlayer.Volume = 0.20f;
+                MediaPlayer.Play(this.Content.Load<Song>("Audio\\Music\\Start"));
+                appState = ApplicationState.Home;
             }
 
             gameOptions.IsTrial = Guide.IsTrialMode;
@@ -165,6 +175,7 @@ namespace AlienGrab
                 case ApplicationState.GameOver:     gameOverScreen.Draw(spriteBatch);
                                                     break;
                 case ApplicationState.GameComplete: break;
+                case ApplicationState.InitaliseApp: break;
                 case ApplicationState.InitaliseGame: break;
                 //ApplicationState.Playing || ApplicationState.Paused || ApplicationState.LevelComplete
                 default:                            gameState.Draw(gameTime, appState, spriteBatch);

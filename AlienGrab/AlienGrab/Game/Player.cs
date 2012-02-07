@@ -17,6 +17,7 @@ namespace AlienGrab
         protected float thrust;
         protected float gravity;
         protected ParticleLibrary particleLibrary;
+        protected SoundPlayer soundPlayer;
         protected int deathTimer;
         protected int deathCounter;
         protected Vector3 startPosition;
@@ -47,6 +48,11 @@ namespace AlienGrab
         public void AttachParticleLibrary(ParticleLibrary _particleLibrary)
         {
             particleLibrary = _particleLibrary;
+        }
+
+        public void AttachSoundPlayer(ref SoundPlayer _soundPlayer)
+        {
+            soundPlayer = _soundPlayer;
         }
 
         protected void GenerateThrustParticles()
@@ -80,6 +86,7 @@ namespace AlienGrab
             //if my score is greater than multiples of 50,000 then give me an extra life
 			if((int)Math.Floor((double)Score/gameOptions.LifeAtScore) == lifeCounter)
 			{
+                soundPlayer.PlaySound("ScoreUp");
 				lifeCounter++;
 				Lives++;
 			}
@@ -91,6 +98,7 @@ namespace AlienGrab
             if (deathCounter == deathTimer - 10)
             {
                 Active = false;
+                soundPlayer.StopSound("Thrust");
             }
             if (deathCounter > 1)
             {
@@ -176,15 +184,18 @@ namespace AlienGrab
                     velocity.Y += thrust;
                     Fuel--;
                     acceleration.Y += accelerationBit;
+                    soundPlayer.PlaySound("Thrust");
                 }
                 else if ((hasPlayArea == false || (hasPlayArea == true && Bounds.Max.Y > playArea.Min.Y)))
                 {
                     velocity.Y -= gravity;                    
-                    acceleration.Y += accelerationBit;                    
+                    acceleration.Y += accelerationBit;
+                    soundPlayer.StopSound("Thrust");
                 }
                 else
                 {
                     velocity.Y = 0;
+                    soundPlayer.StopSound("Thrust");
                 }                
                 velocity.Y = MathHelper.Clamp(velocity.Y, -1.0f, 1.0f);
             }

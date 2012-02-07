@@ -17,28 +17,39 @@ namespace AlienGrab
         protected int finalLevel;
         protected int finalScore;
         protected int drawState;
+        protected bool firstCall;
         private OptionsHolder gameOptions = OptionsHolder.Instance;
+        private Song mySong;
 
         public GameOverScreen(ContentManager content, String assetName, String fontName)
             : base(content, assetName, fontName)
         {
+            mySong = content.Load<Song>("Audio\\Music\\Gameover");
             Reset();
         }
 
         public override void Reset()
         {
             drawState = 70;
+            firstCall = true;
             base.Reset();
         }
 
         public void Update(int _finalLevel, int _finalScore, ref ApplicationState appState, InputState input, PlayerIndex[] controllingPlayer)
         {
+            if (firstCall == true)
+            {
+                MediaPlayer.IsRepeating = true;
+                MediaPlayer.Volume = gameOptions.MusicVolumeAtPlay;
+                MediaPlayer.Play(mySong);
+                firstCall = false;
+            }
             finalLevel = _finalLevel;
             finalScore = _finalScore;
             if (drawState <= 0 && (input.IsNewButtonPress(ButtonMappings.Pad_ABtn, controllingPlayer[0], out controllingPlayer[1]) ||
                     input.IsNewKeyPress(ButtonMappings.Keyboard_ABtn, controllingPlayer[0], out controllingPlayer[1])))
-            {                
-                appState = ApplicationState.Home;
+            {
+                appState = ApplicationState.InitaliseApp;
             }
             drawState--;
             if (drawState > 0 && (input.IsNewButtonPress(ButtonMappings.Pad_ABtn, controllingPlayer[0], out controllingPlayer[1]) ||
@@ -47,8 +58,9 @@ namespace AlienGrab
                 drawState = 0;
             }
             base.Update(input, controllingPlayer);
-            if (appState == ApplicationState.Home)
+            if (appState == ApplicationState.InitaliseApp)
             {
+                MediaPlayer.Stop();
                 Reset();
             }
         }

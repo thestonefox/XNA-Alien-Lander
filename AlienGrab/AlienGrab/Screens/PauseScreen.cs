@@ -41,7 +41,7 @@ namespace AlienGrab
             {
                 switch(quitScreen.Update(input, controllingPlayer))
                 {
-                    case 1: appState = ApplicationState.Home;
+                    case 1: appState = ApplicationState.InitaliseApp;
                             break;
 
                     case 0: confirm = false;

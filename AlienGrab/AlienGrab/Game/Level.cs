@@ -24,21 +24,24 @@ namespace AlienGrab
         protected Base3DObject skybox;
         protected int levelNumber;
         protected Hud gameHud;
+        protected SoundPlayer soundPlayer;
 
         private OptionsHolder gameOptions = OptionsHolder.Instance;
 
-        public Level(Game game, ParticleLibrary _particleEffects, Scene _scene, Player _playerOne, int peeps, int _levelNumber)
+        public Level(Game game, ParticleLibrary _particleEffects, ref SoundPlayer _soundPlayer, Scene _scene, Player _playerOne, int peeps, int _levelNumber)
         {
             levelNumber = _levelNumber;
             particleEffects = _particleEffects;
             peepsLeft = peeps;
             scene = _scene;
             scene.Camera.ResetCamera();
+            soundPlayer = _soundPlayer;
             map = new Map(game, new Vector3(8, 8, 4), scene.Light, peepsLeft); 
             playerOne = _playerOne;
 			playerOne.SetStartPosition(map.GetPlayerStartPosition());
             playerOne.SetPlayArea(map.GetPlayArea());
             playerOne.AttachParticleLibrary(particleEffects);
+            playerOne.AttachSoundPlayer(ref _soundPlayer);
 			playerOne.Reset();
             playerCollisionCheck = CollisionType.None;
             skybox = new Base3DObject(game, "Models/skybox", scene.Light);
@@ -67,6 +70,8 @@ namespace AlienGrab
             if (playerCollisionCheck == CollisionType.Building)
             {
                 playerOne.Die();
+                soundPlayer.StopAllSounds();
+                soundPlayer.PlaySound("Explosion");
             }
             //has player landed too hard, if so they deaded, if there is a peep they deaded too
             if (playerCollisionCheck == CollisionType.Roof && playerOne.SafeDescent() == false)
@@ -76,6 +81,8 @@ namespace AlienGrab
                     peepsLeft--;
                 }
                 playerOne.Die();
+                soundPlayer.StopAllSounds();
+                soundPlayer.PlaySound("Explosion");
             }
             //has the player landed safely, if there is a peep he is abducted
             if (playerCollisionCheck == CollisionType.Roof && playerOne.SafeDescent() == true)
@@ -84,20 +91,25 @@ namespace AlienGrab
                 {
                     peepsLeft--;
                     playerOne.Score += gameOptions.PeepValue;
+                    soundPlayer.PlaySound("Scream");
                 }
 
                 if (map.CheckPowerupCollision(playerOne))
                 {
                     playerOne.Fuel += gameOptions.PowerupFuel;
+                    soundPlayer.PlaySound("Reward");
                 }
             }
 
             if (playerOne.Lives <= 0)
             {
+                soundPlayer.StopAllSounds();
                 appState = ApplicationState.GameOver;
             }
             if (peepsLeft <= 0 && playerOne.Lives>0)
             {
+                soundPlayer.StopAllSounds();
+                soundPlayer.PlaySound("ScoreUp");
                 appState = ApplicationState.LevelComplete;
             }
 

@@ -110,6 +110,7 @@
     <Compile Include="Core\Base3DObject.cs" />
     <Compile Include="Core\BaseCamera.cs" />
     <Compile Include="Core\PlayerIndexExtensions.cs" />
+    <Compile Include="Core\SoundPlayer.cs" />
     <Compile Include="Game\Scene.cs" />
     <Compile Include="Game\OptionsHolder.cs" />
     <Compile Include="Helper\ButtonMappings.cs" />

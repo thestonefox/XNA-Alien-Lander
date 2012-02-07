@@ -27,13 +27,13 @@ namespace AlienGrab
                 if (GamePad.GetState(index).Buttons.Start == ButtonState.Pressed || GamePad.GetState(index).Buttons.A == ButtonState.Pressed)
                 {
                     controllingPlayer[0] = index;
-                    appState = ApplicationState.Home;
+                    appState = ApplicationState.InitaliseApp;
                 }
 
                 if (Keyboard.GetState().IsKeyDown(ButtonMappings.Keyboard_Start) || Keyboard.GetState().IsKeyDown(ButtonMappings.Keyboard_ABtn))
                 {
                     controllingPlayer[0] = PlayerIndex.One;
-                    appState = ApplicationState.Home;
+                    appState = ApplicationState.InitaliseApp;
                 }
             }
         }

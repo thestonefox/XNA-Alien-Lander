@@ -27,6 +27,7 @@ namespace AlienGrab
         private PauseScreen pauseScreen;
         private LevelCompleteScreen levelCompleteScreen;
         private OptionsHolder gameOptions = OptionsHolder.Instance;
+        private SoundPlayer soundPlayer;
 
         public void Initialize(Game _game)
         {
@@ -36,7 +37,17 @@ namespace AlienGrab
             levelCompleteScreen = new LevelCompleteScreen(game.Content, "Screens/levelcomplete", "Fonts/OCR");
             InitParticles();
             startPeeps = gameOptions.StartPeeps;
-            levelCount = 0;			
+            levelCount = 0;
+            soundPlayer = new SoundPlayer(game.Content);
+            soundPlayer.AddSound("Reward", "Audio\\Effects\\reward", false);
+            soundPlayer.AddSound("Explosion", "Audio\\Effects\\explosion", false);
+            soundPlayer.AddSound("Thrust", "Audio\\Effects\\thrust", true);
+            soundPlayer.AddSound("Scream", "Audio\\Effects\\scream", false);
+            soundPlayer.AddSound("ScoreUp", "Audio\\Effects\\scoreup", false);
+            MediaPlayer.IsRepeating = true;
+            MediaPlayer.Volume = gameOptions.MusicVolumeAtPlay;
+            MediaPlayer.Play(game.Content.Load<Song>("Audio\\Music\\Pulse")); 
+
 			playerOne = new Player(game, "Models/ship", scene.Light);
 			playerOne.Fuel=gameOptions.StartFuel;
 			playerOne.StartFuel=gameOptions.StartFuel;
@@ -66,7 +77,8 @@ namespace AlienGrab
 
         protected void CreateLevel()
         {
-            level = new Level(game, particleLibrary, scene, playerOne, startPeeps, levelCount);
+            soundPlayer.StopAllSounds();
+            level = new Level(game, particleLibrary, ref soundPlayer, scene, playerOne, startPeeps, levelCount);
             level.LoadContent(game.Content);
             levelCount++;
         }
@@ -87,6 +99,8 @@ namespace AlienGrab
             {
                 case ApplicationState.LevelComplete:
                     {
+                        soundPlayer.StopAllSounds();
+                        MediaPlayer.Volume = gameOptions.MusicVolumeAtTransition;
                         if (gameOptions.IsTrial == true && levelCount >= 3)
                         {
                             appState = ApplicationState.Trial;
@@ -114,11 +128,14 @@ namespace AlienGrab
                     }
                 case ApplicationState.Playing:
                     {
+                        MediaPlayer.Volume = gameOptions.MusicVolumeAtPlay;
                         level.Update(gameTime, input, controllingPlayer, ref appState, ref playerOne);                
                         break;
                     }
                 case ApplicationState.Paused:
                     {
+                        MediaPlayer.Volume = gameOptions.MusicVolumeAtPause;
+                        soundPlayer.StopAllSounds();
                         pauseScreen.Update(ref appState, input, controllingPlayer);
                         break;
                     }
@@ -139,6 +156,11 @@ namespace AlienGrab
                 {
                     appState = ApplicationState.Playing;
                 }
+            }
+
+            if (appState == ApplicationState.GameComplete || appState == ApplicationState.GameOver)
+            {
+                MediaPlayer.Stop();
             }
         }
 
