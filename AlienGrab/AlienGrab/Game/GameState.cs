@@ -29,6 +29,10 @@ namespace AlienGrab
         private OptionsHolder gameOptions = OptionsHolder.Instance;
         private SoundPlayer soundPlayer;
 
+        ParticleSystem explosionParticles;
+        ParticleSystem explosionSmokeParticles;
+        ParticleSystem energyParticles;
+
         public void Initialize(Game _game)
         {
             game = _game;
@@ -58,9 +62,9 @@ namespace AlienGrab
 
         protected void InitParticles()
         {
-            ParticleSystem explosionParticles = new ExplosionParticleSystem(game, game.Content);
-            ParticleSystem explosionSmokeParticles = new ExplosionSmokeParticleSystem(game, game.Content);
-            ParticleSystem energyParticles = new EnergyParticleSystem(game, game.Content);
+            explosionParticles = new ExplosionParticleSystem(game, game.Content);
+            explosionSmokeParticles = new ExplosionSmokeParticleSystem(game, game.Content);
+            energyParticles = new EnergyParticleSystem(game, game.Content);
             particleLibrary = new ParticleLibrary();
             explosionSmokeParticles.DrawOrder = 200;
             energyParticles.DrawOrder = 300;
@@ -78,6 +82,7 @@ namespace AlienGrab
         protected void CreateLevel()
         {
             soundPlayer.StopAllSounds();
+            MediaPlayer.Volume = gameOptions.MusicVolumeAtPlay;
             level = new Level(game, particleLibrary, ref soundPlayer, scene, playerOne, startPeeps, levelCount);
             level.LoadContent(game.Content);
             levelCount++;
@@ -99,9 +104,8 @@ namespace AlienGrab
             {
                 case ApplicationState.LevelComplete:
                     {
-                        soundPlayer.StopAllSounds();
-                        MediaPlayer.Volume = gameOptions.MusicVolumeAtTransition;
-                        if (gameOptions.IsTrial == true && levelCount >= 3)
+                        soundPlayer.StopAllSounds();                        
+                        if (gameOptions.IsTrial == true && levelCount >= gameOptions.TrialLevel)
                         {
                             appState = ApplicationState.Trial;
                             break;
@@ -127,8 +131,7 @@ namespace AlienGrab
                         break;
                     }
                 case ApplicationState.Playing:
-                    {
-                        MediaPlayer.Volume = gameOptions.MusicVolumeAtPlay;
+                    {                        
                         level.Update(gameTime, input, controllingPlayer, ref appState, ref playerOne);                
                         break;
                     }
@@ -150,10 +153,12 @@ namespace AlienGrab
                 if (appState == ApplicationState.Playing)
                 {
                     pauseScreen.Reset();
+                    MediaPlayer.Volume = gameOptions.MusicVolumeAtPause;
                     appState = ApplicationState.Paused;
                 }
                 else
                 {
+                    MediaPlayer.Volume = gameOptions.MusicVolumeAtPlay;
                     appState = ApplicationState.Playing;
                 }
             }

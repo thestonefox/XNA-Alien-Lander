@@ -14,6 +14,8 @@ namespace AlienGrab
         public int PowerupFuel = 100;
 	    public int FuelMultiplier = 2;
 	    public int StartPeeps = 1;
+        public int StartPowerUps = 3;
+        public int TrialLevel = 3;
 	    public int PeepValue = 10;
 	    public int IncPeeps = 1;
 	    public int MaxPeeps = 16;

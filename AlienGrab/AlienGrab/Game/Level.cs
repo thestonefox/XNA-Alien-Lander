@@ -36,7 +36,7 @@ namespace AlienGrab
             scene = _scene;
             scene.Camera.ResetCamera();
             soundPlayer = _soundPlayer;
-            map = new Map(game, new Vector3(8, 8, 4), scene.Light, peepsLeft); 
+            map = new Map(game, new Vector3(8, 7, 4), scene.Light, peepsLeft); 
             playerOne = _playerOne;
 			playerOne.SetStartPosition(map.GetPlayerStartPosition());
             playerOne.SetPlayArea(map.GetPlayArea());

@@ -23,6 +23,8 @@ namespace AlienGrab
         public LevelCompleteScreen(ContentManager content, String assetName, String fontName)
             : base(content, assetName, fontName)
         {
+            menuColour = Color.Orange;
+            selectedColour = Color.OrangeRed;
             Reset();
         }
 
@@ -59,15 +61,15 @@ namespace AlienGrab
         {
             if (drawState < 100)
             {
-                TextWriter.WriteText(spriteBatch, font, fuelLeft + " X "+gameOptions.FuelMultiplier, new Vector2(660, 292), Color.White, 0);
+                TextWriter.WriteText(spriteBatch, font, fuelLeft + " X "+gameOptions.FuelMultiplier, new Vector2(660, 287), menuColour, 0);
             }
             if (drawState < 50)
             {
-                TextWriter.WriteText(spriteBatch, font, "X " + livesLeft, new Vector2(660, 352), Color.White, 0);
+                TextWriter.WriteText(spriteBatch, font, "X " + livesLeft, new Vector2(660, 349), menuColour, 0);
             }
             if (drawState <= 0)
             {
-                TextWriter.WriteText(spriteBatch, font, score.ToString().PadLeft(gameOptions.ScorePadding, '0'), new Vector2(660, 412), Color.White, 0);
+                TextWriter.WriteText(spriteBatch, font, score.ToString().PadLeft(gameOptions.ScorePadding, '0'), new Vector2(660, 410), menuColour, 0);
             }
         }
     }

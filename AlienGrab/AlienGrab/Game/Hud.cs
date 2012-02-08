@@ -30,7 +30,7 @@ namespace AlienGrab
         public Hud(ContentManager content, Rectangle _safeArea)
         {
             safeArea = _safeArea;
-            safeArea.Inflate(-30, -30);
+            safeArea.Inflate(-40, -40);
             lives = 0;
             score = 0;
             fuel = 0;

@@ -30,6 +30,9 @@ namespace AlienGrab
 
         public override void Reset()
         {
+            menuColour = Color.Crimson;
+            selectedColour = Color.Red;
+
             drawState = 70;
             firstCall = true;
             base.Reset();
@@ -69,11 +72,11 @@ namespace AlienGrab
         {
             if (drawState < 50)
             {
-                TextWriter.WriteText(spriteBatch, font, finalLevel.ToString(), new Vector2(660, 324), Color.White, 0);
+                TextWriter.WriteText(spriteBatch, font, finalLevel.ToString(), new Vector2(660, 289), menuColour, 0);
             }
             if (drawState <= 0)
             {
-                TextWriter.WriteText(spriteBatch, font, finalScore.ToString().PadLeft(gameOptions.ScorePadding, '0'), new Vector2(660, 389), Color.White, 0);
+                TextWriter.WriteText(spriteBatch, font, finalScore.ToString().PadLeft(gameOptions.ScorePadding, '0'), new Vector2(660, 377), menuColour, 0);
             }
         }
     }

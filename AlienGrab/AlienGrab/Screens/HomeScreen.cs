@@ -20,10 +20,12 @@ namespace AlienGrab
         public HomeScreen(ContentManager content, String assetName, String fontName)
             : base(content, assetName, fontName)
         {
+            menuColour = Color.Purple;
+            selectedColour = Color.Magenta;
             options.Add("Play Game");
-            options.Add("View Controls");
+            options.Add("How To Play");
             options.Add("Quit To Dashboard");
-            SetOptions(new Vector2(650, 310), 1);
+            SetOptions(new Vector2(650, 290), 1);
         }
 
         public void Update(ref ApplicationState appState, InputState input, PlayerIndex[] controllingPlayer)

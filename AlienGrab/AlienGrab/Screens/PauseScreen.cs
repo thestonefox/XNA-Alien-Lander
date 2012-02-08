@@ -20,6 +20,8 @@ namespace AlienGrab
         public PauseScreen(ContentManager content, String assetName, String fontName)
             : base(content, assetName, fontName)
         {
+            menuColour = Color.Purple;
+            selectedColour = Color.Magenta;
             options.Add("Resume Game");
             options.Add("Quit To Menu");
             SetOptions(new Vector2(650, 310), 1);

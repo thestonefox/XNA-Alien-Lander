@@ -36,7 +36,7 @@ namespace AlienGrab
             layout = new int[(int)coordinates.Z, (int)coordinates.X];
             playerStart = Vector3.Zero;
             peeps = new Person[totalPeeps];
-            powerups = new Base3DObject[1];
+            powerups = new Base3DObject[3];
             GenerateMap((int)coordinates.Y, light);
         }
 
