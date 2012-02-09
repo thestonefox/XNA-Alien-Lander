@@ -31,11 +31,24 @@ namespace AlienGrab
         private Color drawColour;
         private SoundPlayer soundPlayer;
 
+        private Sprite overlay;
+        private float overlayAlpha;
+        private float originalFadeSpeed;
+        protected float fadeSpeed;
+
         public BaseScreen(ContentManager content, String assetName, String fontName)
         {
             background = new Sprite(content.Load<Texture2D>(assetName));
             background.Position = new Vector2(background.Width/2, background.Height/2);
             font = content.Load<SpriteFont>(fontName);
+            overlay = new Sprite(content.Load<Texture2D>("Sprites/pixel"));
+            overlay.Width = background.Width;
+            overlay.Height= background.Height;
+            overlay.Position = Vector2.Zero;
+            overlay.Colour = Color.Black;
+            overlayAlpha = 1.0f;
+            fadeSpeed = 1.0f;
+            originalFadeSpeed = fadeSpeed;
             soundPlayer = new SoundPlayer(content);
             soundPlayer.AddSound("Select", "Audio\\Effects\\select", false);
             options = new List<String>();  
@@ -46,7 +59,14 @@ namespace AlienGrab
             Reset();
         }
 
-        public void SetOptions(Vector2 position, int _menuAlignment)
+        protected void SetTransition(Color color, float speed)
+        {
+            overlay.Colour = color;
+            fadeSpeed = speed;
+            originalFadeSpeed = fadeSpeed;
+        }
+
+        protected void SetOptions(Vector2 position, int _menuAlignment)
         {
             optionsPosition = position;
             menuAlignment = _menuAlignment;
@@ -56,6 +76,9 @@ namespace AlienGrab
         {
             menuIndex = 0;
             selectedIndex = -1;
+            fadeSpeed = originalFadeSpeed;
+            overlay.Alpha = 1.0f;
+            overlayAlpha = 1.0f;
         }
 
         public void Update(InputState input, PlayerIndex[] controllingPlayer)
@@ -87,11 +110,16 @@ namespace AlienGrab
             {
                 selectedIndex = -1;
             }
+            if (overlayAlpha > 0.0f)
+            {
+                overlayAlpha -= fadeSpeed;                
+                overlay.Alpha = overlayAlpha;
+            }
         }
 
         public virtual void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Begin();
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
             if (loaded > 1)
             {
                 background.Draw(spriteBatch);
@@ -100,7 +128,8 @@ namespace AlienGrab
             else
             {
                 TextWriter.WriteText(spriteBatch, font, "LOADING, PLEASE WAIT", background.Position, menuColour, 1);
-            }
+            }            
+            overlay.Draw(spriteBatch);
             spriteBatch.End();
         }
 

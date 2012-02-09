@@ -20,6 +20,7 @@ namespace AlienGrab
         public HomeScreen(ContentManager content, String assetName, String fontName)
             : base(content, assetName, fontName)
         {
+            SetTransition(Color.Black, 0.05f);
             menuColour = Color.Purple;
             selectedColour = Color.Magenta;
             options.Add("Play Game");

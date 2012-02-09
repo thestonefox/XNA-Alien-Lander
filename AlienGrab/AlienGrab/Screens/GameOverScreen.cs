@@ -24,6 +24,7 @@ namespace AlienGrab
         public GameOverScreen(ContentManager content, String assetName, String fontName)
             : base(content, assetName, fontName)
         {
+            SetTransition(Color.Black, 0.03f);
             mySong = content.Load<Song>("Audio\\Music\\Gameover");
             Reset();
         }

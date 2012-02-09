@@ -75,7 +75,7 @@ namespace AlienGrab
         {
             bar.Height = height;
             bar.Position = pos;
-            bar.Alpha = 1.0f;
+            bar.Alpha = 0.7f;
 
             bar.Width = maxWidth;
             bar.Colour = Color.Red;

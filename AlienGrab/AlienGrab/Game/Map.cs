@@ -23,7 +23,7 @@ namespace AlienGrab
         protected float playAreaCeiling;
         protected BoundingBox playArea;
         protected Vector3 playerStart;
-        protected Vector3 playerSafeZones = new Vector3(10.0f, 5.0f, 10.0f);
+        protected Vector3 playerSafeZones = new Vector3(1.0f, 5.0f, 1.0f);
 
         protected Vector3 blockDimensions = new Vector3(165,60,165);
 
@@ -32,11 +32,11 @@ namespace AlienGrab
         public Map(Game _game, Vector3 coordinates, LightSource light, int totalPeeps)
         {
             game = _game;
-            playAreaCeiling = (coordinates.Y * blockDimensions.Y) * 1.2f;
+            playAreaCeiling = (coordinates.Y * blockDimensions.Y) * 1.4f;
             layout = new int[(int)coordinates.Z, (int)coordinates.X];
             playerStart = Vector3.Zero;
             peeps = new Person[totalPeeps];
-            powerups = new Base3DObject[3];
+            powerups = new Base3DObject[2];
             GenerateMap((int)coordinates.Y, light);
         }
 
@@ -171,7 +171,8 @@ namespace AlienGrab
                             else
                             {
                                 bool addedPeep = false;
-                                if (peepsLeft < peeps.Length && (random.Next(0, 5) == 1 || d >= layout.GetLength(0)-2))
+                                //if running out of room then make sure fill up the 3rd and 4th rows full of peeps
+                                if (peepsLeft < peeps.Length && (random.Next(0, 5) == 1 || (d >= layout.GetLength(0) - 3 && d <= layout.GetLength(0) - 2)))
                                 {
                                     //new peep
                                     Person peep = new Person(game, "Models/person", light);
@@ -182,7 +183,8 @@ namespace AlienGrab
                                     peepsLeft++;
                                     addedPeep = true;
                                 }
-                                if(powerupsLeft < powerups.Length && (random.Next(0,5)==1) && addedPeep==false)
+                                //if running out of room then use the last row for power ups
+                                if (powerupsLeft < powerups.Length && addedPeep == false && (random.Next(0, 5) == 1 || d >= layout.GetLength(0) - 1))
                                 {
                                     Base3DObject powerup = new Base3DObject(game, "Models/powerup_fuel", light);
                                     powerup.LoadContent(true);

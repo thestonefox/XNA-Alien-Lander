@@ -19,6 +19,7 @@ namespace AlienGrab
         public TrialScreen(ContentManager content, String assetName, String fontName)
             : base(content, assetName, fontName)
         {
+            SetTransition(Color.Black, 0.02f);
         }
 
         public void Update(ref ApplicationState appState, InputState input, PlayerIndex[] controllingPlayer)

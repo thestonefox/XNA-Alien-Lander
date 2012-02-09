@@ -76,9 +76,9 @@ namespace AlienGrab
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            this.GraphicsDevice.BlendState = BlendState.Opaque;
-            this.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
-            this.GraphicsDevice.SamplerStates[0] = SamplerState.LinearWrap;
+            //this.GraphicsDevice.BlendState = BlendState.Opaque;
+            //this.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+            //this.GraphicsDevice.SamplerStates[0] = SamplerState.LinearWrap;
         }
 
         /// <summary>
@@ -143,6 +143,9 @@ namespace AlienGrab
                 MediaPlayer.IsRepeating = true;
                 MediaPlayer.Volume = 0.20f;
                 MediaPlayer.Play(this.Content.Load<Song>("Audio\\Music\\Start"));
+                homeScreen.Reset();
+                trialScreen.Reset();
+                gameOverScreen.Reset();
                 appState = ApplicationState.Home;
             }
 

@@ -14,7 +14,7 @@ namespace AlienGrab
         public int PowerupFuel = 100;
 	    public int FuelMultiplier = 2;
 	    public int StartPeeps = 1;
-        public int StartPowerUps = 3;
+        public int StartPowerUps = 2;
         public int TrialLevel = 3;
 	    public int PeepValue = 10;
 	    public int IncPeeps = 1;
@@ -28,7 +28,7 @@ namespace AlienGrab
 
         public float MusicVolumeAtPlay = 0.18f;
         public float MusicVolumeAtTransition = 0.18f;
-        public float MusicVolumeAtPause = 0.05f;
+        public float MusicVolumeAtPause = 0.025f;
 
         private OptionsHolder()
         {

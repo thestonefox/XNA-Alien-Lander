@@ -17,6 +17,7 @@ namespace AlienGrab
         public SplashScreen(ContentManager content, String assetName, String fontName)
             : base(content, assetName, fontName)
         {
+            SetTransition(Color.Black, 0.03f);
         }
 
         public void Update(ref ApplicationState appState, InputState input, ref PlayerIndex[] controllingPlayer)

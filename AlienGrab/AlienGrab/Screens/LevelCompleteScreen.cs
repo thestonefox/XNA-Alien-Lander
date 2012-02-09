@@ -23,6 +23,7 @@ namespace AlienGrab
         public LevelCompleteScreen(ContentManager content, String assetName, String fontName)
             : base(content, assetName, fontName)
         {
+            SetTransition(Color.Black, 0.03f);
             menuColour = Color.Orange;
             selectedColour = Color.OrangeRed;
             Reset();
@@ -34,6 +35,7 @@ namespace AlienGrab
             livesLeft = 0;
             score = 0;
             drawState = 120;
+            base.Reset();
         }
 
         public bool Update(int _fuelLeft, int _livesLeft, int _score, InputState input, PlayerIndex[] controllingPlayer)

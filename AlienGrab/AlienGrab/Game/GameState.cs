@@ -22,6 +22,7 @@ namespace AlienGrab
         private int levelCount;
         private int startPeeps;
         private bool updateScore;
+        private bool isPaused;
         private Game game;
 
         private PauseScreen pauseScreen;
@@ -81,7 +82,9 @@ namespace AlienGrab
 
         protected void CreateLevel()
         {
+            isPaused = false;
             soundPlayer.StopAllSounds();
+            levelCompleteScreen.Reset();            
             MediaPlayer.Volume = gameOptions.MusicVolumeAtPlay;
             level = new Level(game, particleLibrary, ref soundPlayer, scene, playerOne, startPeeps, levelCount);
             level.LoadContent(game.Content);
@@ -131,34 +134,39 @@ namespace AlienGrab
                         break;
                     }
                 case ApplicationState.Playing:
-                    {                        
+                    {
+                        if (isPaused == true)
+                        {
+                            MediaPlayer.Volume = gameOptions.MusicVolumeAtPlay;
+                            isPaused = false;
+                        }
                         level.Update(gameTime, input, controllingPlayer, ref appState, ref playerOne);                
                         break;
                     }
                 case ApplicationState.Paused:
-                    {
-                        MediaPlayer.Volume = gameOptions.MusicVolumeAtPause;
-                        soundPlayer.StopAllSounds();
+                    {                        
                         pauseScreen.Update(ref appState, input, controllingPlayer);
                         break;
                     }
             }
 
             //check for pause button or game pad being disconnected
-            if ((appState != ApplicationState.LevelComplete || appState != ApplicationState.Trial) && ((input.IsNewButtonPress(ButtonMappings.Pad_Start, controllingPlayer[0], out controllingPlayer[1]) ||
+            if ((appState != ApplicationState.LevelComplete && appState != ApplicationState.Trial) && 
+                ((input.IsNewButtonPress(ButtonMappings.Pad_Start, controllingPlayer[0], out controllingPlayer[1]) ||
                 input.IsNewKeyPress(ButtonMappings.Keyboard_Start, controllingPlayer[0], out controllingPlayer[1])) ||
                 input.GamePadConnected(controllingPlayer[0], out controllingPlayer[1]) == GamePadStateValues.Disconnected)
 				)
             {
                 if (appState == ApplicationState.Playing)
                 {
+                    soundPlayer.StopAllSounds();
                     pauseScreen.Reset();
                     MediaPlayer.Volume = gameOptions.MusicVolumeAtPause;
                     appState = ApplicationState.Paused;
+                    isPaused = true;
                 }
                 else
-                {
-                    MediaPlayer.Volume = gameOptions.MusicVolumeAtPlay;
+                {                    
                     appState = ApplicationState.Playing;
                 }
             }
@@ -167,6 +175,7 @@ namespace AlienGrab
             {
                 MediaPlayer.Stop();
             }
+
         }
 
         public void Draw(GameTime gameTime, ApplicationState appState, SpriteBatch spriteBatch)

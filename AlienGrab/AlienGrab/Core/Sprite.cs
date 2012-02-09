@@ -55,7 +55,7 @@ namespace AlienGrab
             if (alive)
             {
                 source = new Rectangle(0, 0, (int)Width, (int)Height);
-                spriteBatch.Draw(texture, Position, source, new Color(Colour.R, Colour.G, Colour.B, Alpha), Rotation, center, Scale, SpriteEffects.None, Depth);
+                spriteBatch.Draw(texture, Position, source, new Color(Colour.R, Colour.G, Colour.B) * Alpha, Rotation, center, Scale, SpriteEffects.None, Depth);
             }
         }
     }
