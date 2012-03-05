@@ -175,6 +175,7 @@ namespace AlienGrab
 
                 if (Fuel>0 && 
                     ((input.IsNewButtonHeld(ButtonMappings.Pad_RightTrigger, controllingPlayer[0], out controllingPlayer[1]) ||
+                    input.IsNewButtonHeld(ButtonMappings.Pad_LeftTrigger, controllingPlayer[0], out controllingPlayer[1]) ||
                     input.IsNewButtonHeld(ButtonMappings.Pad_ABtn, controllingPlayer[0], out controllingPlayer[1]) ||
                     input.IsNewKeyHeld(ButtonMappings.Keyboard_ABtn, controllingPlayer[0], out controllingPlayer[1]))
                     && (hasPlayArea == false || (hasPlayArea == true && Bounds.Min.Y < playArea.Max.Y)))

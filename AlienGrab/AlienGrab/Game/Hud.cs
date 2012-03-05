@@ -52,23 +52,21 @@ namespace AlienGrab
         public void Draw(SpriteBatch sb)
         {
             color = new Color(0.5f, 0.5f, 0.5f, 0.1f);
-            TextWriter.WriteText(sb, text, "SCORE: " + score.ToString().PadLeft(gameOptions.ScorePadding, '0'), new Vector2(safeArea.Left, safeArea.Top), color, 0);
+            TextWriter.WriteText(sb, text, "SCORE: " + score.ToString().PadLeft(gameOptions.ScorePadding, '0'), new Vector2(safeArea.Left, safeArea.Bottom-22), color, 0);
 
-            //TextWriter.WriteText(sb, text, "" + gameOptions.IsTrial, new Vector2(safeArea.Left, safeArea.Top+40), color, 0);
-
-            lifeIcon.Position = new Vector2(safeArea.Right-60, safeArea.Top+18);
+            lifeIcon.Position = new Vector2(safeArea.Right-60, safeArea.Bottom - 5);
             lifeIcon.Draw(sb);
-
-            TextWriter.WriteText(sb, text, lives.ToString().PadLeft(2, '0'), new Vector2(safeArea.Right - 40, safeArea.Top), color, 0);
+            TextWriter.WriteText(sb, text, lives.ToString().PadLeft(2, '0'), new Vector2(safeArea.Right - 40, safeArea.Bottom-22), color, 0);
 
             Vector2 fontHeight = new Vector2(0, (text.MeasureString("A").Y * 1.0f));
-            peepIcon.Position = new Vector2(safeArea.Right-60, safeArea.Top+28) + fontHeight;
+
+            peepIcon.Position = new Vector2(safeArea.Right - 160, safeArea.Bottom - 5);
             peepIcon.Draw(sb);
-            TextWriter.WriteText(sb, text, peeps.ToString().PadLeft(2, '0'), new Vector2(safeArea.Right-40, safeArea.Top+12) + fontHeight, color, 0);
+            TextWriter.WriteText(sb, text, peeps.ToString().PadLeft(2, '0'), new Vector2(safeArea.Right-140, safeArea.Bottom-22), color, 0);
 
-            DrawBar(sb, new Vector2(safeArea.Left+20, safeArea.Bottom-40), Color.Green, 32, safeArea.Width-40, 1000, fuel);
+            DrawBar(sb, new Vector2(safeArea.Left + 420, safeArea.Bottom - 18), Color.Green, 32, safeArea.Width - 620, 1000, fuel);
 
-            TextWriter.WriteText(sb, text, "FUEL", new Vector2(safeArea.Width/2, safeArea.Bottom-44), Color.White, 0);
+            TextWriter.WriteText(sb, text, "FUEL", new Vector2((safeArea.Width / 2) + 100, safeArea.Bottom - 21), color, 0);
         }
 
         protected void DrawBar(SpriteBatch spriteBatch, Vector2 pos, Color col, int height, int maxWidth, int initialValue, int currentValue)
