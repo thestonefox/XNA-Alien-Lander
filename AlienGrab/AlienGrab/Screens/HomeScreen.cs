@@ -20,7 +20,7 @@ namespace AlienGrab
         public HomeScreen(ContentManager content, String assetName, String fontName)
             : base(content, assetName, fontName)
         {
-            SetTransition(Color.Black, 0.05f);
+            SetTransition(Color.Black, 0.06f);
             menuColour = Color.Purple;
             selectedColour = Color.Magenta;
             options.Add("Play Game");
@@ -45,15 +45,16 @@ namespace AlienGrab
 
             switch (selectedIndex)
             {
-                case 0: appState = ApplicationState.InitaliseGame;
+                case 0: SetTransitionOut(ApplicationState.InitaliseGame);
                     break;
-                case 1: appState = ApplicationState.Options;
+                case 1: SetTransitionOut(ApplicationState.Options);
                     break;
-                case 2: appState = ApplicationState.Quit;
+                case 2: SetTransitionOut(ApplicationState.Quit);
                     break;
                 case 3: if (controllingPlayer[0].CanBuyGame()) { Guide.ShowMarketplace(controllingPlayer[0]); }
                     break;
             }
+            appState = ReturnState(ApplicationState.Home);
         }
     }
 }

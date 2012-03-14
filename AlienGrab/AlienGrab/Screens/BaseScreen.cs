@@ -35,6 +35,8 @@ namespace AlienGrab
         private float overlayAlpha;
         private float originalFadeSpeed;
         protected float fadeSpeed;
+        protected Boolean transitionOut;
+        protected ApplicationState transitionTo;
 
         public BaseScreen(ContentManager content, String assetName, String fontName)
         {
@@ -74,11 +76,19 @@ namespace AlienGrab
 
         public virtual void Reset()
         {
+            transitionOut = false;
+            transitionTo = ApplicationState.InitaliseApp;
             menuIndex = 0;
             selectedIndex = -1;
             fadeSpeed = originalFadeSpeed;
             overlay.Alpha = 1.0f;
             overlayAlpha = 1.0f;
+        }
+
+        public void SetTransitionOut(ApplicationState _transitionTo)
+        {
+            transitionTo = _transitionTo;
+            transitionOut = true;
         }
 
         public void Update(InputState input, PlayerIndex[] controllingPlayer)
@@ -110,10 +120,29 @@ namespace AlienGrab
             {
                 selectedIndex = -1;
             }
-            if (overlayAlpha > 0.0f)
+            if (overlayAlpha > 0.0f && transitionOut == false)
             {
                 overlayAlpha -= fadeSpeed;                
                 overlay.Alpha = overlayAlpha;
+            }
+
+            if (overlayAlpha < 1.1f && transitionOut == true)
+            {
+                overlayAlpha += fadeSpeed;
+                overlay.Alpha = overlayAlpha;
+            }
+        }
+
+        protected ApplicationState ReturnState(ApplicationState currentState)
+        {
+            if (overlayAlpha >= 1.0f && transitionOut == true)
+            {
+                transitionOut = false;
+                return transitionTo;
+            }
+            else
+            {
+                return currentState;
             }
         }
 

@@ -17,6 +17,7 @@ namespace AlienGrab
         public OptionsScreen(ContentManager content, String assetName, String fontName)
             : base(content, assetName, fontName)
         {
+            SetTransition(Color.Black, 0.06f);
         }
 
         public void Update(ref ApplicationState appState, InputState input, PlayerIndex[] controllingPlayer)
@@ -28,8 +29,9 @@ namespace AlienGrab
                 (input.IsNewButtonPress(ButtonMappings.Pad_BBtn, controllingPlayer[0], out controllingPlayer[1]) ||
                     input.IsNewKeyPress(ButtonMappings.Keyboard_BBtn, controllingPlayer[0], out controllingPlayer[1])))
             {
-                appState = ApplicationState.Home;
+                SetTransitionOut(ApplicationState.Home);
             }
+            appState = ReturnState(ApplicationState.Options);
         }
     }
 }
