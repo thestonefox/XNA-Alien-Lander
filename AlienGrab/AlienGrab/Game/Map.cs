@@ -23,7 +23,7 @@ namespace AlienGrab
         protected float playAreaCeiling;
         protected BoundingBox playArea;
         protected Vector3 playerStart;
-        protected Vector3 playerSafeZones = new Vector3(1.0f, 5.0f, 1.0f);
+        protected Vector3 playerSafeZones = new Vector3(-20.0f, 5.0f, -20.0f);
 
         protected Vector3 blockDimensions = new Vector3(165,60,165);
 

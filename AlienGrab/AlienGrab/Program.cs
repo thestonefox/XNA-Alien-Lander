@@ -10,7 +10,11 @@ namespace AlienGrab
         /// </summary>
         static void Main(string[] args)
         {
-            try
+            using (Game1 game = new Game1())
+            {
+                game.Run();
+            }
+            /*try
             {
                 using (Game1 game = new Game1())
                 {
@@ -23,7 +27,7 @@ namespace AlienGrab
                 {
                     game.Run();
                 }
-            }
+            }*/
         }
     }
 #endif

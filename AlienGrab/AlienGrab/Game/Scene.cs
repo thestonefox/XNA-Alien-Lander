@@ -20,11 +20,11 @@ namespace AlienGrab
         public Scene(Game game)
         {
             Camera = new GameCamera(50.0f,
-                                    new Vector3[] { new Vector3(-200.0f, -1050.0f, -520.0f), new Vector3(1350.0f, -150.0f, -430.0f) },
-                                    new Vector3[] { new Vector3(-320.0f, 430.0f, 570.0f), new Vector3(1230.0f, 1230.0f, 1180.0f) },
+                                    new Vector3[] { new Vector3(1830.0f, -1100.0f, 250.0f), new Vector3(1830.0f, -1100.0f, 250.0f) },
+                                    new Vector3[] { new Vector3(-600.0f, 1000.0f, 250.0f), new Vector3(600.0f, 1000.0f, 250.0f) },
                                     game.GraphicsDevice.Viewport.AspectRatio, 10.0f, 10000.0f,
-                                    new Vector3(-320.0f, 680.0f, 1180.0f),
-                                    new Vector3(1350.0f, -400.0f, -520.0f));
+                                    new Vector3(-600.0f, 1000.0f, 250.0f),
+                                    new Vector3(1830.0f, -1100.0f, 250.0f));
 
             Light = new LightSource(new Vector3(-0.3f, 500.0f, 0.5f), Camera);
 

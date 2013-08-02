@@ -32,15 +32,17 @@ namespace AlienGrab
         public void Update(ref ApplicationState appState, InputState input, PlayerIndex[] controllingPlayer)
         {
             base.Update(input, controllingPlayer);
+            /*
             if (gameOptions.IsTrial == true && addBuyOption == false)
             {
                 options.Add("Unlock Full Game");
                 addBuyOption = true;
             }
+            
             if (gameOptions.IsTrial == false && addBuyOption == true)
             {
                 options.Remove("Unlock Full Game");
-            }
+            }*/
 
 
             switch (selectedIndex)
@@ -51,8 +53,8 @@ namespace AlienGrab
                     break;
                 case 2: SetTransitionOut(ApplicationState.Quit);
                     break;
-                case 3: if (controllingPlayer[0].CanBuyGame()) { Guide.ShowMarketplace(controllingPlayer[0]); }
-                    break;
+                //case 3: if (controllingPlayer[0].CanBuyGame()) { Guide.ShowMarketplace(controllingPlayer[0]); }
+                    //break;
             }
             appState = ReturnState(ApplicationState.Home);
         }

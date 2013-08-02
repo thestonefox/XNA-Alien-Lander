@@ -8,6 +8,8 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using LeapLibrary;
+using AlienGrab.Helper;
 
 namespace AlienGrab
 {
@@ -18,6 +20,7 @@ namespace AlienGrab
     {
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
+        LeapComponet leap;
 
         private InputState input;
         private PlayerIndex[] controllingPlayer;
@@ -39,7 +42,10 @@ namespace AlienGrab
             graphics.PreferredBackBufferWidth = 1280;
             graphics.PreferredBackBufferHeight = 720;
             Content.RootDirectory = "Content";
-            Components.Add(new GamerServicesComponent(this));
+            //Components.Add(new GamerServicesComponent(this));
+            leap = new LeapComponet(this);
+            this.Components.Add(leap);
+            LeapController.Instance.Init(leap);
 
             appState = ApplicationState.Splash;
             gameState = new GameState();
@@ -149,7 +155,7 @@ namespace AlienGrab
                 appState = ApplicationState.Home;
             }
 
-            gameOptions.IsTrial = Guide.IsTrialMode;
+            //gameOptions.IsTrial = Guide.IsTrialMode;
             base.Update(gameTime);
         }
 
@@ -184,7 +190,7 @@ namespace AlienGrab
                 default:                            gameState.Draw(gameTime, appState, spriteBatch);
                                                     break;
             }
-            
+            //Console.WriteLine(leap.DebugLine);
             base.Draw(gameTime);
         }
     }

@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using AlienGrab.Helper;
 
 namespace AlienGrab
 {
@@ -37,7 +38,7 @@ namespace AlienGrab
             gravity = gameOptions.Gravity;
             particleLibrary = null;
             deathTimer = 50;
-			lifeCounter = 1;
+			lifeCounter = 1;            
         }
 		
 		public void SetStartPosition(Vector3 _startPosition)
@@ -74,10 +75,11 @@ namespace AlienGrab
 
         public bool SafeDescent()
         {
+            /*
             if (velocity.Y < gameOptions.SafeVelocity)
             {
                 return false;
-            }
+            }*/
             return true;
         }
 
@@ -122,14 +124,70 @@ namespace AlienGrab
             Active = true;
         }
 
+        protected bool MoveLeft(InputState input, PlayerIndex[] controllingPlayer)
+        {
+            if (LeapController.Instance.Left() ||
+                input.IsNewButtonHeld(ButtonMappings.Pad_LeftStickLeft, controllingPlayer[0], out controllingPlayer[1]) ||
+                    input.IsNewKeyHeld(ButtonMappings.Keyboard_LeftStickLeft, controllingPlayer[0], out controllingPlayer[1]))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        protected bool MoveRight(InputState input, PlayerIndex[] controllingPlayer)
+        {
+            if (LeapController.Instance.Right() ||
+                input.IsNewButtonHeld(ButtonMappings.Pad_LeftStickRight, controllingPlayer[0], out controllingPlayer[1]) ||
+                    input.IsNewKeyHeld(ButtonMappings.Keyboard_LeftStickRight, controllingPlayer[0], out controllingPlayer[1]))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        protected bool MoveUp(InputState input, PlayerIndex[] controllingPlayer)
+        {
+            if (LeapController.Instance.Forward() ||
+                input.IsNewButtonHeld(ButtonMappings.Pad_LeftStickUp, controllingPlayer[0], out controllingPlayer[1]) ||
+                    input.IsNewKeyHeld(ButtonMappings.Keyboard_LeftStickUp, controllingPlayer[0], out controllingPlayer[1]))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        protected bool MoveDown(InputState input, PlayerIndex[] controllingPlayer)
+        {
+            if (LeapController.Instance.Backward() ||
+                input.IsNewButtonHeld(ButtonMappings.Pad_LeftStickDown, controllingPlayer[0], out controllingPlayer[1]) ||
+                    input.IsNewKeyHeld(ButtonMappings.Keyboard_LeftStickDown, controllingPlayer[0], out controllingPlayer[1]))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        protected bool PressThrust(InputState input, PlayerIndex[] controllingPlayer)
+        {
+            if (LeapController.Instance.Up() ||
+                input.IsNewButtonHeld(ButtonMappings.Pad_RightTrigger, controllingPlayer[0], out controllingPlayer[1]) ||
+                    input.IsNewButtonHeld(ButtonMappings.Pad_LeftTrigger, controllingPlayer[0], out controllingPlayer[1]) ||
+                    input.IsNewButtonHeld(ButtonMappings.Pad_ABtn, controllingPlayer[0], out controllingPlayer[1]) ||
+                    input.IsNewKeyHeld(ButtonMappings.Keyboard_ABtn, controllingPlayer[0], out controllingPlayer[1]))
+            {
+                return true;
+            }
+            return false;
+        }
+
         public void Move(InputState input, PlayerIndex[] controllingPlayer)
         {
             if (Active == true)
             {
                 Rotation.Y += MathHelper.ToRadians(5.0f);
                 if (
-                    (input.IsNewButtonHeld(ButtonMappings.Pad_LeftStickLeft, controllingPlayer[0], out controllingPlayer[1]) ||
-                    input.IsNewKeyHeld(ButtonMappings.Keyboard_LeftStickLeft, controllingPlayer[0], out controllingPlayer[1]))
+                    MoveDown(input, controllingPlayer)
                     && (hasPlayArea == false || (hasPlayArea == true && Bounds.Max.X > playArea.Min.X))
                     )
                 {
@@ -137,8 +195,7 @@ namespace AlienGrab
                     acceleration.X += accelerationBit;
                 }
                 else if (
-                    (input.IsNewButtonHeld(ButtonMappings.Pad_LeftStickRight, controllingPlayer[0], out controllingPlayer[1]) ||
-                    input.IsNewKeyHeld(ButtonMappings.Keyboard_LeftStickRight, controllingPlayer[0], out controllingPlayer[1]))
+                    MoveUp(input, controllingPlayer)
                     && (hasPlayArea == false || (hasPlayArea == true && Bounds.Min.X < playArea.Max.X))
                     )
                 {
@@ -151,8 +208,7 @@ namespace AlienGrab
                 }
 
                 if (
-                    (input.IsNewButtonHeld(ButtonMappings.Pad_LeftStickUp, controllingPlayer[0], out controllingPlayer[1]) ||
-                    input.IsNewKeyHeld(ButtonMappings.Keyboard_LeftStickUp, controllingPlayer[0], out controllingPlayer[1]))
+                    MoveLeft(input, controllingPlayer)
                     && (hasPlayArea == false || (hasPlayArea == true && Bounds.Max.Z > playArea.Min.Z))
                     )
                 {
@@ -160,8 +216,7 @@ namespace AlienGrab
                     acceleration.Z += accelerationBit;
                 }
                 else if (
-                    (input.IsNewButtonHeld(ButtonMappings.Pad_LeftStickDown, controllingPlayer[0], out controllingPlayer[1]) ||
-                    input.IsNewKeyHeld(ButtonMappings.Keyboard_LeftStickDown, controllingPlayer[0], out controllingPlayer[1]))
+                    MoveRight(input, controllingPlayer)
                     && (hasPlayArea == false || (hasPlayArea == true && Bounds.Min.Z < playArea.Max.Z))
                     )
                 {
@@ -174,10 +229,8 @@ namespace AlienGrab
                 }
 
                 if (Fuel>0 && 
-                    ((input.IsNewButtonHeld(ButtonMappings.Pad_RightTrigger, controllingPlayer[0], out controllingPlayer[1]) ||
-                    input.IsNewButtonHeld(ButtonMappings.Pad_LeftTrigger, controllingPlayer[0], out controllingPlayer[1]) ||
-                    input.IsNewButtonHeld(ButtonMappings.Pad_ABtn, controllingPlayer[0], out controllingPlayer[1]) ||
-                    input.IsNewKeyHeld(ButtonMappings.Keyboard_ABtn, controllingPlayer[0], out controllingPlayer[1]))
+                    (
+                    PressThrust(input, controllingPlayer)
                     && (hasPlayArea == false || (hasPlayArea == true && Bounds.Min.Y < playArea.Max.Y)))
                     )
                 {

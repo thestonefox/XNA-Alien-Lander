@@ -34,13 +34,14 @@ namespace AlienGrab
             if ((input.IsNewButtonPress(ButtonMappings.Pad_XBtn, controllingPlayer[0], out controllingPlayer[1]) ||
                     input.IsNewKeyPress(ButtonMappings.Keyboard_XBtn, controllingPlayer[0], out controllingPlayer[1])))
             {
+                /*
                 if (gameOptions.IsTrial == true)
                 {
                     if (controllingPlayer[0].CanBuyGame())
                     {
                         Guide.ShowMarketplace(controllingPlayer[0]);
                     }
-                }
+                }*/
             }
 
             if ((input.IsNewButtonPress(ButtonMappings.Pad_BBtn, controllingPlayer[0], out controllingPlayer[1]) ||

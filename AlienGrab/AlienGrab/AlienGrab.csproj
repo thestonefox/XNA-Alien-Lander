@@ -73,6 +73,10 @@
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="LeapCSharp.NET4.0, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\LEAPLibrary\LeapCSharp.NET4.0.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
       <Private>False</Private>
     </Reference>
@@ -131,6 +135,7 @@
     <Compile Include="Helper\DebugShapeRenderer.cs" />
     <Compile Include="Core\Enums.cs" />
     <Compile Include="Game\GameCamera.cs" />
+    <Compile Include="Helper\LeapController.cs" />
     <Compile Include="Screens\BaseScreen.cs" />
     <Compile Include="Screens\GameOverScreen.cs" />
     <Compile Include="Game\GameState.cs" />
@@ -172,6 +177,10 @@
     <Content Include="GameThumbnail.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\LEAPLibrary\LeapLibrary.csproj">
+      <Project>{B2AA5DA6-0FA6-42A4-813F-0480460F0820}</Project>
+      <Name>LeapLibrary</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AlienGrabContent\AlienGrabContent.contentproj">
       <Name>AlienGrabContent</Name>
       <XnaReferenceType>Content</XnaReferenceType>
