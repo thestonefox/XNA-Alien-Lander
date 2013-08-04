@@ -189,6 +189,7 @@ namespace AlienGrab
                                     Base3DObject powerup = new Base3DObject(game, "Models/powerup_fuel", light);
                                     powerup.LoadContent(true);
                                     powerup.Position = new Vector3(w * blockDimensions.X, (h * blockDimensions.Y) + blockDimensions.Y, d * blockDimensions.Z);
+                                    powerup.Rotation = new Vector3(0.0f, 80.0f, 0.0f);
                                     powerup.Initialize();
                                     powerups[powerupsLeft] = powerup;
                                     powerupsLeft++;

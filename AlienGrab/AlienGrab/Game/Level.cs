@@ -114,6 +114,10 @@ namespace AlienGrab
             }
 
             gameHud.Update(gameTime, playerOne.Lives, playerOne.Score, playerOne.Fuel, peepsLeft);
+            if (playerOne.deathCounter == 0)
+            {
+                scene.Camera.Position.X = playerOne.Position.X - 550;
+            }
 
             if (Keyboard.GetState().IsKeyDown(Keys.P))
             {

@@ -20,7 +20,7 @@ namespace AlienGrab
         protected ParticleLibrary particleLibrary;
         protected SoundPlayer soundPlayer;
         protected int deathTimer;
-        protected int deathCounter;
+        public int deathCounter;
         protected Vector3 startPosition;
         protected Vector3 diePosition;
 		protected int lifeCounter;

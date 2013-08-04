@@ -34,28 +34,22 @@ namespace AlienGrab
             fuelLeft = 0;
             livesLeft = 0;
             score = 0;
-            drawState = 120;
+            drawState = 0;
             base.Reset();
         }
 
         public bool Update(int _fuelLeft, int _livesLeft, int _score, InputState input, PlayerIndex[] controllingPlayer)
         {
+            base.Update(input, controllingPlayer);
             fuelLeft = _fuelLeft;
             livesLeft = _livesLeft;
             score = _score;
-            if (drawState <= 0 && (input.IsNewButtonPress(ButtonMappings.Pad_ABtn, controllingPlayer[0], out controllingPlayer[1]) ||
-                    input.IsNewKeyPress(ButtonMappings.Keyboard_ABtn, controllingPlayer[0], out controllingPlayer[1])))
+            drawState = 0;
+            if (drawState <= 0 && (PressBack(input, controllingPlayer)))
             {
                 Reset();
                 return true;
-            }
-            drawState--;
-            if (drawState > 0 && (input.IsNewButtonPress(ButtonMappings.Pad_ABtn, controllingPlayer[0], out controllingPlayer[1]) ||
-                    input.IsNewKeyPress(ButtonMappings.Keyboard_ABtn, controllingPlayer[0], out controllingPlayer[1])))
-            {
-                drawState = 0;
-            }
-            base.Update(input, controllingPlayer);
+            }            
             return false;
         }
 

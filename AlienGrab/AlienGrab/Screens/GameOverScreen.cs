@@ -34,7 +34,7 @@ namespace AlienGrab
             menuColour = Color.Crimson;
             selectedColour = Color.Red;
 
-            drawState = 70;
+            drawState = 0;
             firstCall = true;
             base.Reset();
         }
@@ -50,16 +50,10 @@ namespace AlienGrab
             }
             finalLevel = _finalLevel;
             finalScore = _finalScore;
-            if (drawState <= 0 && (input.IsNewButtonPress(ButtonMappings.Pad_ABtn, controllingPlayer[0], out controllingPlayer[1]) ||
+            if (drawState <= 0 && (PressBack(input, controllingPlayer) || input.IsNewButtonPress(ButtonMappings.Pad_ABtn, controllingPlayer[0], out controllingPlayer[1]) ||
                     input.IsNewKeyPress(ButtonMappings.Keyboard_ABtn, controllingPlayer[0], out controllingPlayer[1])))
             {
                 appState = ApplicationState.InitaliseApp;
-            }
-            drawState--;
-            if (drawState > 0 && (input.IsNewButtonPress(ButtonMappings.Pad_ABtn, controllingPlayer[0], out controllingPlayer[1]) ||
-                    input.IsNewKeyPress(ButtonMappings.Keyboard_ABtn, controllingPlayer[0], out controllingPlayer[1])))
-            {
-                drawState = 0;
             }
             base.Update(input, controllingPlayer);
             if (appState == ApplicationState.InitaliseApp)

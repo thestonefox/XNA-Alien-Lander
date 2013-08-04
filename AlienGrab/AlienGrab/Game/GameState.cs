@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using AlienGrab.Helper;
 
 namespace AlienGrab
 {
@@ -151,10 +152,30 @@ namespace AlienGrab
             }
 
             //check for pause button or game pad being disconnected
+            
+            if (appState != ApplicationState.LevelComplete && appState != ApplicationState.Trial)
+            {
+                if (LeapController.Instance.HandActive() == false && appState == ApplicationState.Playing)
+                {
+                    soundPlayer.StopAllSounds();
+                    pauseScreen.Reset();
+                    MediaPlayer.Volume = gameOptions.MusicVolumeAtPause;
+                    appState = ApplicationState.Paused;
+                    isPaused = true;
+                }
+            }
+
+            
             if ((appState != ApplicationState.LevelComplete && appState != ApplicationState.Trial) && 
-                ((input.IsNewButtonPress(ButtonMappings.Pad_Start, controllingPlayer[0], out controllingPlayer[1]) ||
-                input.IsNewKeyPress(ButtonMappings.Keyboard_Start, controllingPlayer[0], out controllingPlayer[1])) ||
-                input.GamePadConnected(controllingPlayer[0], out controllingPlayer[1]) == GamePadStateValues.Disconnected)
+                    (
+                        (
+                        input.IsNewButtonPress(ButtonMappings.Pad_Start, controllingPlayer[0], out controllingPlayer[1]) 
+                        ||
+                        input.IsNewKeyPress(ButtonMappings.Keyboard_Start, controllingPlayer[0], out controllingPlayer[1])
+                        )
+                    ||
+                    input.GamePadConnected(controllingPlayer[0], out controllingPlayer[1]) == GamePadStateValues.Disconnected
+                    )
 				)
             {
                 if (appState == ApplicationState.Playing)

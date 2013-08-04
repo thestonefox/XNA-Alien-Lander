@@ -36,17 +36,20 @@ namespace LeapLibrary
         public List<Finger> Fingers { get { return fingers.ToList<Finger>(); } }
 
         GestureList gestures;
+        public SwipeGesture swipe;
         public List<Gesture> Gestures { get { return gestures.ToList<Gesture>(); } }
 
         //first hand
         Hand hand;
         public Hand FirstHand { get { return hand; } }
         Vector2 firstHandLoc;       //for drawing firsthand
+        public bool handActive;
+        protected int handActiveTimer = 0;
 
         float width, height;
 
         public Vector3 handSpace = new Vector3(0,0,0);
-        public Vector3 handBaseline = new Vector3(0,90,0);
+        public Vector3 handBaseline = new Vector3(0,50,0);
         Vector3 handBaselineCounter = new Vector3(0, 0, 0);
         Vector3 baselineFidelity = new Vector3(10,10000,10);
 
@@ -95,8 +98,21 @@ namespace LeapLibrary
             base.UnloadContent();
         }
 
+        protected void ResetHandPlane()
+        {
+            handSpace.X = 0;
+            handBaseline.X = 0;
+            handBaselineCounter.X = baselineFidelity.X;
+            handSpace.Y = 0;
+            handSpace.Z = 0;
+            handBaseline.Z = 0;
+            handBaselineCounter.Z = baselineFidelity.Z;            
+            handActive = false;
+        }
+
         protected void HandPlane()
         {
+            handActive = true;
             handBaselineCounter.X--;
             handSpace.X = hand.PalmPosition.x;
             if (handBaselineCounter.X <= 0)
@@ -146,13 +162,13 @@ namespace LeapLibrary
                         + ", fingers: " + frame.Fingers.Count
                         + ", tools: " + frame.Tools.Count
                         + ", gestures: " + frame.Gestures().Count);
-                
+
                 if (!frame.Hands.Empty)
                 {
                     // Get the first hand
                     hand = frame.Hands[0];
-                    
-                    firstHandLoc = new Vector2(NormalizeWidth(hand.SphereCenter.x), NormalizeHeight( hand.SphereCenter.y));
+
+                    firstHandLoc = new Vector2(NormalizeWidth(hand.SphereCenter.x), NormalizeHeight(hand.SphereCenter.y));
                     // Check if the hand has any fingers
                     fingers = hand.Fingers;
                     if (!fingers.Empty)
@@ -169,14 +185,14 @@ namespace LeapLibrary
                             avgPos += finger.TipPosition;
                         }
                         avgPos /= fingers.Count;
-                        
+
                         SafeWriteLine("Hand has " + fingers.Count
                                     + " fingers, average finger tip position: " + avgPos);
-                         
+
                     }
 
                     // Get the hand's sphere radius and palm position
-                    
+
                     SafeWriteLine("Hand sphere radius: " + hand.SphereRadius.ToString("n2")
                                 + " mm, palm position: " + hand.PalmPosition);
                     HandPlane();
@@ -185,11 +201,15 @@ namespace LeapLibrary
                     Vector direction = hand.Direction;
 
                     // Calculate the hand's pitch, roll, and yaw angles
-                    
+
                     SafeWriteLine("Hand pitch: " + direction.Pitch * 180.0f / (float)Math.PI + " degrees, "
                                 + "roll: " + normal.Roll * 180.0f / (float)Math.PI + " degrees, "
                                 + "yaw: " + direction.Yaw * 180.0f / (float)Math.PI + " degrees");
-                     
+
+                }
+                else
+                {
+                    ResetHandPlane();
                 }
 
                 // Get gestures
@@ -234,7 +254,7 @@ namespace LeapLibrary
                              
                             break;
                         case Gesture.GestureType.TYPESWIPE:
-                            SwipeGesture swipe = new SwipeGesture(gesture);
+                            swipe = new SwipeGesture(gesture);
                             
                             SafeWriteLine("Swipe id: " + swipe.Id
                                            + ", " + swipe.State

@@ -36,9 +36,7 @@ namespace AlienGrab
         }
 
         public void Update(ref ApplicationState appState, InputState input, PlayerIndex[] controllingPlayer)
-        {
-            base.Update(input, controllingPlayer);
-
+        {            
             if (confirm == true)
             {
                 switch(quitScreen.Update(input, controllingPlayer))
@@ -52,7 +50,7 @@ namespace AlienGrab
                 }
             }
 
-            if (selectedIndex == 0 || (input.IsNewButtonPress(ButtonMappings.Pad_BBtn, controllingPlayer[0], out controllingPlayer[1]) ||
+            if (selectedIndex == 0 || (PressBack(input, controllingPlayer) || input.IsNewButtonPress(ButtonMappings.Pad_BBtn, controllingPlayer[0], out controllingPlayer[1]) ||
                     input.IsNewKeyPress(ButtonMappings.Keyboard_BBtn, controllingPlayer[0], out controllingPlayer[1])))
             {
                 menuIndex = 0;
@@ -63,6 +61,7 @@ namespace AlienGrab
                 confirm = true;
                 quitScreen.Reset();
             }
+            base.Update(input, controllingPlayer);
         }
 
         public override void Draw(SpriteBatch spriteBatch)

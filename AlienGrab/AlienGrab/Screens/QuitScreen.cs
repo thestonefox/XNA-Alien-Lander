@@ -27,8 +27,7 @@ namespace AlienGrab
         public new int Update(InputState input, PlayerIndex[] controllingPlayer)
         {
             base.Update(input, controllingPlayer);
-
-            if (selectedIndex == 0 || (input.IsNewButtonPress(ButtonMappings.Pad_BBtn, controllingPlayer[0], out controllingPlayer[1]) ||
+            if (selectedIndex == 0 || (PressBack(input, controllingPlayer) || input.IsNewButtonPress(ButtonMappings.Pad_BBtn, controllingPlayer[0], out controllingPlayer[1]) ||
                     input.IsNewKeyPress(ButtonMappings.Keyboard_BBtn, controllingPlayer[0], out controllingPlayer[1])))
             {
                 return 0;
@@ -37,7 +36,7 @@ namespace AlienGrab
             {
                 return 1;
             }
-            return -1;
+            return -1;            
         }
     }
 }

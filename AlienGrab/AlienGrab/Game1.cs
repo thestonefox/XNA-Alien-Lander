@@ -46,6 +46,7 @@ namespace AlienGrab
             leap = new LeapComponet(this);
             this.Components.Add(leap);
             LeapController.Instance.Init(leap);
+            LeapController.Instance.SetDebug(false);
 
             appState = ApplicationState.Splash;
             gameState = new GameState();

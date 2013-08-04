@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using AlienGrab.Helper;
 
 namespace AlienGrab
 {
@@ -91,27 +92,68 @@ namespace AlienGrab
             transitionOut = true;
         }
 
-        public void Update(InputState input, PlayerIndex[] controllingPlayer)
+        protected bool MoveUp(InputState input, PlayerIndex[] controllingPlayer)
         {
+            if (LeapController.Instance.SwipeUp() ||
+                (input.IsNewButtonPress(ButtonMappings.Pad_LeftStickUp, controllingPlayer[0], out controllingPlayer[1]) ||
+                                input.IsNewKeyPress(ButtonMappings.Keyboard_LeftStickUp, controllingPlayer[0], out controllingPlayer[1])))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        protected bool MoveDown(InputState input, PlayerIndex[] controllingPlayer)
+        {
+            if (LeapController.Instance.SwipeDown() ||
+                (input.IsNewButtonPress(ButtonMappings.Pad_LeftStickDown, controllingPlayer[0], out controllingPlayer[1]) ||
+                    input.IsNewKeyPress(ButtonMappings.Keyboard_LeftStickDown, controllingPlayer[0], out controllingPlayer[1])))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        protected bool PressSelect(InputState input, PlayerIndex[] controllingPlayer)
+        {
+            if (LeapController.Instance.SwipeRight() ||
+                (input.IsNewButtonPress(ButtonMappings.Pad_ABtn, controllingPlayer[0], out controllingPlayer[1]) ||
+                    input.IsNewKeyPress(ButtonMappings.Keyboard_ABtn, controllingPlayer[0], out controllingPlayer[1])))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        protected bool PressBack(InputState input, PlayerIndex[] controllingPlayer)
+        {
+            if (LeapController.Instance.SwipeLeft() ||
+                (input.IsNewButtonPress(ButtonMappings.Pad_BBtn, controllingPlayer[0], out controllingPlayer[1]) ||
+                    input.IsNewKeyPress(ButtonMappings.Keyboard_BBtn, controllingPlayer[0], out controllingPlayer[1])))
+            {                
+                return true;
+            }
+            return false;
+        }
+
+        public void Update(InputState input, PlayerIndex[] controllingPlayer)
+        {            
             if (loaded < 2)
             {
                 loaded++;
             }
-            if((input.IsNewButtonPress(ButtonMappings.Pad_LeftStickUp, controllingPlayer[0], out controllingPlayer[1]) ||
-                    input.IsNewKeyPress(ButtonMappings.Keyboard_LeftStickUp, controllingPlayer[0], out controllingPlayer[1])))
+            if(MoveUp(input, controllingPlayer))
             {
                 menuIndex--;
             }
-            if ((input.IsNewButtonPress(ButtonMappings.Pad_LeftStickDown, controllingPlayer[0], out controllingPlayer[1]) ||
-                    input.IsNewKeyPress(ButtonMappings.Keyboard_LeftStickDown, controllingPlayer[0], out controllingPlayer[1])))
+            if (MoveDown(input, controllingPlayer))
             {
                 menuIndex++;
             }
 
             menuIndex = (int)MathHelper.Clamp(menuIndex, 0, options.Count-1);
 
-            if ((input.IsNewButtonPress(ButtonMappings.Pad_ABtn, controllingPlayer[0], out controllingPlayer[1]) ||
-                    input.IsNewKeyPress(ButtonMappings.Keyboard_ABtn, controllingPlayer[0], out controllingPlayer[1])))
+            if (PressSelect(input, controllingPlayer))
             {
                 selectedIndex = menuIndex;
                 soundPlayer.PlaySound("Select");

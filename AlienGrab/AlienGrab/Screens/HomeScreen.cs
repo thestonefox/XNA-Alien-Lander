@@ -25,7 +25,7 @@ namespace AlienGrab
             selectedColour = Color.Magenta;
             options.Add("Play Game");
             options.Add("How To Play");
-            options.Add("Quit To Dashboard");
+            options.Add("Quit Game");
             SetOptions(new Vector2(650, 290), 1);
         }
 

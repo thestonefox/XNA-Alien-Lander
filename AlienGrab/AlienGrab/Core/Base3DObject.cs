@@ -166,7 +166,7 @@ namespace AlienGrab
                     effect.Parameters["View"].SetValue(camera.GetViewMatrix());
                     effect.Parameters["Projection"].SetValue(camera.GetProjectionMatrix());
                     effect.Parameters["LightDirection"].SetValue(light.LightDirection);
-                    effect.Parameters["LightViewProj"].SetValue(lightViewProjection);
+                    effect.Parameters["LightViewProj"].SetValue(lightViewProjection);                    
                     if (createShadowMap == false)
                     {
                         effect.Parameters["ShadowMap"].SetValue(shadowRenderTarget);

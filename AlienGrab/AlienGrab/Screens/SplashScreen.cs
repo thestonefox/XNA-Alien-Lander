@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using AlienGrab.Helper;
 
 namespace AlienGrab
 {
@@ -31,13 +32,12 @@ namespace AlienGrab
                     SetTransitionOut(ApplicationState.InitaliseApp);
                 }
 
-                if (Keyboard.GetState().IsKeyDown(ButtonMappings.Keyboard_Start) || Keyboard.GetState().IsKeyDown(ButtonMappings.Keyboard_ABtn))
+                if (LeapController.Instance.SwipeLeft() || Keyboard.GetState().IsKeyDown(ButtonMappings.Keyboard_Start) || Keyboard.GetState().IsKeyDown(ButtonMappings.Keyboard_ABtn))
                 {
                     controllingPlayer[0] = PlayerIndex.One;
                     SetTransitionOut(ApplicationState.InitaliseApp);
                 }
-            }
-
+            }            
             appState = ReturnState(ApplicationState.Splash);
         }
     }

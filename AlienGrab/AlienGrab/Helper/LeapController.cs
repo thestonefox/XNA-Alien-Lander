@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using LeapLibrary;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 
 namespace AlienGrab.Helper
 {
@@ -15,6 +17,9 @@ namespace AlienGrab.Helper
 
         private LeapComponet leap;
         private float deadzone = 15;
+        private float swipeAllowance = 0.6f;
+        private Vector4 swipeTimer = new Vector4(0,0,0,0);
+        private float swipeTimerReset = 10;
 
         public void Init(LeapComponet _leap) {
             leap = _leap;
@@ -23,6 +28,16 @@ namespace AlienGrab.Helper
         public LeapComponet Get()
         {
             return leap;
+        }
+
+        public bool HandActive()
+        {
+            return leap.handActive;
+        }
+
+        public void SetDebug(bool debugMode)
+        {
+            leap.DrawDebug = debugMode;
         }
 
         public float XAxis()
@@ -100,6 +115,93 @@ namespace AlienGrab.Helper
         public bool Backward()
         {
             if (ZAxis() < (leap.handBaseline.Z - deadzone))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private void ResetSwipeTimers() {
+            swipeTimer.X = swipeTimerReset;
+            swipeTimer.Y = swipeTimerReset;
+            swipeTimer.Z = swipeTimerReset;
+            swipeTimer.W = swipeTimerReset;
+        }
+
+        public bool SwipeDown()
+        {
+            if(leap.swipe != null) {
+                if (swipeTimer.W <= 0 && leap.swipe.Direction.y < (swipeAllowance * -1) && leap.swipe.State.ToString() == "STATESTART")
+                {
+                    ResetSwipeTimers();
+                    return true;
+                }
+                swipeTimer.W--;
+            }
+            if (swipeTimer.W < 0)
+            {
+                swipeTimer.W = 0;
+            }
+            return false;
+        }
+
+        public bool SwipeUp()
+        {
+            if (leap.swipe != null)
+            {
+                if (swipeTimer.Y <= 0 && leap.swipe.Direction.y > swipeAllowance && leap.swipe.State.ToString() == "STATESTART")
+                {
+                    ResetSwipeTimers();
+                    return true;
+                }
+                swipeTimer.Y--;
+            }
+            if (swipeTimer.Y < 0)
+            {
+                swipeTimer.Y = 0;
+            }
+            return false;
+        }
+
+        public bool SwipeLeft()
+        {
+            if (leap.swipe != null)
+            {
+                if (swipeTimer.Z <= 0 && leap.swipe.Direction.x < (swipeAllowance * -1) && leap.swipe.State.ToString() == "STATESTART")
+                {
+                    ResetSwipeTimers();
+                    return true;
+                }
+                swipeTimer.Z--;
+            }
+            if (swipeTimer.Z < 0)
+            {
+                swipeTimer.Z = 0;
+            }
+            return false;
+        }
+
+        public bool SwipeRight()
+        {
+            if (leap.swipe != null)
+            {
+                if (swipeTimer.X <= 0 && leap.swipe.Direction.x > swipeAllowance && leap.swipe.State.ToString() == "STATESTART")
+                {
+                    ResetSwipeTimers();
+                    return true;
+                }
+                swipeTimer.X--;
+            }
+            if (swipeTimer.X < 0)
+            {
+                swipeTimer.X = 0;
+            }
+            return false;
+        }
+
+        public bool SwipeLeftOrRight()
+        {
+            if (SwipeLeft() || SwipeRight())
             {
                 return true;
             }
