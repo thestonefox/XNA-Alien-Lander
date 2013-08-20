@@ -17,9 +17,9 @@ namespace AlienGrab.Helper
 
         private LeapComponet leap;
         private float deadzone = 15;
-        private float swipeAllowance = 0.6f;
+        private float swipeAllowance = 0.3f;
         private Vector4 swipeTimer = new Vector4(0,0,0,0);
-        private float swipeTimerReset = 10;
+        private float swipeTimerReset = 3;
 
         public void Init(LeapComponet _leap) {
             leap = _leap;

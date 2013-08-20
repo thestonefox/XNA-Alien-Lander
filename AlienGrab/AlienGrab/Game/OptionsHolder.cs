@@ -11,7 +11,7 @@ namespace AlienGrab
 	    public int StartLives = 3;
 	    public int StartFuel = 1000;
 	    public int DecreaseFuel = 100;
-        public int PowerupFuel = 100;
+        public int PowerupFuel = 250;
 	    public int FuelMultiplier = 2;
 	    public int StartPeeps = 1;
         public int StartPowerUps = 2;

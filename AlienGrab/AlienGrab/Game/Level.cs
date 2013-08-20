@@ -24,7 +24,10 @@ namespace AlienGrab
         protected Base3DObject skybox;
         protected int levelNumber;
         protected Hud gameHud;
+        protected Countdown countdown;
         protected SoundPlayer soundPlayer;
+        protected int initTimer;
+        protected int timerIndex;
 
         private OptionsHolder gameOptions = OptionsHolder.Instance;
 
@@ -46,6 +49,9 @@ namespace AlienGrab
             playerCollisionCheck = CollisionType.None;
             skybox = new Base3DObject(game, "Models/skybox", scene.Light);
             gameHud = new Hud(game.Content, game.GraphicsDevice.Viewport.TitleSafeArea);
+            countdown = new Countdown(game.Content, game.GraphicsDevice.Viewport.TitleSafeArea);
+            initTimer = 140;
+            timerIndex = 0;
         }
 
         public void LoadContent(ContentManager content)
@@ -59,83 +65,105 @@ namespace AlienGrab
 
         public void Update(GameTime gameTime, InputState input, PlayerIndex[] controllingPlayer, ref ApplicationState appState, ref Player playerOne)
         {
-            scene.Camera.Move(input, controllingPlayer);
             skybox.Update(gameTime);
-            map.Update(gameTime);
-            playerOne.Move(input, controllingPlayer);
-            playerOne.Update(gameTime);           
-
-            playerCollisionCheck = map.CheckBuildingCollision(playerOne);
-            //has player hit the building, if so they deaded
-            if (playerCollisionCheck == CollisionType.Building)
+            initTimer--;
+            if (initTimer > 0)
             {
-                playerOne.Die();
-                soundPlayer.StopAllSounds();
-                soundPlayer.PlaySound("Explosion");
-            }
-            //has player landed too hard, if so they deaded, if there is a peep they deaded too
-            if (playerCollisionCheck == CollisionType.Roof && playerOne.SafeDescent() == false)
-            {
-                if (map.CheckPeepCollision(playerOne))
-                {
-                    peepsLeft--;
+                if(initTimer % 35 == 34) {
+                    timerIndex++;
                 }
-                playerOne.Die();
-                soundPlayer.StopAllSounds();
-                soundPlayer.PlaySound("Explosion");
+                countdown.Update(gameTime, timerIndex);
             }
-            //has the player landed safely, if there is a peep he is abducted
-            if (playerCollisionCheck == CollisionType.Roof && playerOne.SafeDescent() == true)
+            else
             {
-                if (map.CheckPeepCollision(playerOne))
+                scene.Camera.Move(input, controllingPlayer);
+                map.Update(gameTime);
+                playerOne.Move(input, controllingPlayer);
+                playerOne.Update(gameTime);
+
+                playerCollisionCheck = map.CheckBuildingCollision(playerOne);
+                //has player hit the building, if so they deaded
+                if (playerCollisionCheck == CollisionType.Building || (playerOne.Fuel <= 0 && playerOne.deathCounter == 0))
                 {
-                    peepsLeft--;
-                    playerOne.Score += gameOptions.PeepValue;
-                    soundPlayer.PlaySound("Scream");
+                    playerOne.Die();
+                    soundPlayer.StopAllSounds();
+                    soundPlayer.PlaySound("Explosion");
+                }
+                //has player landed too hard, if so they deaded, if there is a peep they deaded too
+                if (playerCollisionCheck == CollisionType.Roof && playerOne.SafeDescent() == false)
+                {
+                    if (map.CheckPeepCollision(playerOne))
+                    {
+                        peepsLeft--;
+                    }
+                    playerOne.Die();
+                    soundPlayer.StopAllSounds();
+                    soundPlayer.PlaySound("Explosion");
+                }
+                //has the player landed safely, if there is a peep he is abducted
+                if (playerCollisionCheck == CollisionType.Roof && playerOne.SafeDescent() == true)
+                {
+                    if (map.CheckPeepCollision(playerOne))
+                    {
+                        peepsLeft--;
+                        playerOne.Score += gameOptions.PeepValue;
+                        soundPlayer.PlaySound("Scream");
+                    }
+
+                    if (map.CheckPowerupCollision(playerOne))
+                    {
+                        playerOne.Fuel += gameOptions.PowerupFuel;
+                        soundPlayer.PlaySound("Reward");
+                    }
                 }
 
-                if (map.CheckPowerupCollision(playerOne))
+                if (playerOne.Lives <= 0)
                 {
-                    playerOne.Fuel += gameOptions.PowerupFuel;
-                    soundPlayer.PlaySound("Reward");
+                    soundPlayer.StopAllSounds();
+                    appState = ApplicationState.GameOver;
                 }
-            }
+                if (peepsLeft <= 0 && playerOne.Lives > 0)
+                {
+                    soundPlayer.StopAllSounds();
+                    soundPlayer.PlaySound("ScoreUp");
+                    appState = ApplicationState.LevelComplete;
+                }
 
-            if (playerOne.Lives <= 0)
-            {
-                soundPlayer.StopAllSounds();
-                appState = ApplicationState.GameOver;
-            }
-            if (peepsLeft <= 0 && playerOne.Lives>0)
-            {
-                soundPlayer.StopAllSounds();
-                soundPlayer.PlaySound("ScoreUp");
-                appState = ApplicationState.LevelComplete;
-            }
+                gameHud.Update(gameTime, playerOne.Lives, playerOne.Score, playerOne.Fuel, peepsLeft);
+                if (playerOne.deathCounter == 0)
+                {
+                    scene.Camera.Position.X = playerOne.Position.X - 550;
+                }
 
-            gameHud.Update(gameTime, playerOne.Lives, playerOne.Score, playerOne.Fuel, peepsLeft);
-            if (playerOne.deathCounter == 0)
-            {
-                scene.Camera.Position.X = playerOne.Position.X - 550;
-            }
-
-            if (Keyboard.GetState().IsKeyDown(Keys.P))
-            {
-                Console.WriteLine(scene.Camera.Position + " - " + scene.Camera.View + "." + " - " + playerOne.Position);
+                if (Keyboard.GetState().IsKeyDown(Keys.P))
+                {
+                    Console.WriteLine(scene.Camera.Position + " - " + scene.Camera.View + "." + " - " + playerOne.Position);
+                }
             }
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             particleEffects.Draw(scene.Camera);
-            playerOne.DrawShadow(scene.Camera, ref scene.ShadowRenderTarget);
+            if (initTimer <= 0)
+            {
+                playerOne.DrawShadow(scene.Camera, ref scene.ShadowRenderTarget);
+            }
             map.Draw(scene.Camera, ref scene.ShadowRenderTarget);
-            playerOne.Draw(scene.Camera, ref scene.ShadowRenderTarget);
+            if (initTimer <= 0)
+            {
+                playerOne.Draw(scene.Camera, ref scene.ShadowRenderTarget);
+            }
             skybox.Draw(scene.Camera);
 
             spriteBatch.Begin();
-            gameHud.Draw(spriteBatch);
+            gameHud.Draw(spriteBatch);            
+            if (initTimer > 0)
+            {
+                countdown.Draw(spriteBatch);
+            }
             spriteBatch.End();
+
         }
     }
 }

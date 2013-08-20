@@ -19,7 +19,7 @@
     <ApplicationIcon>Game.ico</ApplicationIcon>
     <Thumbnail>GameThumbnail.png</Thumbnail>
     <IsWebBootstrapper>false</IsWebBootstrapper>
-    <PublishUrl>C:\Users\Harvey\Desktop\1\</PublishUrl>
+    <PublishUrl>D:\Users\Harvey\Desktop\argh aliens\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>false</UpdateEnabled>
@@ -29,7 +29,10 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>1</ApplicationRevision>
+    <TargetCulture>en-GB</TargetCulture>
+    <ProductName>Argh Aliens</ProductName>
+    <PublisherName>Sysdia Solutions Ltd</PublisherName>
+    <ApplicationRevision>5</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -70,7 +73,7 @@
     <GenerateManifests>true</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="LeapCSharp.NET4.0, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -129,6 +132,7 @@
     <Compile Include="Core\PlayerIndexExtensions.cs" />
     <Compile Include="Core\SoundPlayer.cs" />
     <Compile Include="CrashDebugGame.cs" />
+    <Compile Include="Game\Countdown.cs" />
     <Compile Include="Game\Scene.cs" />
     <Compile Include="Game\OptionsHolder.cs" />
     <Compile Include="Helper\ButtonMappings.cs" />
